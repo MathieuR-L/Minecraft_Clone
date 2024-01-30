@@ -62,6 +62,9 @@ public class PlayerMovePacket implements ClientPacket {
             player.getPosition().y = positionNode.get("y").floatValue();
             player.getPosition().z = positionNode.get("z").floatValue();
 
+            player.getVelocity().x = positionNode.get("vx").floatValue();
+            player.getVelocity().y = positionNode.get("vy").floatValue();
+            player.getVelocity().z = positionNode.get("vz").floatValue();
 
         } catch (IOException e) {
             logger.error(e.getMessage());

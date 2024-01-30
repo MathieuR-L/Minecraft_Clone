@@ -34,7 +34,7 @@ public class Client {
         this.speed = .1f;
         this.skin = null;
         this.velocity= new Vector3f(0,0,0);
-        this.Vmax = 0.6f;
+        this.Vmax = 1f;
     }
 
     public String getName() {
@@ -87,17 +87,19 @@ public class Client {
             acceleration = acceleration.add(right);
         }
 
-        if (velocity.length()>Vmax) {
-            velocity=velocity.normalize().mul(speed);
-        }
+        velocity = velocity.add(acceleration.mul(speed));
 
-        velocity = velocity.add(acceleration).mul(speed);
-/*
+        if (velocity.length()>Vmax) {
+            velocity=velocity.normalize().mul(Vmax);
+        }
+        /*
         if (!movingBackward && !movingForward && !movingLeft && !movingRight) {
             velocity = velocity.mul(0.99f);
         }
-*/
-        velocity = velocity.mul(0.95f);
+        */
+        velocity.x *= .95f;
+        velocity.z *= .95f;
+
         position = position.add(velocity);
 
         if (flying)
@@ -106,7 +108,6 @@ public class Client {
         if (sneaking)
             position = position.sub(new Vector3f(0.0f, .5f, 0.0f));
 
-        System.out.println("Velocity: "+ velocity);
     }
 
     public Vector3f getPosition() {
@@ -137,5 +138,9 @@ public class Client {
 
     public float getBodyYaw() {
         return bodyYaw;
+    }
+
+    public Vector3f getVelocity() {
+        return velocity;
     }
 }

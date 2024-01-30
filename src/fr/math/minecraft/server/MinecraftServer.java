@@ -265,6 +265,9 @@ public class MinecraftServer {
         positionNode.put("x", client.getPosition().x);
         positionNode.put("y", client.getPosition().y);
         positionNode.put("z", client.getPosition().z);
+        positionNode.put("vx", client.getVelocity().x);
+        positionNode.put("vy", client.getVelocity().y);
+        positionNode.put("vz", client.getVelocity().z);
 
         String response = new ObjectMapper().writeValueAsString(positionNode);
         byte[] buffer = response.getBytes(StandardCharsets.UTF_8);

@@ -8,6 +8,7 @@ import fr.math.minecraft.client.gui.menus.ConnectionMenu;
 import fr.math.minecraft.client.gui.menus.MainMenu;
 import fr.math.minecraft.client.gui.menus.Menu;
 import fr.math.minecraft.client.manager.*;
+import fr.math.minecraft.client.packet.PlayerMovePacket;
 import fr.math.minecraft.client.packet.PlayersListPacket;
 import fr.math.minecraft.client.entity.Player;
 import fr.math.minecraft.client.world.Chunk;
@@ -208,16 +209,19 @@ public class Game {
 
             lastDeltaTime = currentTime;
             this.render(renderer);
+
             if (state == GameState.PLAYING) {
                 player.handleInputs(window);
             }
+
             while (updateTimer > GameConfiguration.UPDATE_TICK) {
                 this.update();
-                updateTimer -= GameConfiguration.UPDATE_TICK;
                 if (state == GameState.PLAYING) {
-                    //player.handleInputs(window);
+                    PlayerMovePacket playerMovePacket = new PlayerMovePacket(player);
+                    playerMovePacket.send();
                     playersListPacket.send();
                 }
+                updateTimer -= GameConfiguration.UPDATE_TICK;
             }
 
             frames++;
@@ -260,7 +264,6 @@ public class Game {
 
         world.getPendingChunks().clear();
         // worldManager.cleanChunks(world);
-        player.update();
         camera.update(player);
         time += 0.01f;
         for (Player player : players.values()) {

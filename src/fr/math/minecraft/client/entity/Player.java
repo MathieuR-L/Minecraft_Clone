@@ -28,6 +28,7 @@ public class Player {
     public final static float HEIGHT = 1.75f;
     public final static float DEPTH = WIDTH;
     private Vector3f position;
+    private Vector3f velocity;
     private float yaw;
     private float bodyYaw;
     private float pitch;
@@ -48,6 +49,7 @@ public class Player {
 
     public Player(String name) {
         this.position = new Vector3f(0.0f, 0.0f, 0.0f);
+        this.velocity = new Vector3f(0, 0, 0);
         this.yaw = 0.0f;
         this.bodyYaw = 0.0f;
         this.pitch = 0.0f;
@@ -158,11 +160,9 @@ public class Player {
     }
 
     public void update() {
-        PlayerMovePacket playerMovePacket = new PlayerMovePacket(this);
         for (Animation animation : animations) {
             animation.update();
         }
-        playerMovePacket.send();
     }
 
     public boolean isMoving() {
@@ -289,5 +289,9 @@ public class Player {
 
     public boolean isSneaking() {
         return sneaking;
+    }
+
+    public Vector3f getVelocity() {
+        return velocity;
     }
 }
