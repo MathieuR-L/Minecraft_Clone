@@ -78,6 +78,9 @@ public class ChunkGenerationWorker implements Runnable {
 
         Chunk chunk = world.getChunk(chunkPosition.getX(), chunkPosition.getY(), chunkPosition.getZ());
 
+        if(chunk == null){
+            return;
+        }
         if (!chunk.isEmpty()) {
             synchronized (game.getPendingChunks()) {
                 game.getPendingChunks().add(chunk);

@@ -208,12 +208,14 @@ public class Game {
 
             lastDeltaTime = currentTime;
             this.render(renderer);
-
+            if (state == GameState.PLAYING) {
+                player.handleInputs(window);
+            }
             while (updateTimer > GameConfiguration.UPDATE_TICK) {
                 this.update();
                 updateTimer -= GameConfiguration.UPDATE_TICK;
                 if (state == GameState.PLAYING) {
-                    player.handleInputs(window);
+                    //player.handleInputs(window);
                     playersListPacket.send();
                 }
             }
@@ -258,7 +260,7 @@ public class Game {
 
         world.getPendingChunks().clear();
         // worldManager.cleanChunks(world);
-
+        player.update();
         camera.update(player);
         time += 0.01f;
         for (Player player : players.values()) {

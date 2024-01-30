@@ -92,11 +92,13 @@ public class Client {
         }
 
         velocity = velocity.add(acceleration).mul(speed);
-        position = position.add(velocity);
-
+/*
         if (!movingBackward && !movingForward && !movingLeft && !movingRight) {
-            velocity = velocity.mul(0.95f);
+            velocity = velocity.mul(0.99f);
         }
+*/
+        velocity = velocity.mul(0.95f);
+        position = position.add(velocity);
 
         if (flying)
             position = position.add(new Vector3f(0.0f, .5f, 0.0f));
@@ -104,7 +106,7 @@ public class Client {
         if (sneaking)
             position = position.sub(new Vector3f(0.0f, .5f, 0.0f));
 
-
+        System.out.println("Velocity: "+ velocity);
     }
 
     public Vector3f getPosition() {

@@ -79,6 +79,7 @@ public class Player {
         DoubleBuffer mouseX = BufferUtils.createDoubleBuffer(1);
         DoubleBuffer mouseY = BufferUtils.createDoubleBuffer(1);
         glfwGetCursorPos(window, mouseX, mouseY);
+        this.resetMoving();
 
         if (firstMouse) {
             lastMouseX = (float) mouseX.get(0);
@@ -101,37 +102,29 @@ public class Player {
             pitch = -89.0f;
         }
 
-        PlayerMovePacket packet = new PlayerMovePacket(this);
-        this.resetMoving();
 
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
             movingForward = true;
-            packet.setMovingForward(true);
         }
 
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
             movingLeft = true;
-            packet.setMovingLeft(true);
         }
 
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
             movingBackward = true;
-            packet.setMovingBackward(true);
         }
 
         if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
             movingRight = true;
-            packet.setMovingRight(true);
         }
 
         if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
             flying = true;
-            packet.setFlying(true);
         }
 
         if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
             sneaking = true;
-            packet.setSneaking(true);
         }
 
         if (glfwGetKey(window, GLFW_KEY_F3) == GLFW_PRESS) {
@@ -149,13 +142,13 @@ public class Player {
             this.notifyEvent(new PlayerMoveEvent(this));
         }
 
-        packet.send();
 
         lastMouseX = (float) mouseX.get(0);
         lastMouseY = (float) mouseY.get(0);
+
     }
 
-    private void resetMoving() {
+    public void resetMoving() {
         movingLeft = false;
         movingRight = false;
         movingForward = false;
@@ -165,9 +158,11 @@ public class Player {
     }
 
     public void update() {
+        PlayerMovePacket playerMovePacket = new PlayerMovePacket(this);
         for (Animation animation : animations) {
             animation.update();
         }
+        playerMovePacket.send();
     }
 
     public boolean isMoving() {
@@ -272,4 +267,27 @@ public class Player {
         eventListeners.remove(event);
     }
 
+    public boolean isMovingBackward() {
+        return movingBackward;
+    }
+
+    public boolean isMovingForward() {
+        return movingForward;
+    }
+
+    public boolean isMovingLeft() {
+        return movingLeft;
+    }
+
+    public boolean isMovingRight() {
+        return movingRight;
+    }
+
+    public boolean isFlying() {
+        return flying;
+    }
+
+    public boolean isSneaking() {
+        return sneaking;
+    }
 }

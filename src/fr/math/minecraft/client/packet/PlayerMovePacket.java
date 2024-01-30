@@ -29,12 +29,12 @@ public class PlayerMovePacket implements ClientPacket {
     public PlayerMovePacket(Player player) {
         this.player = player;
         this.mapper = new ObjectMapper();
-        this.movingLeft = false;
-        this.movingRight = false;
-        this.movingForward = false;
-        this.movingBackward = false;
-        this.flying = false;
-        this.sneaking = false;
+        this.movingLeft = player.isMovingLeft();
+        this.movingRight = player.isMovingRight();
+        this.movingForward = player.isMovingForward();
+        this.movingBackward = player.isMovingBackward();
+        this.flying = player.isFlying();
+        this.sneaking = player.isSneaking();
         this.movingHead = false;
     }
 
