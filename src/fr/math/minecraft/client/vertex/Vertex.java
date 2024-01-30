@@ -12,17 +12,21 @@ public class Vertex {
     private final Vector2f textureCoords;
     private final float blockID;
     private final float blockFace;
-    public Vertex(Vector3f position, Vector2f textureCoords, float blockID, float blockFace) {
+    private final int occlusion;
+
+    public Vertex(Vector3f position, Vector2f textureCoords, float blockID, float blockFace, int occlusion) {
         this.position = position;
         this.textureCoords = textureCoords;
-        this.blockID=blockID;
-        this.blockFace=blockFace;
+        this.blockID = blockID;
+        this.blockFace = blockFace;
+        this.occlusion = occlusion;
     }
     public Vertex(Vector3f position, Vector2f textureCoords) {
         this.position = position;
         this.textureCoords = textureCoords;
-        this.blockID=-1;
-        this.blockFace=-1;
+        this.blockID = -1;
+        this.blockFace = -1;
+        this.occlusion = -1;
     }
 
 
@@ -38,4 +42,7 @@ public class Vertex {
 
     public float getBlockFace(){return blockFace;}
 
+    public int getOcclusion() {
+        return occlusion;
+    }
 }

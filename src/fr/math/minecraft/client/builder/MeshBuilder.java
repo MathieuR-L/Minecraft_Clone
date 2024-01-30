@@ -5,16 +5,14 @@ import fr.math.minecraft.client.meshs.model.NatureModel;
 import fr.math.minecraft.client.packet.ChunkEmptyPacket;
 import fr.math.minecraft.client.vertex.Vertex;
 import fr.math.minecraft.client.meshs.model.BlockModel;
-import fr.math.minecraft.client.world.Chunk;
-import fr.math.minecraft.client.world.Coordinates;
-import fr.math.minecraft.client.world.Material;
-import fr.math.minecraft.client.world.World;
+import fr.math.minecraft.client.world.*;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class MeshBuilder {
 
@@ -102,38 +100,12 @@ public class MeshBuilder {
 
                         for (int k = 0; k < 6; k++)  {
                             Vector3f blockVector = new Vector3f(x, y, z);
-                            vertices.add(new Vertex(blockVector.add(NatureModel.FIRST_FACE[k]), textureCoords[k],material.getId(),0));
+                            vertices.add(new Vertex(blockVector.add(NatureModel.FIRST_FACE[k]), textureCoords[k],material.getId(),0, 3));
                         }
                         for (int k = 0; k < 6; k++)  {
                             Vector3f blockVector = new Vector3f(x, y, z);
-                            vertices.add(new Vertex(blockVector.add(NatureModel.SECOND_FACE[k]), textureCoords[k],material.getId(),0));
+                            vertices.add(new Vertex(blockVector.add(NatureModel.SECOND_FACE[k]), textureCoords[k],material.getId(),0, 3));
                         }
-                        /*
-                        for (int k = 0; k < 6; k++)  {
-                            Vector3f blockVector = new Vector3f(x, y, z);
-                            vertices.add(new Vertex(blockVector.add(BlockModel.PX_POS[k]), textureCoords[k],material.getId(),0));
-                        }
-                        for (int k = 0; k < 6; k++)  {
-                            Vector3f blockVector = new Vector3f(x, y, z);
-                            vertices.add(new Vertex(blockVector.add(BlockModel.NX_POS[k]), textureCoords[k],material.getId(),0));
-                        }
-                        for (int k = 0; k < 6; k++)  {
-                            Vector3f blockVector = new Vector3f(x, y, z);
-                            vertices.add(new Vertex(blockVector.add(BlockModel.PY_POS[k]), textureCoords[k],material.getId(),0));
-                        }
-                        for (int k = 0; k < 6; k++)  {
-                            Vector3f blockVector = new Vector3f(x, y, z);
-                            vertices.add(new Vertex(blockVector.add(BlockModel.NY_POS[k]), textureCoords[k],material.getId(),0));
-                        }
-                        for (int k = 0; k < 6; k++)  {
-                            Vector3f blockVector = new Vector3f(x, y, z);
-                            vertices.add(new Vertex(blockVector.add(BlockModel.PZ_POS[k]), textureCoords[k],material.getId(),0));
-                        }
-                        for (int k = 0; k < 6; k++)  {
-                            Vector3f blockVector = new Vector3f(x, y, z);
-                            vertices.add(new Vertex(blockVector.add(BlockModel.NZ_POS[k]), textureCoords[k],material.getId(),0));
-                        }
-                        */
                     } else {
                         if (px) {
                             if(material.isFaces()) {
@@ -142,9 +114,12 @@ public class MeshBuilder {
                                 textureCoords = calculateTexCoords(material.getX(), material.getY(), 16.0f);
 
                             }
+
+                            Map<Integer, Integer> map = calculateAmbiantOcclusion(worldX, worldY, worldZ, BlockFace.PX_FACE);
+
                             for (int k = 0; k < 6; k++)  {
                                 Vector3f blockVector = new Vector3f(x, y, z);
-                                vertices.add(new Vertex(blockVector.add(BlockModel.PX_POS[k]), textureCoords[k],material.getId(),0));
+                                vertices.add(new Vertex(blockVector.add(BlockModel.PX_POS[k]), textureCoords[k],material.getId(),0, map.get(k)));
                             }
                         }
 
@@ -155,9 +130,12 @@ public class MeshBuilder {
                                 textureCoords = calculateTexCoords(material.getX(), material.getY(), 16.0f);
 
                             }
+
+                            Map<Integer, Integer> map = calculateAmbiantOcclusion(worldX, worldY, worldZ, BlockFace.NX_FACE);
+
                             for (int k = 0; k < 6; k++)  {
                                 Vector3f blockVector = new Vector3f(x, y, z);
-                                vertices.add(new Vertex(blockVector.add(BlockModel.NX_POS[k]), textureCoords[k],material.getId(),1));
+                                vertices.add(new Vertex(blockVector.add(BlockModel.NX_POS[k]), textureCoords[k],material.getId(),1, map.get(k)));
                             }
                         }
 
@@ -168,9 +146,12 @@ public class MeshBuilder {
                                 textureCoords = calculateTexCoords(material.getX(), material.getY(), 16.0f);
 
                             }
+
+                            Map<Integer, Integer> map = calculateAmbiantOcclusion(worldX, worldY, worldZ, BlockFace.PY_FACE);
+
                             for (int k = 0; k < 6; k++)  {
                                 Vector3f blockVector = new Vector3f(x, y, z);
-                                vertices.add(new Vertex(blockVector.add(BlockModel.PY_POS[k]), textureCoords[k],material.getId(),2));
+                                vertices.add(new Vertex(blockVector.add(BlockModel.PY_POS[k]), textureCoords[k],material.getId(),2, map.get(k)));
                             }
                         }
 
@@ -181,9 +162,12 @@ public class MeshBuilder {
                                 textureCoords = calculateTexCoords(material.getX(), material.getY(), 16.0f);
 
                             }
+
+                            Map<Integer, Integer> map = calculateAmbiantOcclusion(worldX, worldY, worldZ, BlockFace.NY_FACE);
+
                             for (int k = 0; k < 6; k++)  {
                                 Vector3f blockVector = new Vector3f(x, y, z);
-                                vertices.add(new Vertex(blockVector.add(BlockModel.NY_POS[k]), textureCoords[k],material.getId(),3));
+                                vertices.add(new Vertex(blockVector.add(BlockModel.NY_POS[k]), textureCoords[k],material.getId(),3, map.get(k)));
                             }
                         }
 
@@ -194,9 +178,12 @@ public class MeshBuilder {
                                 textureCoords = calculateTexCoords(material.getX(), material.getY(), 16.0f);
 
                             }
+
+                            Map<Integer, Integer> map = calculateAmbiantOcclusion(worldX, worldY, worldZ, BlockFace.PZ_FACE);
+
                             for (int k = 0; k < 6; k++)  {
                                 Vector3f blockVector = new Vector3f(x, y, z);
-                                vertices.add(new Vertex(blockVector.add(BlockModel.PZ_POS[k]), textureCoords[k],material.getId(),4));
+                                vertices.add(new Vertex(blockVector.add(BlockModel.PZ_POS[k]), textureCoords[k],material.getId(),4, map.get(k)));
                             }
                         }
 
@@ -207,9 +194,12 @@ public class MeshBuilder {
                                 textureCoords = calculateTexCoords(material.getX(), material.getY(), 16.0f);
 
                             }
+
+                            Map<Integer, Integer> map = calculateAmbiantOcclusion(worldX, worldY, worldZ, BlockFace.NZ_FACE);
+
                             for (int k = 0; k < 6; k++)  {
                                 Vector3f blockVector = new Vector3f(x, y, z);
-                                vertices.add(new Vertex(blockVector.add(BlockModel.NZ_POS[k]), textureCoords[k],material.getId(),5));
+                                vertices.add(new Vertex(blockVector.add(BlockModel.NZ_POS[k]), textureCoords[k],material.getId(),5, map.get(k)));
                             }
                         }
                     }
@@ -219,6 +209,91 @@ public class MeshBuilder {
         counter = 0;
 
         return vertices.toArray(new Vertex[0]);
+    }
+
+    public Map<Integer, Integer> calculateAmbiantOcclusion(int worldX, int worldY, int worldZ, BlockFace face) {
+
+        int a = 0;
+        int b = 0;
+        int c = 0;
+        int d = 0;
+        int e = 0;
+        int f = 0;
+        int g = 0;
+        int h = 0;
+
+        switch (face) {
+            case PX_FACE:
+                a = isEmpty(worldX + 1, worldY + 1, worldZ) ? 1 : 0;
+                b = isEmpty(worldX + 1, worldY + 1, worldZ - 1) ? 1 : 0;
+                c = isEmpty(worldX + 1, worldY, worldZ - 1) ? 1 : 0;
+                d = isEmpty(worldX + 1, worldY - 1, worldZ - 1) ? 1 : 0;
+                e = isEmpty(worldX + 1, worldY - 1, worldZ) ? 1 : 0;
+                f = isEmpty(worldX + 1, worldY - 1, worldZ + 1) ? 1 : 0;
+                g = isEmpty(worldX + 1, worldY, worldZ + 1) ? 1 : 0;
+                h = isEmpty(worldX + 1, worldY + 1, worldZ + 1) ? 1 : 0;
+                break;
+            case PY_FACE:
+                a = isEmpty(worldX, worldY + 1, worldZ - 1) ? 1 : 0;
+                b = isEmpty(worldX + 1, worldY + 1, worldZ - 1) ? 1 : 0;
+                c = isEmpty(worldX + 1, worldY + 1, worldZ) ? 1 : 0;
+                d = isEmpty(worldX + 1, worldY + 1, worldZ + 1) ? 1 : 0;
+                e = isEmpty(worldX, worldY + 1, worldZ + 1) ? 1 : 0;
+                f = isEmpty(worldX - 1, worldY + 1, worldZ + 1) ? 1 : 0;
+                g = isEmpty(worldX - 1, worldY + 1, worldZ) ? 1 : 0;
+                h = isEmpty(worldX - 1, worldY + 1, worldZ - 1) ? 1 : 0;
+                break;
+            case PZ_FACE:
+                a = isEmpty(worldX, worldY + 1, worldZ + 1) ? 1 : 0;
+                b = isEmpty(worldX + 1, worldY + 1, worldZ + 1) ? 1 : 0;
+                c = isEmpty(worldX + 1, worldY, worldZ + 1) ? 1 : 0;
+                d = isEmpty(worldX + 1, worldY - 1, worldZ + 1) ? 1 : 0;
+                e = isEmpty(worldX, worldY - 1, worldZ + 1) ? 1 : 0;
+                f = isEmpty(worldX - 1, worldY - 1, worldZ + 1) ? 1 : 0;
+                g = isEmpty(worldX - 1, worldY, worldZ + 1) ? 1 : 0;
+                h = isEmpty(worldX - 1, worldY + 1, worldZ + 1) ? 1 : 0;
+                break;
+            case NX_FACE:
+                a = isEmpty(worldX - 1, worldY + 1, worldZ) ? 1 : 0;
+                b = isEmpty(worldX - 1, worldY + 1, worldZ + 1) ? 1 : 0;
+                c = isEmpty(worldX - 1, worldY, worldZ + 1) ? 1 : 0;
+                d = isEmpty(worldX - 1, worldY - 1, worldZ + 1) ? 1 : 0;
+                e = isEmpty(worldX - 1, worldY - 1, worldZ) ? 1 : 0;
+                f = isEmpty(worldX - 1, worldY - 1, worldZ - 1) ? 1 : 0;
+                g = isEmpty(worldX - 1, worldY, worldZ - 1) ? 1 : 0;
+                h = isEmpty(worldX - 1, worldY + 1, worldZ - 1) ? 1 : 0;
+                break;
+            case NY_FACE:
+                a = isEmpty(worldX, worldY - 1, worldZ - 1) ? 1 : 0;
+                b = isEmpty(worldX - 1, worldY - 1, worldZ - 1) ? 1 : 0;
+                c = isEmpty(worldX - 1, worldY - 1, worldZ) ? 1 : 0;
+                d = isEmpty(worldX - 1, worldY - 1, worldZ + 1) ? 1 : 0;
+                e = isEmpty(worldX, worldY - 1, worldZ + 1) ? 1 : 0;
+                f = isEmpty(worldX + 1, worldY - 1, worldZ + 1) ? 1 : 0;
+                g = isEmpty(worldX + 1, worldY - 1, worldZ) ? 1 : 0;
+                h = isEmpty(worldX + 1, worldY - 1, worldZ - 1) ? 1 : 0;
+                break;
+            case NZ_FACE:
+                a = isEmpty(worldX, worldY + 1, worldZ - 1) ? 1 : 0;
+                b = isEmpty(worldX - 1, worldY + 1, worldZ - 1) ? 1 : 0;
+                c = isEmpty(worldX - 1, worldY, worldZ - 1) ? 1 : 0;
+                d = isEmpty(worldX - 1, worldY - 1, worldZ - 1) ? 1 : 0;
+                e = isEmpty(worldX, worldY - 1, worldZ - 1) ? 1 : 0;
+                f = isEmpty(worldX + 1, worldY - 1, worldZ - 1) ? 1 : 0;
+                g = isEmpty(worldX + 1, worldY, worldZ - 1) ? 1 : 0;
+                h = isEmpty(worldX + 1, worldY + 1, worldZ - 1) ? 1 : 0;
+                break;
+        }
+
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(0, g + f + e);
+        map.put(1, g + h + a);
+        map.put(2, a + b + c);
+        map.put(3, a + b + c);
+        map.put(4, c + d + e);
+        map.put(5, g + f + e);
+
+        return map;
     }
 
 }
