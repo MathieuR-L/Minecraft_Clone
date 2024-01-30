@@ -15,7 +15,7 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class TickHandler extends Thread {
 
-    private final static float TICK_PER_SECONDS = 20.0f;
+    private final static float TICK_PER_SECONDS = 1.0f;
     private final static float TICK_RATE = 1.0f / TICK_PER_SECONDS;
     private final Game game;
     private final ChunkManager chunkManager;

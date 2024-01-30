@@ -146,9 +146,10 @@ public class Player {
         }
 
         if (movingLeft || movingRight || movingForward || movingBackward || sneaking || flying) {
-            packet.send();
             this.notifyEvent(new PlayerMoveEvent(this));
         }
+
+        packet.send();
 
         lastMouseX = (float) mouseX.get(0);
         lastMouseY = (float) mouseY.get(0);

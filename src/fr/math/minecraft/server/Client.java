@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.joml.Vector3f;
 
 import java.awt.image.BufferedImage;
+import java.beans.VetoableChangeListener;
 
 public class Client {
 
@@ -17,6 +18,9 @@ public class Client {
     private float bodyYaw;
     private float pitch;
     private float speed;
+    private Vector3f velocity;
+    private Vector3f acceleration;
+    private float Vmax;
     private BufferedImage skin;
     private boolean movingLeft, movingRight, movingForward, movingBackward;
 
@@ -27,8 +31,10 @@ public class Client {
         this.position = new Vector3f(0.0f, 0.0f, 0.0f);
         this.yaw = 0.0f;
         this.pitch = 0.0f;
-        this.speed = 0.1f;
+        this.speed = .1f;
         this.skin = null;
+        this.velocity= new Vector3f(0,0,0);
+        this.Vmax = 0.6f;
     }
 
     public String getName() {
@@ -56,6 +62,8 @@ public class Client {
         this.movingForward = movingForward;
         this.movingBackward = movingBackward;
 
+        Vector3f acceleration = new Vector3f(0,0,0);
+
         front.x = (float) (Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
         front.y = (float) Math.sin(Math.toRadians(0.0f));
         front.z = (float) (Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
@@ -63,23 +71,39 @@ public class Client {
         front.normalize();
         Vector3f right = new Vector3f(front).cross(new Vector3f(0, 1, 0)).normalize();
 
-        if (movingForward)
-            position = position.add(new Vector3f(front).mul(speed));
+        if (movingForward) {
+            acceleration = acceleration.add(front);
+        }
 
-        if (movingBackward)
-            position = position.sub(new Vector3f(front).mul(speed));
+        if (movingBackward) {
+            acceleration = acceleration.sub(front);
+        }
 
-        if (movingLeft)
-            position = position.sub(new Vector3f(right).mul(speed));
+        if (movingLeft) {
+            acceleration = acceleration.sub(right);
+        }
 
-        if (movingRight)
-            position = position.add(new Vector3f(right).mul(speed));
+        if (movingRight) {
+            acceleration = acceleration.add(right);
+        }
+
+        if (velocity.length()>Vmax) {
+            velocity=velocity.normalize().mul(speed);
+        }
+
+        velocity = velocity.add(acceleration).mul(speed);
+        position = position.add(velocity);
+
+        if (!movingBackward && !movingForward && !movingLeft && !movingRight) {
+            velocity = velocity.mul(0.95f);
+        }
 
         if (flying)
             position = position.add(new Vector3f(0.0f, .5f, 0.0f));
 
         if (sneaking)
             position = position.sub(new Vector3f(0.0f, .5f, 0.0f));
+
 
     }
 
