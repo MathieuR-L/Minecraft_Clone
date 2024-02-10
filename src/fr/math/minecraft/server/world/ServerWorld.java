@@ -3,6 +3,7 @@ package fr.math.minecraft.server.world;
 import fr.math.minecraft.client.Game;
 import fr.math.minecraft.client.GameConfiguration;
 import fr.math.minecraft.client.world.Chunk;
+import fr.math.minecraft.client.world.Material;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,6 +78,14 @@ public class ServerWorld {
         blockZ = blockZ < 0 ? blockZ + Chunk.SIZE : blockZ;
 
         return chunk.getBlock(blockX, blockY, blockZ);
+    }
+
+    public int getYupperBlock(int x, int z){
+        int height=0;
+        while(getBlockAt(x,height,z)!= Material.AIR.getId()){
+            height+=1;
+        }
+        return height;
     }
 
     public HashMap<Coordinates, ServerChunk> getStructures() {

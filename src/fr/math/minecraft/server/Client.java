@@ -22,7 +22,7 @@ public class Client {
     private Vector3f acceleration;
     private float Vmax;
     private BufferedImage skin;
-    private boolean movingLeft, movingRight, movingForward, movingBackward;
+    private boolean movingLeft, movingRight, movingForward, movingBackward,flying,sneaking;
 
     public Client(String uuid, String name) {
         this.uuid = uuid;
@@ -61,6 +61,8 @@ public class Client {
         this.movingRight = movingRight;
         this.movingForward = movingForward;
         this.movingBackward = movingBackward;
+        this.flying=flying;
+        this.sneaking=sneaking;
 
         Vector3f acceleration = new Vector3f(0,0,0);
 
@@ -105,7 +107,7 @@ public class Client {
         if (flying)
             position = position.add(new Vector3f(0.0f, .5f, 0.0f));
 
-        if (sneaking)
+        if (sneaking && !isCollidingNy())
             position = position.sub(new Vector3f(0.0f, .5f, 0.0f));
 
     }
@@ -143,4 +145,11 @@ public class Client {
     public Vector3f getVelocity() {
         return velocity;
     }
+
+    public boolean isCollidingNy(){
+        MinecraftServer server = MinecraftServer.getInstance();
+        System.out.println("Is colliding?");
+        return position.y - 1.5 <= server.getWorld().getYupperBlock((int)position.x,(int)position.z);
+    }
+
 }
