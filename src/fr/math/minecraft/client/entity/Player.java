@@ -35,8 +35,7 @@ public class Player {
     private boolean firstMouse;
     private boolean movingLeft, movingRight, movingForward, movingBackward;
     private boolean flying, sneaking;
-    private boolean debugKeyPressed;
-
+    private boolean debugKeyPressed, occlusionKeyPressed;
     private float lastMouseX, lastMouseY;
     private String name;
     private String uuid;
@@ -64,6 +63,7 @@ public class Player {
         this.debugKeyPressed = false;
         this.sneaking = false;
         this.flying = false;
+        this.occlusionKeyPressed = false;
         this.animations = new ArrayList<>();
         this.nametagMesh = new NametagMesh(name);
         this.skin = null;
@@ -134,6 +134,13 @@ public class Player {
             packet.setSneaking(true);
         }
 
+        if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
+            if (!occlusionKeyPressed) {
+                Game.getInstance().setOcclusion(!Game.getInstance().getOcclusion());
+                occlusionKeyPressed = true;
+            }
+        }
+
         if (glfwGetKey(window, GLFW_KEY_F3) == GLFW_PRESS) {
             if (!debugKeyPressed) {
                 Game.getInstance().setDebugging(!Game.getInstance().isDebugging());
@@ -143,6 +150,10 @@ public class Player {
 
         if (glfwGetKey(window, GLFW_KEY_F3) == GLFW_RELEASE) {
             debugKeyPressed = false;
+        }
+
+        if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_RELEASE) {
+            occlusionKeyPressed = false;
         }
 
         if (movingLeft || movingRight || movingForward || movingBackward || sneaking || flying) {

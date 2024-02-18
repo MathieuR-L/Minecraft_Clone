@@ -15,6 +15,7 @@ uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 model;
 uniform float time;
+uniform float occlusionEnabled;
 
 float brigthness[6] = float[6](0.85f, 0.6f, 1.0f, 0.6f, 0.85f, 0.6f); /*[px, nx, py, ny, pz, nz]*/
 
@@ -26,7 +27,7 @@ bool equals(float a, float b) {
 
 vec4 calculatePosition() {
     vec3 position = aPosition.xyz;
-    if (equals(aBlockID, 7.0f)) {
+    if (equals(aBlockID, 7.0f) && equals(occlusionEnabled, 1.0f)) {
         position.x += sin((time + position.y + position.z) * 1.8f) / 15.0f;
         position.z -= cos((time + position.x + position.y) * 1.8f) / 15.0f;
     }
@@ -38,5 +39,9 @@ void main() {
     textureCoord = aTexture;
     blockID=aBlockID;
     blockFace=aBlockFace;
-    brightnessFace = brigthness[int(blockFace)] * occlusion[int(aOcclusion)];
+    if (equals(occlusionEnabled, 1.0f)) {
+        brightnessFace = brigthness[int(blockFace)] * occlusion[int(aOcclusion)];
+    } else {
+        brightnessFace = brigthness[int(blockFace)];
+    }
 }

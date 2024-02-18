@@ -62,7 +62,7 @@ public class Game {
     private Renderer renderer;
     private MenuManager menuManager;
     private DoubleBuffer mouseXBuffer, mouseYBuffer;
-    private boolean debugging;
+    private boolean debugging, occlusion;
     private int frames, fps;
     private ThreadPoolExecutor chunkLoadingQueue;
     private ThreadPoolExecutor packetQueue;
@@ -129,6 +129,7 @@ public class Game {
         this.mouseXBuffer = BufferUtils.createDoubleBuffer(1);
         this.mouseYBuffer = BufferUtils.createDoubleBuffer(1);
         this.debugging = false;
+        this.occlusion = false;
         this.frames = 0;
         this.fps = 0;
         this.chunkLoadingQueue = (ThreadPoolExecutor) Executors.newFixedThreadPool(8);
@@ -420,5 +421,11 @@ public class Game {
         this.time = time;
     }
 
+    public boolean getOcclusion() {
+        return this.occlusion;
+    }
 
+    public void setOcclusion(boolean occlusion) {
+        this.occlusion = occlusion;
+    }
 }
