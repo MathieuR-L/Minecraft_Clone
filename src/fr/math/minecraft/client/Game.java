@@ -145,8 +145,10 @@ public class Game {
             soundManager.addSound(sound.getFilePath(), false);
         }
 
-        for (Sound sound : soundManager.getAllSounds()) {
-            sound.load();
+        if (GameConfiguration.MUSIC_ENABLED) {
+            for (Sound sound : soundManager.getAllSounds()) {
+                sound.load();
+            }
         }
 
         Menu mainMenu = new MainMenu(this);
@@ -183,7 +185,9 @@ public class Game {
         double lastDeltaTime = glfwGetTime();
         double lastFramesTime = glfwGetTime();
 
-        soundManager.getRandomMusic().play();
+        if (GameConfiguration.MUSIC_ENABLED) {
+            soundManager.getRandomMusic().play();
+        }
 
         menuManager.open(MainMenu.class);
 
@@ -252,6 +256,8 @@ public class Game {
             return;
         }
 
+        time += 0.1f * (1.0f / 20.0f);
+
         for (Chunk chunk : world.getPendingChunks().values()) {
             world.addChunk(chunk);
         }
@@ -260,7 +266,7 @@ public class Game {
         // worldManager.cleanChunks(world);
 
         camera.update(player);
-        time += 0.01f;
+
         for (Player player : players.values()) {
             player.update();
         }
@@ -409,4 +415,10 @@ public class Game {
     public ThreadPoolExecutor getPacketQueue() {
         return packetQueue;
     }
+
+    public void setTime(float time) {
+        this.time = time;
+    }
+
+
 }

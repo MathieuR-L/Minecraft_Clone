@@ -14,13 +14,27 @@ out float brightnessFace;
 uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 model;
+uniform float time;
 
 float brigthness[6] = float[6](0.85f, 0.6f, 1.0f, 0.6f, 0.85f, 0.6f); /*[px, nx, py, ny, pz, nz]*/
 
 float occlusion[4] = float[4](0.1f, 0.25f, 0.5f, 1f);
 
+bool equals(float a, float b) {
+    return abs(a - b) < 1e-5;
+}
+
+vec4 calculatePosition() {
+    vec3 position = aPosition.xyz;
+    if (equals(aBlockID, 7.0f)) {
+        position.x += sin((time + position.y + position.z) * 1.8f) / 15.0f;
+        position.z -= cos((time + position.x + position.y) * 1.8f) / 15.0f;
+    }
+    return vec4(position, 1.0);
+}
+
 void main() {
-    gl_Position = projection * view * model * vec4(aPosition, 1.0);
+    gl_Position = projection * view * model * calculatePosition();
     textureCoord = aTexture;
     blockID=aBlockID;
     blockFace=aBlockFace;

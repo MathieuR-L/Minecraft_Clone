@@ -47,6 +47,65 @@ public class ChunkGenerationWorker implements Runnable {
             new Coordinates(x, y + 1, z),
             new Coordinates(x, y, z - 1),
             new Coordinates(x, y, z + 1),
+            // Face y + 1
+            new Coordinates(x - 1, y + 1, z - 1),
+            new Coordinates(x - 1, y + 1, z + 1),
+            new Coordinates(x + 1, y + 1, z + 1),
+            new Coordinates(x + 1, y + 1, z + 1),
+            new Coordinates(x, y + 1, z - 1),
+            new Coordinates(x, y + 1, z + 1),
+            new Coordinates(x - 1, y + 1, z),
+            new Coordinates(x + 1, y + 1, z),
+
+            // Face y - 1
+            new Coordinates(x - 1, y - 1, z - 1),
+            new Coordinates(x - 1, y - 1, z + 1),
+            new Coordinates(x + 1, y - 1, z + 1),
+            new Coordinates(x + 1, y - 1, z + 1),
+            new Coordinates(x, y - 1, z - 1),
+            new Coordinates(x, y - 1, z + 1),
+            new Coordinates(x - 1, y - 1, z),
+            new Coordinates(x + 1, y - 1, z),
+
+            // Face x + 1
+            new Coordinates(x + 1, y + 1, z + 1),
+            new Coordinates(x + 1, y + 1, z),
+            new Coordinates(x + 1, y + 1, z - 1),
+            new Coordinates(x + 1, y, z - 1),
+            new Coordinates(x + 1, y - 1, z - 1),
+            new Coordinates(x + 1, y - 1, z),
+            new Coordinates(x + 1, y - 1, z + 1),
+            new Coordinates(x + 1, y, z + 1),
+
+            // Face x - 1
+            new Coordinates(x - 1, y + 1, z + 1),
+            new Coordinates(x - 1, y + 1, z),
+            new Coordinates(x - 1, y + 1, z - 1),
+            new Coordinates(x - 1, y, z - 1),
+            new Coordinates(x - 1, y - 1, z - 1),
+            new Coordinates(x - 1, y - 1, z),
+            new Coordinates(x - 1, y - 1, z + 1),
+            new Coordinates(x - 1, y, z + 1),
+
+            // Face z + 1
+            new Coordinates(x - 1, y + 1, z + 1),
+            new Coordinates(x, y + 1, z + 1),
+            new Coordinates(x + 1, y + 1, z + 1),
+            new Coordinates(x + 1, y, z + 1),
+            new Coordinates(x + 1, y - 1, z + 1),
+            new Coordinates(x, y - 1, z + 1),
+            new Coordinates(x - 1, y - 1, z + 1),
+            new Coordinates(x - 1, y, z + 1),
+
+            // Face z - 1
+            new Coordinates(x - 1, y + 1, z - 1),
+            new Coordinates(x, y + 1, z - 1),
+            new Coordinates(x + 1, y + 1, z - 1),
+            new Coordinates(x + 1, y, z - 1),
+            new Coordinates(x + 1, y - 1, z - 1),
+            new Coordinates(x, y - 1, z - 1),
+            new Coordinates(x - 1, y - 1, z - 1),
+            new Coordinates(x - 1, y, z - 1),
         };
 
         List<Future<?>> futures = new ArrayList<>();

@@ -51,7 +51,7 @@ public class TickHandler extends Thread {
     }
 
     private void tick() {
-
+        // Game.getInstance().setTime(Game.getInstance().getTime() + 0.05f);
     }
 
 }

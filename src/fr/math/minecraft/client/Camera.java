@@ -77,6 +77,7 @@ public class Camera {
         view.lookAt(newPosition, new Vector3f(newPosition).add(front), up);
         model.translate(chunk.getPosition().x * Chunk.SIZE, chunk.getPosition().y * Chunk.SIZE, chunk.getPosition().z * Chunk.SIZE);
 
+        shader.sendFloat("time", Game.getInstance().getTime());
         shader.sendMatrix("projection", projection, projectionBuffer);
         shader.sendMatrix("view", view, viewBuffer);
         shader.sendMatrix("model", model, modelBuffer);

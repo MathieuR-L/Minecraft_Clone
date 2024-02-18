@@ -17,15 +17,14 @@ import java.util.Map;
 public class MeshBuilder {
 
     private static int counter = 0;
-    private HashMap<Coordinates, Boolean> emptyMap = new HashMap<>();
 
-    public boolean isEmpty(int worldX, int worldY, int worldZ) {
+    public boolean isEmpty (int worldX, int worldY, int worldZ) {
+        return this.isEmpty(worldX, worldY, worldZ, true);
+    }
+
+    public boolean isEmpty(int worldX, int worldY, int worldZ, boolean occlusionMode) {
 
         Coordinates coordinates = new Coordinates(worldX, worldY, worldZ);
-
-        if (emptyMap.containsKey(coordinates)) {
-            return emptyMap.get(coordinates);
-        }
 
         int chunkX = (int) Math.floor(worldX / (double) Chunk.SIZE);
         int chunkY = (int) Math.floor(worldY / (double) Chunk.SIZE);
@@ -44,7 +43,10 @@ public class MeshBuilder {
 
         if (chunk == null) return true;
 
-        emptyMap.put(coordinates, world.getTransparents().contains(chunk.getBlock(blockX, blockY, blockZ)));
+        if (occlusionMode) {
+            return chunk.getBlock(blockX, blockY, blockZ) == Material.AIR.getId();
+        }
+
         return world.getTransparents().contains(chunk.getBlock(blockX, blockY, blockZ));
     }
 
@@ -81,17 +83,16 @@ public class MeshBuilder {
 
                     if (material == null) material = Material.DEBUG;
 
-
                     int worldX = x + chunk.getPosition().x * Chunk.SIZE;
                     int worldY = y + chunk.getPosition().y * Chunk.SIZE;
                     int worldZ = z + chunk.getPosition().z * Chunk.SIZE;
 
-                    boolean px = isEmpty(worldX + 1, worldY, worldZ);
-                    boolean nx = isEmpty(worldX - 1, worldY, worldZ);
-                    boolean py = isEmpty(worldX, worldY + 1, worldZ);
-                    boolean ny = isEmpty(worldX, worldY - 1, worldZ);
-                    boolean pz = isEmpty(worldX, worldY, worldZ + 1);
-                    boolean nz = isEmpty(worldX, worldY, worldZ - 1);
+                    boolean px = isEmpty(worldX + 1, worldY, worldZ, false);
+                    boolean nx = isEmpty(worldX - 1, worldY, worldZ, false);
+                    boolean py = isEmpty(worldX, worldY + 1, worldZ, false);
+                    boolean ny = isEmpty(worldX, worldY - 1, worldZ, false);
+                    boolean pz = isEmpty(worldX, worldY, worldZ + 1, false);
+                    boolean nz = isEmpty(worldX, worldY, worldZ - 1, false);
 
                     Vector2f[] textureCoords;
 
@@ -102,6 +103,7 @@ public class MeshBuilder {
                             Vector3f blockVector = new Vector3f(x, y, z);
                             vertices.add(new Vertex(blockVector.add(NatureModel.FIRST_FACE[k]), textureCoords[k],material.getId(),0, 3));
                         }
+
                         for (int k = 0; k < 6; k++)  {
                             Vector3f blockVector = new Vector3f(x, y, z);
                             vertices.add(new Vertex(blockVector.add(NatureModel.SECOND_FACE[k]), textureCoords[k],material.getId(),0, 3));
@@ -225,13 +227,13 @@ public class MeshBuilder {
         switch (face) {
             case PX_FACE:
                 a = isEmpty(worldX + 1, worldY + 1, worldZ) ? 1 : 0;
-                b = isEmpty(worldX + 1, worldY + 1, worldZ - 1) ? 1 : 0;
-                c = isEmpty(worldX + 1, worldY, worldZ - 1) ? 1 : 0;
-                d = isEmpty(worldX + 1, worldY - 1, worldZ - 1) ? 1 : 0;
+                b = isEmpty(worldX + 1, worldY + 1, worldZ + 1) ? 1 : 0;
+                c = isEmpty(worldX + 1, worldY, worldZ + 1) ? 1 : 0;
+                d = isEmpty(worldX + 1, worldY - 1, worldZ + 1) ? 1 : 0;
                 e = isEmpty(worldX + 1, worldY - 1, worldZ) ? 1 : 0;
-                f = isEmpty(worldX + 1, worldY - 1, worldZ + 1) ? 1 : 0;
-                g = isEmpty(worldX + 1, worldY, worldZ + 1) ? 1 : 0;
-                h = isEmpty(worldX + 1, worldY + 1, worldZ + 1) ? 1 : 0;
+                f = isEmpty(worldX + 1, worldY - 1, worldZ - 1) ? 1 : 0;
+                g = isEmpty(worldX + 1, worldY, worldZ - 1) ? 1 : 0;
+                h = isEmpty(worldX + 1, worldY + 1, worldZ - 1) ? 1 : 0;
                 break;
             case PY_FACE:
                 a = isEmpty(worldX, worldY + 1, worldZ - 1) ? 1 : 0;
@@ -265,23 +267,23 @@ public class MeshBuilder {
                 break;
             case NY_FACE:
                 a = isEmpty(worldX, worldY - 1, worldZ - 1) ? 1 : 0;
-                b = isEmpty(worldX - 1, worldY - 1, worldZ - 1) ? 1 : 0;
-                c = isEmpty(worldX - 1, worldY - 1, worldZ) ? 1 : 0;
-                d = isEmpty(worldX - 1, worldY - 1, worldZ + 1) ? 1 : 0;
+                b = isEmpty(worldX + 1, worldY - 1, worldZ - 1) ? 1 : 0;
+                c = isEmpty(worldX + 1, worldY - 1, worldZ) ? 1 : 0;
+                d = isEmpty(worldX + 1, worldY - 1, worldZ + 1) ? 1 : 0;
                 e = isEmpty(worldX, worldY - 1, worldZ + 1) ? 1 : 0;
-                f = isEmpty(worldX + 1, worldY - 1, worldZ + 1) ? 1 : 0;
-                g = isEmpty(worldX + 1, worldY - 1, worldZ) ? 1 : 0;
-                h = isEmpty(worldX + 1, worldY - 1, worldZ - 1) ? 1 : 0;
+                f = isEmpty(worldX - 1, worldY - 1, worldZ + 1) ? 1 : 0;
+                g = isEmpty(worldX - 1, worldY - 1, worldZ) ? 1 : 0;
+                h = isEmpty(worldX - 1, worldY - 1, worldZ - 1) ? 1 : 0;
                 break;
             case NZ_FACE:
                 a = isEmpty(worldX, worldY + 1, worldZ - 1) ? 1 : 0;
-                b = isEmpty(worldX - 1, worldY + 1, worldZ - 1) ? 1 : 0;
-                c = isEmpty(worldX - 1, worldY, worldZ - 1) ? 1 : 0;
-                d = isEmpty(worldX - 1, worldY - 1, worldZ - 1) ? 1 : 0;
+                b = isEmpty(worldX + 1, worldY + 1, worldZ - 1) ? 1 : 0;
+                c = isEmpty(worldX + 1, worldY, worldZ - 1) ? 1 : 0;
+                d = isEmpty(worldX + 1, worldY - 1, worldZ - 1) ? 1 : 0;
                 e = isEmpty(worldX, worldY - 1, worldZ - 1) ? 1 : 0;
-                f = isEmpty(worldX + 1, worldY - 1, worldZ - 1) ? 1 : 0;
-                g = isEmpty(worldX + 1, worldY, worldZ - 1) ? 1 : 0;
-                h = isEmpty(worldX + 1, worldY + 1, worldZ - 1) ? 1 : 0;
+                f = isEmpty(worldX - 1, worldY - 1, worldZ - 1) ? 1 : 0;
+                g = isEmpty(worldX - 1, worldY, worldZ - 1) ? 1 : 0;
+                h = isEmpty(worldX - 1, worldY + 1, worldZ - 1) ? 1 : 0;
                 break;
         }
 
