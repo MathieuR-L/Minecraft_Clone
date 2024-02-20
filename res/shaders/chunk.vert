@@ -28,9 +28,20 @@ bool equals(float a, float b) {
 vec4 calculatePosition() {
     vec3 position = aPosition.xyz;
     if (equals(aBlockID, 7.0f) && equals(occlusionEnabled, 1.0f)) {
-        position.x += sin((time + position.y + position.z) * 1.8f) / 15.0f;
-        position.z -= cos((time + position.x + position.y) * 1.8f) / 15.0f;
+        position.x += sin((time + position.y + position.z) * 1.5f) / 15.0f;
+        position.z -= cos((time + position.x + position.y) * 1.5f) / 15.0f;
     }
+
+    if (equals(aBlockID, 8.0f) && equals(occlusionEnabled, 1.0f)) {
+        position.x += sin((time + position.y + position.z) * 1.5f) / 15.0f;
+        position.z -= cos((time + position.x + position.y) * 1.5f) / 15.0f;
+    }
+
+    if (equals(aBlockID, 9.0f) && equals(occlusionEnabled, 1.0f)) {
+        position.x += sin((time + position.y + position.z) * 1.5f) / 15.0f;
+        position.z -= cos((time + position.x + position.y) * 1.5f) / 15.0f;
+    }
+
     return vec4(position, 1.0);
 }
 
