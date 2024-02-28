@@ -42,7 +42,7 @@ public class Player {
     private float speed;
     private boolean firstMouse;
     private boolean movingLeft, movingRight, movingForward, movingBackward;
-    private boolean flying, sneaking, canJump, canBreakBlock, jumping, sprinting;
+    private boolean flying, sneaking, canJump, canBreakBlock, canPlaceBlock,jumping, sprinting;
     private boolean movingMouse;
     private boolean debugKeyPressed, occlusionKeyPressed, interpolationKeyPressed;
     private boolean placingBlock, breakingBlock;
@@ -67,7 +67,7 @@ public class Player {
     private String skinPath;
     private final PlayerHand hand;
     private EntityUpdate lastUpdate;
-    private int breakBlockCooldown;
+    private int breakBlockCooldown, placeBlockCooldown;
     private Ray attackRay, buildRay;
     private ArrayList<Vector3i> aimedBlocks;
 
@@ -242,6 +242,15 @@ public class Player {
             canBreakBlock = true;
         }
 
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
+            placingBlock = true;
+        }
+
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE) {
+            placingBlock = false;
+            canPlaceBlock = true;
+        }
+
         if (movingLeft || movingRight || movingForward || movingBackward || sneaking || flying) {
             this.notifyEvent(new PlayerMoveEvent(this));
         }
@@ -405,6 +414,24 @@ public class Player {
             breakBlockCooldown--;
             if (breakBlockCooldown == 0) {
                 canBreakBlock = true;
+            }
+        }
+
+        if(placingBlock) {
+            if(canPlaceBlock) {
+                ChunkManager chunkManager = new ChunkManager();
+                if(buildRay.getAimedChunk() != null && (buildRay.getAimedBlock() != Material.AIR.getId() || buildRay.getAimedBlock() != Material.WATER.getId())) {
+                    chunkManager.placeBlock(buildRay.getAimedChunk(), buildRay.getBlockChunkPositionLocal(), Game.getInstance().getWorld(), Material.STONE);
+                }
+                canPlaceBlock = false;
+                placeBlockCooldown = (int) GameConfiguration.UPS / 3;
+            }
+        }
+
+        if (placeBlockCooldown > 0) {
+            placeBlockCooldown--;
+            if (placeBlockCooldown == 0) {
+                placingBlock = true;
             }
         }
 
