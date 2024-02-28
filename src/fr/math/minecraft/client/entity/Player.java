@@ -9,7 +9,9 @@ import fr.math.minecraft.client.events.listeners.EventListener;
 import fr.math.minecraft.client.events.PlayerMoveEvent;
 import fr.math.minecraft.client.manager.ChunkManager;
 import fr.math.minecraft.client.meshs.NametagMesh;
+import fr.math.minecraft.server.Utils;
 import fr.math.minecraft.shared.GameConfiguration;
+import fr.math.minecraft.shared.world.Chunk;
 import fr.math.minecraft.shared.world.Coordinates;
 import fr.math.minecraft.shared.world.Material;
 import fr.math.minecraft.shared.world.World;
@@ -106,6 +108,7 @@ public class Player {
         this.flying = false;
         this.canJump = false;
         this.canBreakBlock = true;
+        this.canPlaceBlock = true;
         this.jumping = false;
         this.placingBlock = false;
         this.breakingBlock = false;
@@ -268,8 +271,6 @@ public class Player {
         sneaking = false;
         jumping = false;
         movingMouse = false;
-        //breakingBlock = false;
-        //placingBlock = false;
     }
 
     public void updateAnimations() {
@@ -421,7 +422,12 @@ public class Player {
             if(canPlaceBlock) {
                 ChunkManager chunkManager = new ChunkManager();
                 if(buildRay.getAimedChunk() != null && (buildRay.getAimedBlock() != Material.AIR.getId() || buildRay.getAimedBlock() != Material.WATER.getId())) {
-                    chunkManager.placeBlock(buildRay.getAimedChunk(), buildRay.getBlockChunkPositionLocal(), Game.getInstance().getWorld(), Material.STONE);
+
+                    //Trouver le chunk
+                    Vector3i blockPlaced = buildRay.getBlockPlacedPosition(buildRay.getBlockWorldPosition());
+                    Chunk chunk = Game.getInstance().getWorld().getChunkAt(blockPlaced);
+
+                    chunkManager.placeBlock(chunk, Utils.worldToLocal(blockPlaced), Game.getInstance().getWorld(), Material.STONE);
                 }
                 canPlaceBlock = false;
                 placeBlockCooldown = (int) GameConfiguration.UPS / 3;

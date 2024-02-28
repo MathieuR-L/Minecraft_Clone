@@ -1,5 +1,6 @@
 package fr.math.minecraft.client.entity;
 
+import fr.math.minecraft.client.meshs.Face;
 import fr.math.minecraft.server.Utils;
 import fr.math.minecraft.shared.MathUtils;
 import fr.math.minecraft.shared.world.Chunk;
@@ -9,15 +10,17 @@ import org.joml.Math;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
-import java.util.Arrays;
-
 public class Ray {
 
     private Chunk aimedChunk;
     private byte aimedBlock;
     private Vector3i blockWorldPosition, blockChunkPosition;
-
-    private float reach;
+    private float reach, dx, dy, dz;
+    float tDeltaX, tDeltaY, tDeltaZ, tMaxX, tMaxY, tMaxZ;
+    private final int xAxis = 0;
+    private final int yAxis = 1;
+    private final int zAxis = 2;
+    private Face face;
 
     public Ray(float reach) {
         this.aimedChunk = null;
@@ -25,10 +28,13 @@ public class Ray {
         this.blockWorldPosition = new Vector3i();
         this.blockChunkPosition = new Vector3i();
         this.reach = reach;
+        this.face = null;
     }
 
 
     public void update(Vector3f position, Vector3f front, World world, boolean isServer) {
+
+        int direction;
 
         this.aimedChunk = null;
         this.aimedBlock = Material.AIR.getId();
@@ -39,7 +45,7 @@ public class Ray {
 
         endPoint.add(new Vector3f(front).mul(reach));
 
-        float dx, dy, dz, tDeltaX, tDeltaY, tDeltaZ, tMaxX, tMaxY, tMaxZ;
+        float tDeltaX, tDeltaY, tDeltaZ, tMaxX, tMaxY, tMaxZ;
 
         dx = Math.signum(endPoint.x - startPoint.x);
         tDeltaX = dx != 0 ? Math.min(dx / (endPoint.x - startPoint.x), 10000000.0f) :  10000000.0f;
@@ -57,12 +63,15 @@ public class Ray {
             if (tMaxX < tMaxY && tMaxX < tMaxZ) {
                 rayPosition.x += dx;
                 tMaxX += tDeltaX;
+                direction = xAxis;
             } else if (tMaxY < tMaxX && tMaxY < tMaxZ) {
                 rayPosition.y += dy;
                 tMaxY += tDeltaY;
+                direction = yAxis;
             } else {
                 rayPosition.z += dz;
                 tMaxZ += tDeltaZ;
+                direction = zAxis;
             }
 
             synchronized (world.getChunks()) {
@@ -100,12 +109,60 @@ public class Ray {
                         this.blockChunkPosition.z = blockZ;
 
                         this.aimedBlock = block;
+
+                        setFace(dx, dy, dz, direction);
                         break;
                     }
                 }
             }
 
         }
+    }
+
+    public void setFace(float dx, float dy, float dz, int direction) {
+        switch (direction) {
+            case xAxis :
+                if(dx > 0) {
+                    this.face = Face.WEST;
+                } else {
+                    this.face = Face.EST;
+                }
+                break;
+            case yAxis:
+                if(dy > 0) {
+                    this.face = Face.DOWN;
+                } else {
+                    this.face = Face.UP;
+                }
+                break;
+            case zAxis:
+                if(dz > 0) {
+                    this.face = Face.SOUTH;
+                } else {
+                    this.face = Face.NORTH;
+                }
+                break;
+        }
+    }
+
+    public Vector3i getBlockPlacedPosition(Vector3i blockWorldPosition) {
+        Vector3i block = new Vector3i(blockWorldPosition);
+
+        if(this.face == Face.UP) {
+            block.add(Face.UP.getNormal());
+        } else if (this.face == Face.DOWN){
+            block.add(Face.DOWN.getNormal());
+        } else if (this.face == Face.NORTH){
+            block.add(Face.NORTH.getNormal());
+        } else if (this.face == Face.SOUTH){
+            block.add(Face.SOUTH.getNormal());
+        } else if (this.face == Face.EST){
+            block.add(Face.EST.getNormal());
+        } else if (this.face == Face.WEST){
+            block.add(Face.WEST.getNormal());
+        }
+
+        return block;
     }
 
     public Vector3i getBlockChunkPositionLocal() {
@@ -146,4 +203,66 @@ public class Ray {
         this.blockChunkPosition = new Vector3i();
         this.blockWorldPosition = new Vector3i();
     }
+
+    public float getDx() {
+        return dx;
+    }
+
+    public float getDy() {
+        return dy;
+    }
+
+    public float getDz() {
+        return dz;
+    }
+
+    public float gettDeltaX() {
+        return tDeltaX;
+    }
+
+    public void settDeltaX(float tDeltaX) {
+        this.tDeltaX = tDeltaX;
+    }
+
+    public float gettDeltaY() {
+        return tDeltaY;
+    }
+
+    public void settDeltaY(float tDeltaY) {
+        this.tDeltaY = tDeltaY;
+    }
+
+    public float gettDeltaZ() {
+        return tDeltaZ;
+    }
+
+    public void settDeltaZ(float tDeltaZ) {
+        this.tDeltaZ = tDeltaZ;
+    }
+
+    public float gettMaxX() {
+        return tMaxX;
+    }
+
+    public void settMaxX(float tMaxX) {
+        this.tMaxX = tMaxX;
+    }
+
+    public float gettMaxY() {
+        return tMaxY;
+    }
+
+    public void settMaxY(float tMaxY) {
+        this.tMaxY = tMaxY;
+    }
+
+    public float gettMaxZ() {
+        return tMaxZ;
+    }
+
+    public void settMaxZ(float tMaxZ) {
+        this.tMaxZ = tMaxZ;
+    }
+
+
 }

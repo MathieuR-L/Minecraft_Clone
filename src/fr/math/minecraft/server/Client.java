@@ -40,7 +40,7 @@ public class Client {
     private BufferedImage skin;
     private boolean movingLeft, movingRight, movingForward, movingBackward;
     private boolean flying, sneaking;
-    private boolean canBreakBlock;
+    private boolean canBreakBlock, canPlaceBlock;
     private boolean active;
     private final Vector3i inputVector;
     private final Vector3f velocity;
@@ -89,6 +89,7 @@ public class Client {
         this.sneaking = false;
         this.canJump = true;
         this.canBreakBlock = true;
+        this.canPlaceBlock = true;
         this.active = false;
         this.buildRay = new Ray(GameConfiguration.BUILDING_REACH);
         this.attackRay = new Ray(GameConfiguration.ATTACK_REACH);
@@ -294,6 +295,32 @@ public class Client {
                         buildRay.getAimedChunk().setBlock(blockPositionLocal.x, blockPositionLocal.y, blockPositionLocal.z, Material.AIR.getId());
                         buildRay.reset();
                         this.canBreakBlock = false;
+                    }
+                }
+            }
+
+            if (!inputData.isPlacingBlock()) {
+                canBreakBlock = true;
+            }
+
+            if (inputData.isPlacingBlock()) {
+
+                byte block = buildRay.getAimedBlock();
+
+                if (this.canPlaceBlock) {
+                    if (buildRay.getAimedChunk() != null && block != Material.AIR.getId() && block != Material.WATER.getId()) {
+
+                        Vector3i rayPosition = buildRay.getBlockPlacedPosition(buildRay.getBlockWorldPosition());
+                        Vector3i blockPositionLocal = Utils.worldToLocal(rayPosition);
+
+                        blocksPosition.add(rayPosition);
+                        blocksIDs.add(Material.STONE.getId());
+
+                        logger.info(name + " (" + uuid + ") a posé un block de " + Material.getMaterialById(block) + " en " + rayPosition);
+
+                        buildRay.getAimedChunk().setBlock(blockPositionLocal.x, blockPositionLocal.y, blockPositionLocal.z, Material.STONE.getId());
+                        buildRay.reset();
+                        this.canPlaceBlock = false;
                     }
                 }
             }
