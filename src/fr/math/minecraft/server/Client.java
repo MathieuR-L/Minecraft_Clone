@@ -3,6 +3,7 @@ package fr.math.minecraft.server;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import fr.math.minecraft.client.Game;
 import fr.math.minecraft.client.entity.Ray;
 import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
@@ -316,7 +317,7 @@ public class Client {
                         blocksPosition.add(rayPosition);
                         blocksIDs.add(Material.STONE.getId());
 
-                        logger.info(name + " (" + uuid + ") a posé un block de " + Material.getMaterialById(block) + " en " + rayPosition);
+                        logger.info(name + " (" + uuid + ") a posé un block de " + Material.STONE + " en " + rayPosition);
 
                         buildRay.getAimedChunk().setBlock(blockPositionLocal.x, blockPositionLocal.y, blockPositionLocal.z, Material.STONE.getId());
                         buildRay.reset();

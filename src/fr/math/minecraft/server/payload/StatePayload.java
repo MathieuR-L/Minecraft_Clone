@@ -72,7 +72,9 @@ public class StatePayload {
         }
 
         ObjectNode payloadNode = this.toJSON();
-        ObjectNode payloadEventNode = this.toJSONEvent();
+        ObjectNode payloadEventBreakNode = this.toJSONEvent("PLAYER_BREAK_EVENT");
+        ObjectNode payloadEventPlaceNode = this.toJSONEvent("PLAYER_PLACE_EVENT");
+
         ObjectMapper mapper = new ObjectMapper();
 
         try {
@@ -84,12 +86,36 @@ public class StatePayload {
             e.printStackTrace();
         }
 
-        if (payloadEventNode == null) {
+        if (payloadEventBreakNode == null) {
+            return;
+        }
+
+            if (payloadEventPlaceNode == null) {
             return;
         }
 
         try {
-            String payloadEventData = mapper.writeValueAsString(payloadEventNode);
+            String payloadEventData = mapper.writeValueAsString(payloadEventBreakNode);
+            byte[] buffer = payloadEventData.getBytes(StandardCharsets.UTF_8);
+            DatagramPacket packetEvent = new DatagramPacket(buffer, buffer.length);
+
+            System.out.println(payloadEventData);
+
+            synchronized (server.getClients()) {
+                for (Client onlineClient : server.getClients().values()) {
+                    if(!onlineClient.getUuid().equalsIgnoreCase(payload.getClientUuid())) {
+                        packetEvent.setAddress(onlineClient.getAddress());
+                        packetEvent.setPort(onlineClient.getPort());
+                        server.sendPacket(packetEvent);
+                    }
+                }
+            }
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            String payloadEventData = mapper.writeValueAsString(payloadEventPlaceNode);
             byte[] buffer = payloadEventData.getBytes(StandardCharsets.UTF_8);
             DatagramPacket packetEvent = new DatagramPacket(buffer, buffer.length);
 
@@ -111,7 +137,7 @@ public class StatePayload {
 
     }
 
-    public ObjectNode toJSONEvent() {
+    public ObjectNode toJSONEvent(String eventName) {
 
         if (aimedBlocks.isEmpty()) {
             return null;
@@ -121,7 +147,7 @@ public class StatePayload {
         ObjectNode payloadNode = mapper.createObjectNode();
         ArrayNode blocksArray = mapper.createArrayNode();
 
-        payloadNode.put("type", "PLAYER_BREAK_EVENT");
+        payloadNode.put("type", eventName);
         payloadNode.put("uuid", payload.getClientUuid());
         
         for (int i = 0; i < aimedBlocks.size(); i++) {

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import fr.math.minecraft.client.Game;
 import fr.math.minecraft.client.entity.Player;
 import fr.math.minecraft.client.events.BlockBreakEvent;
+import fr.math.minecraft.client.events.BlockPlaceEvent;
 import fr.math.minecraft.client.events.PlayerJoinEvent;
 import fr.math.minecraft.client.events.PlayerMoveEvent;
 import fr.math.minecraft.client.manager.ChunkManager;
@@ -12,6 +13,7 @@ import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
 import fr.math.minecraft.server.Utils;
 import fr.math.minecraft.shared.world.Chunk;
+import fr.math.minecraft.shared.world.Material;
 import org.apache.log4j.Logger;
 import org.joml.Vector3i;
 
@@ -68,6 +70,15 @@ public class PlayerListener implements EventListener {
         ChunkManager chunkManager = new ChunkManager();
         Vector3i blockPosition = Utils.worldToLocal(event.getPosition());
         chunkManager.removeBlock(Game.getInstance().getWorld().getChunkAt(event.getPosition()), blockPosition, Game.getInstance().getWorld());
+        logger.info("Le joueur :" + event.getPlayer().getName() + " a cassé un bloc en :" + event.getPosition());
+    }
+
+    @Override
+    public void onBlockPlace(BlockPlaceEvent event) {
+        ChunkManager chunkManager = new ChunkManager();
+        Vector3i blockPlaced = event.getPosition();
+        Chunk chunk = Game.getInstance().getWorld().getChunkAt(blockPlaced);
+        chunkManager.placeBlock(chunk, Utils.worldToLocal(blockPlaced), Game.getInstance().getWorld(), Material.STONE);
         logger.info("Le joueur :" + event.getPlayer().getName() + " a cassé un bloc en :" + event.getPosition());
     }
 
