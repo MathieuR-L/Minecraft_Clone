@@ -6,6 +6,7 @@ import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
 import fr.math.minecraft.server.handler.*;
 import fr.math.minecraft.server.manager.ChunkManager;
+import fr.math.minecraft.server.manager.PluginManager;
 import fr.math.minecraft.server.pathfinding.AStar;
 import fr.math.minecraft.shared.ChatColor;
 import fr.math.minecraft.shared.ChatMessage;
@@ -42,6 +43,7 @@ public class MinecraftServer {
     private final TickHandler tickHandler;
     private final ChunkManager chunkManager;
     private final List<ChatMessage> chatMessages;
+    private final PluginManager pluginManager;
 
     private MinecraftServer(int port) {
         this.running = false;
@@ -51,6 +53,7 @@ public class MinecraftServer {
         this.sockets = new HashMap<>();
         this.lastActivities = new HashMap<>();
         this.world = new World();
+        this.pluginManager = new PluginManager();
         //this.world.buildSpawn();
         //this.world.calculateSpawnPosition();
         //AStar.initGraph(world, world.getSpawnPosition());
@@ -60,6 +63,11 @@ public class MinecraftServer {
         this.chunkManager = new ChunkManager();
         this.chatMessages = new ArrayList<>();
 
+        try {
+            this.pluginManager.loadPlugins("plugins");
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
         logger.info("Point de spawn calculé en " + world.getSpawnPosition());
         //world.addEntity(new Villager("Dummy"));
         world.addEntity(new Zombie("Dummy"));
@@ -135,6 +143,9 @@ public class MinecraftServer {
             }
         }
         socket.close();
+        for (Plugin plugin : pluginManager.getPlugins()) {
+            plugin.onDisable();
+        }
     }
 
     public synchronized void sendPacket(DatagramPacket packet) {
@@ -230,5 +241,13 @@ public class MinecraftServer {
 
     public void setPort(int port) {
         this.port = port;
+    }
+
+    public PluginManager getPluginManager() {
+        return pluginManager;
+    }
+
+    public void setRunning(boolean running) {
+        this.running = running;
     }
 }

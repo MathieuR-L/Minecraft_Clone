@@ -105,6 +105,7 @@ public class ConnectionInitHandler extends PacketHandler implements Runnable {
 
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, clientPort);
             logger.info(playerName + " (" + uuid + ") a rejoint le serveur ! (" + clients.size() + "/???)");
+            server.getPluginManager().invokePlayerJoin(server.getClients().size());
             server.announceMessage(playerName + " a rejoint le serveur.", ChatColor.YELLOW);
 
             if (!lastActivities.containsKey(uuid)) {
