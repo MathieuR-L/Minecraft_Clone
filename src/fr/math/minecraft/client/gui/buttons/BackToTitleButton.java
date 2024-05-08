@@ -6,6 +6,15 @@ import fr.math.minecraft.client.visitor.ButtonVisitor;
 
 public class BackToTitleButton extends BlockButton {
 
+    public BackToTitleButton(float x, float y) {
+        super(
+                "Retour à l'écran titre",
+                x,
+                y,
+                -9
+        );
+    }
+
     public BackToTitleButton() {
         super(
             "Retour à l'écran titre",
@@ -17,6 +26,6 @@ public class BackToTitleButton extends BlockButton {
 
     @Override
     public <T> T accept(ButtonVisitor<T> visitor) {
-        return visitor.visit(this);
+        return visitor.onClick(this);
     }
 }

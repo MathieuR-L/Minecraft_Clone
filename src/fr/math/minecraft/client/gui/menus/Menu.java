@@ -1,6 +1,7 @@
 package fr.math.minecraft.client.gui.menus;
 
 import fr.math.minecraft.client.Game;
+import fr.math.minecraft.client.gui.GuiInputField;
 import fr.math.minecraft.shared.GameConfiguration;
 import fr.math.minecraft.client.gui.buttons.BlockButton;
 import fr.math.minecraft.client.gui.GuiText;
@@ -12,8 +13,9 @@ import java.util.List;
 public abstract class Menu {
 
     protected GuiText title;
-    protected List<BlockButton> buttons;
-    protected List<GuiText> texts;
+    protected final List<BlockButton> buttons;
+    protected final List<GuiText> texts;
+    protected final List<GuiInputField> inputFields;
     protected boolean open;
     protected final Game game;
 
@@ -35,6 +37,7 @@ public abstract class Menu {
         this.game = game;
         this.buttons = new ArrayList<>();
         this.texts = new ArrayList<>();
+        this.inputFields = new ArrayList<>();
         this.open = false;
         this.title = null;
         this.loadContent();
@@ -67,5 +70,9 @@ public abstract class Menu {
 
     public GuiText getTitle() {
         return title;
+    }
+
+    public List<GuiInputField> getInputFields() {
+        return inputFields;
     }
 }

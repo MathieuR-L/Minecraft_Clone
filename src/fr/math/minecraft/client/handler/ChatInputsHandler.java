@@ -7,22 +7,26 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class ChatInputsHandler {
 
+    public void handleInputs(long window, StringBuilder builder) {
+        glfwSetCharCallback(window, new InputHandler(builder));
+    }
+
     public void handleInputs(long window, ChatPayload chatWindow) {
-        glfwSetCharCallback(window, new InputHandler(chatWindow));
+        glfwSetCharCallback(window, new InputHandler(chatWindow.getMessage()));
     }
 
     private static class InputHandler extends GLFWCharCallback {
 
-        private final ChatPayload chatPayload;
+        private final StringBuilder inputBuilder;
 
-        public InputHandler(ChatPayload chatWindow) {
-            this.chatPayload = chatWindow;
+        public InputHandler(StringBuilder inputBuilder) {
+            this.inputBuilder = inputBuilder;
         }
 
         @Override
         public void invoke(long window, int codepoint) {
             char letter = (char) codepoint;
-            chatPayload.getMessage().append(letter);
+            inputBuilder.append(letter);
         }
     }
 

@@ -5,6 +5,7 @@ import fr.math.minecraft.client.entity.Ray;
 import fr.math.minecraft.client.entity.player.Player;
 import fr.math.minecraft.client.entity.player.PlayerHand;
 import fr.math.minecraft.client.fonts.CFont;
+import fr.math.minecraft.client.gui.GuiInputField;
 import fr.math.minecraft.client.gui.buttons.BlockButton;
 import fr.math.minecraft.client.gui.GuiText;
 import fr.math.minecraft.client.gui.menus.MainMenu;
@@ -575,6 +576,31 @@ public class Renderer {
         for (BlockButton button : menu.getButtons()) {
             this.renderButton(camera, button);
         }
+
+        for (GuiInputField inputField : menu.getInputFields()) {
+            this.renderInputField(camera, inputField);
+        }
+    }
+
+    private void renderInputField(Camera camera, GuiInputField inputField) {
+
+        float labelMarginTop = 10;
+        float paddingX = 5;
+        float paddingY = 10;
+
+        this.renderText(camera, inputField.getLabel(), inputField.getX(), inputField.getY() + GuiInputField.HEIGHT + labelMarginTop , -8, 0xA7A7A7, GameConfiguration.DEFAULT_SCALE);
+        this.renderRect(camera, inputField.getX() - 2, inputField.getY() - 2, GuiInputField.WIDTH + 4, GuiInputField.HEIGHT + 4, 0xA7A7A7, 1.0f, -8);
+        this.renderRect(camera, inputField.getX(), inputField.getY(), GuiInputField.WIDTH, GuiInputField.HEIGHT, 0x000000, 1.0f, -7);
+
+        if (inputField.isFocused() && inputField.getValue().length() == 0) {
+            this.renderRect(camera, inputField.getX() + paddingX, inputField.getY() + paddingY, 10, 2, 0xFFFFFF, 1.0f, -6);
+        }
+
+        if (inputField.getValue().length() == 0) {
+            return;
+        }
+
+        this.renderText(camera, inputField.getValue().toString(), inputField.getX() + paddingX, inputField.getY() + paddingY , -5, 0xFFFFFF, GameConfiguration.DEFAULT_SCALE);
     }
 
     private void renderDirtBackground(Camera camera) {
