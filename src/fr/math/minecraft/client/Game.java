@@ -2,6 +2,9 @@ package fr.math.minecraft.client;
 
 import fr.math.minecraft.client.audio.*;
 import fr.math.minecraft.client.entity.Ray;
+import fr.math.minecraft.client.gui.GuiInputField;
+import fr.math.minecraft.client.gui.menus.AuthMenu;
+import fr.math.minecraft.client.handler.ChatInputsHandler;
 import fr.math.minecraft.shared.ChatMessage;
 import fr.math.minecraft.shared.entity.Entity;
 import fr.math.minecraft.shared.PlayerAction;
@@ -192,10 +195,11 @@ public class Game {
 
         Menu mainMenu = new MainMenu(this);
         Menu connectionMenu = new ConnectionMenu(this);
+        Menu authMenu = new AuthMenu(this);
 
         menuManager.registerMenu(mainMenu);
         menuManager.registerMenu(connectionMenu);
-
+        menuManager.registerMenu(authMenu);
     }
 
     private void loadSplashText() {
@@ -284,6 +288,19 @@ public class Game {
 
                 mouseXBuffer.rewind();
                 mouseYBuffer.rewind();
+            }
+
+            for (GuiInputField inputField : menu.getInputFields()) {
+                glfwGetCursorPos(window, mouseXBuffer, mouseYBuffer);
+                inputField.handleInputs(window, mouseXBuffer.get(), mouseYBuffer.get());
+
+                mouseXBuffer.rewind();
+                mouseYBuffer.rewind();
+
+                if (!inputField.isFocused()) continue;
+
+                ChatInputsHandler handler = new ChatInputsHandler();
+                handler.handleInputs(window, inputField.getValue());
             }
         }
 

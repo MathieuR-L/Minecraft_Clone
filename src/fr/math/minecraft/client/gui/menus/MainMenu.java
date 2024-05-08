@@ -2,6 +2,7 @@ package fr.math.minecraft.client.gui.menus;
 
 import fr.math.minecraft.client.Camera;
 import fr.math.minecraft.client.Game;
+import fr.math.minecraft.client.gui.buttons.AuthButton;
 import fr.math.minecraft.shared.GameConfiguration;
 import fr.math.minecraft.client.entity.player.Player;
 import fr.math.minecraft.client.gui.buttons.BlockButton;
@@ -31,6 +32,7 @@ public class MainMenu extends Menu {
         float splashWidth = fontManager.getTextWidth(fontMesh, game.getSplashText());
 
         BlockButton playButton = new PlayButton();
+        BlockButton authButton = new AuthButton();
         GuiText versionText = new GuiText("Minecraft 1.0.0", 5, 5, 0xFFFFFF);
         GuiText copyrightText = new GuiText("Copyright Me and the hoes.", GameConfiguration.WINDOW_WIDTH - fontManager.getTextWidth(fontMesh, "Copyright Me and the hoes.") - 5, 5, 0xFFFFFF);
         this.splashText = new GuiText(game.getSplashText(), (float)((GameConfiguration.WINDOW_WIDTH * 0.7) - (splashWidth / 2.0f) - splashOffset), (float) (GameConfiguration.WINDOW_HEIGHT - (GameConfiguration.WINDOW_HEIGHT* 0.25)), -9, 0xFFFF00);
@@ -38,6 +40,7 @@ public class MainMenu extends Menu {
         splashText.rotate(10);
 
         this.buttons.add(playButton);
+        this.buttons.add(authButton);
         this.texts.add(versionText);
         this.texts.add(copyrightText);
         this.texts.add(splashText);

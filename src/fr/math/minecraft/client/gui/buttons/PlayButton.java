@@ -11,6 +11,6 @@ public class PlayButton extends BlockButton {
 
     @Override
     public <T> T accept(ButtonVisitor<T> visitor) {
-        return visitor.visit(this);
+        return visitor.onClick(this);
     }
 }
