@@ -12,17 +12,23 @@ public class ChatMessage {
     private final String senderName;
     private final String message;
     private final long timestamp;
+    private final ChatColor color;
 
     public ChatMessage(String senderUuid, String senderName, String message) {
-        this(UUID.randomUUID().toString(), System.currentTimeMillis(), senderUuid, senderName, message);
+        this(UUID.randomUUID().toString(), System.currentTimeMillis(), senderUuid, senderName, message, ChatColor.WHITE);
     }
 
-    public ChatMessage(String id, long timestamp, String senderUuid, String senderName, String message) {
+    public ChatMessage(String senderUuid, String senderName, String message, ChatColor color) {
+        this(UUID.randomUUID().toString(), System.currentTimeMillis(), senderUuid, senderName, message, color);
+    }
+
+    public ChatMessage(String id, long timestamp, String senderUuid, String senderName, String message, ChatColor color) {
         this.timestamp = timestamp;
         this.id = id;
         this.senderUuid = senderUuid;
         this.senderName = senderName;
         this.message = message;
+        this.color = color;
     }
 
     public long getTimestamp() {
@@ -50,11 +56,16 @@ public class ChatMessage {
         node.put("uuid", senderUuid);
         node.put("name", senderName);
         node.put("message", message);
+        node.put("colorName", color.toString());
 
         return node;
     }
 
     public String getId() {
         return id;
+    }
+
+    public ChatColor getColor() {
+        return color;
     }
 }

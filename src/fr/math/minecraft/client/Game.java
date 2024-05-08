@@ -90,7 +90,7 @@ public class Game {
     private int tick;
     private GameConfiguration gameConfiguration;
     private List<Chunk> chunkUpdateQueue;
-    private Map<String, ChatMessage> chatMessages;
+    private ChatManager chatManager;
     private AuthUser user;
 
     private Game() {
@@ -163,7 +163,7 @@ public class Game {
         this.loadingChunks = new HashMap<>();
         this.fontManager = new FontManager();
         this.pendingMeshs = new LinkedList<>();
-        this.chatMessages = new HashMap<>();
+        this.chatManager = new ChatManager();
         this.playerMovementHandler = new PlayerMovementHandler();
         this.lastPingTime = 0;
         this.chunkUpdateQueue = new ArrayList<>();
@@ -333,9 +333,15 @@ public class Game {
 
         }
 
-        player.handleInputs(window);
+        player.handleInputs(window, chatManager);
         this.update(player);
         time += 0.01f;
+
+        chatManager.setDelay(chatManager.getDelay() - 1);
+
+        if (chatManager.getDelay() <= 0) {
+            chatManager.setChatOpacity(chatManager.getChatOpacity() - 0.005f);
+        }
 
         synchronized (this.getPlayers()) {
             for (Player player : this.getPlayers().values()) {
@@ -509,12 +515,12 @@ public class Game {
         if (player.getChatPayload().isOpen()) {
             renderer.renderChatPayload(camera, player.getChatPayload());
         }
-        renderer.renderChat(camera, chatMessages);
+        renderer.renderChat(camera, chatManager.getChatOpacity(), chatManager.getChatMessages());
     }
 
     public static Game getInstance() {
         if (instance == null) {
-            System.out.println("Game getInstance :"+instance);
+            System.out.println("Game getInstance :" + instance);
             instance = new Game();
         }
         return instance;
@@ -619,15 +625,15 @@ public class Game {
         return chunkUpdateQueue;
     }
 
-    public Map<String, ChatMessage> getChatMessages() {
-        return chatMessages;
-    }
-
     public AuthUser getUser() {
         return user;
     }
 
     public void setUser(AuthUser user) {
         this.user = user;
+    }
+
+    public ChatManager getChatManager() {
+        return chatManager;
     }
 }

@@ -11,6 +11,7 @@ import fr.math.minecraft.client.gui.menus.ConnectionMenu;
 import fr.math.minecraft.client.gui.menus.MainMenu;
 import fr.math.minecraft.client.manager.MenuManager;
 import fr.math.minecraft.client.manager.SoundManager;
+import fr.math.minecraft.client.network.AuthUser;
 import fr.math.minecraft.client.network.packet.AuthentificationPacket;
 import fr.math.minecraft.client.network.packet.ConnectionInitPacket;
 
@@ -24,14 +25,19 @@ public class ButtonActionVisitor implements ButtonVisitor<Void> {
         SoundManager soundManager = game.getSoundManager();
         MenuManager menuManager = game.getMenuManager();
 
-
         soundManager.play(Sounds.CLICK);
-        menuManager.open(ConnectionMenu.class);
 
+        AuthUser user = game.getUser();
+
+        if (user == null) {
+            return null;
+        }
+
+        menuManager.open(ConnectionMenu.class);
         ConnectionMenu menu = (ConnectionMenu) menuManager.getOpenedMenu();
         menu.getTitle().setText("Connexion en cours...");
 
-        ConnectionInitPacket packet = new ConnectionInitPacket(player);
+        ConnectionInitPacket packet = new ConnectionInitPacket(player, user);
         Thread thread = new Thread(packet);
         thread.start();
 

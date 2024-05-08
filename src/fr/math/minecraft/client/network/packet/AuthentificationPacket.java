@@ -11,6 +11,8 @@ import fr.math.minecraft.client.manager.MenuManager;
 import fr.math.minecraft.client.network.AuthUser;
 import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
+import fr.math.minecraft.shared.network.HttpResponse;
+import fr.math.minecraft.shared.network.HttpUtils;
 import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
@@ -55,32 +57,12 @@ public class AuthentificationPacket extends ClientPacket implements Runnable {
 
             logger.info("Interrogation du serveur d'authentification...");
 
-            URL url = new URL("http://localhost:3001/auth/login");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            HttpResponse httpResponse = HttpUtils.POST("http://localhost:3001/auth/login", credentialsNode);
 
-            conn.setRequestMethod("POST");
-            conn.setDoOutput(true);
-            conn.setRequestProperty("Content-Type", "application/json");
+            logger.info("Code de réponse du serveur d'authentification : " + httpResponse.getCode());
 
-            String requestBody = mapper.writeValueAsString(credentialsNode);
-            DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
-
-            wr.writeBytes(requestBody);
-            wr.flush();
-            wr.close();
-
-            int responseCode = conn.getResponseCode();
-            logger.info("Code de réponse du serveur d'authentification : " + responseCode);
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String inputLine;
-            StringBuilder response = new StringBuilder();
-
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-
-            logger.info("Réponse : " + response);
+            JsonNode response = mapper.readTree(httpResponse.getResponse().toString());
+            logger.info("Réponse : " + httpResponse.getResponse());
 
             JsonNode userData = mapper.readTree(response.toString()).get("user");
 
@@ -91,13 +73,12 @@ public class AuthentificationPacket extends ClientPacket implements Runnable {
             AuthUser user = new AuthUser(username, email, token);
             Game.getInstance().setUser(user);
 
-            in.close();
-            conn.disconnect();
-
             menuManager.open(MainMenu.class);
 
         } catch (IOException e) {
             menuManager.open(RetryAuthMenu.class);
+            RetryAuthMenu menu = (RetryAuthMenu) menuManager.getOpenedMenu();
+            menu.getSubTitle().setText("Email ou mot de passe incorrect.");
             logger.error(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();

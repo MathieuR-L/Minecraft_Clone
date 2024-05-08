@@ -5,6 +5,8 @@ import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
 import fr.math.minecraft.server.handler.*;
 import fr.math.minecraft.server.manager.ChunkManager;
+import fr.math.minecraft.server.pathfinding.AStar;
+import fr.math.minecraft.shared.ChatColor;
 import fr.math.minecraft.shared.ChatMessage;
 import fr.math.minecraft.shared.entity.mob.Zombie;
 import fr.math.minecraft.shared.world.World;
@@ -186,6 +188,22 @@ public class MinecraftServer {
                 this.sendPacket(packet);
             }
         }
+    }
+
+    public void broadcastMessage(String message) {
+        this.broadcastMessage(message, ChatColor.WHITE);
+    }
+
+    public void broadcastMessage(String message, ChatColor color) {
+        chatMessages.add(new ChatMessage("CONSOLE", "CONSOLE", message, color));
+    }
+
+    public void announceMessage(String message) {
+        this.announceMessage(message, ChatColor.WHITE);
+    }
+
+    public void announceMessage(String message, ChatColor color) {
+        chatMessages.add(new ChatMessage("ANNOUNCE", "ANNOUNCE", message, color));
     }
 
     public DatagramSocket getSocket() {

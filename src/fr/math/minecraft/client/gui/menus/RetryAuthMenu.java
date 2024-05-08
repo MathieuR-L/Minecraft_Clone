@@ -7,7 +7,7 @@ import fr.math.minecraft.client.gui.buttons.BlockButton;
 public class RetryAuthMenu extends Menu {
 
     public RetryAuthMenu(Game game) {
-        super(game, "Authentification échoué.");
+        super(game, "Authentification échoué.", "");
     }
 
     @Override

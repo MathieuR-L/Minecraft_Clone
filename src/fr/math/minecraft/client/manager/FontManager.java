@@ -19,7 +19,7 @@ public class FontManager {
         this.currentPos = 0.0f;
     }
 
-    public void addCharacter(FontMesh fontMesh, float x, float y, float z, float scale, CharInfo charInfo, int rgb, boolean onWorld) {
+    public void addCharacter(FontMesh fontMesh, float x, float y, float z, float scale, CharInfo charInfo, int rgb, float alpha, boolean onWorld) {
 
         if (fontMesh.getSize() >= FontMesh.BATCH_SIZE - 4) {
             fontMesh.flush();
@@ -51,6 +51,7 @@ public class FontManager {
         vertices[index + 5] = b;
         vertices[index + 6] = ux1;
         vertices[index + 7] = uy0;
+        vertices[index + 8] = alpha;
 
         index += FontMesh.VERTEX_SIZE;
         vertices[index] = onWorld ? currentPos + CHARACTER_WIDTH : x1;
@@ -61,6 +62,7 @@ public class FontManager {
         vertices[index + 5] = b;
         vertices[index + 6] = ux1;
         vertices[index + 7] = uy1;
+        vertices[index + 8] = alpha;
 
         index += FontMesh.VERTEX_SIZE;
         vertices[index] = onWorld ? currentPos : x0;
@@ -71,6 +73,7 @@ public class FontManager {
         vertices[index + 5] = b;
         vertices[index + 6] = ux0;
         vertices[index + 7] = uy1;
+        vertices[index + 8] = alpha;
 
         index += FontMesh.VERTEX_SIZE;
         vertices[index] = onWorld ? currentPos : x0;
@@ -81,11 +84,12 @@ public class FontManager {
         vertices[index + 5] = b;
         vertices[index + 6] = ux0;
         vertices[index + 7] = uy0;
+        vertices[index + 8] = alpha;
 
         fontMesh.setSize(fontMesh.getSize() + 4);
     }
 
-    public void addText(FontMesh fontMesh, String text, float x, float y, float z, float scale, int rgb, boolean onWorld) {
+    public void addText(FontMesh fontMesh, String text, float x, float y, float z, float scale, int rgb, float alpha, boolean onWorld) {
         if (onWorld) {
             x = 0.2f;
             currentPos = -0.5f + 0.5f - text.length() * CHARACTER_SPACE / 2.0f;
@@ -98,7 +102,7 @@ public class FontManager {
                 continue;
             }
 
-            this.addCharacter(fontMesh, x, y, z, scale, charInfo, rgb, onWorld);
+            this.addCharacter(fontMesh, x, y, z, scale, charInfo, rgb, alpha, onWorld);
 
             if (onWorld) {
                 currentPos += CHARACTER_SPACE;
@@ -108,8 +112,8 @@ public class FontManager {
         }
     }
 
-    public void addText(FontMesh fontMesh, String text, float x, float y, float z, float scale, int rgb) {
-        this.addText(fontMesh, text, x, y, z, scale, rgb, false);
+    public void addText(FontMesh fontMesh, String text, float x, float y, float z, float scale, int rgb, float alpha) {
+        this.addText(fontMesh, text, x, y, z, scale, rgb, alpha, false);
     }
 
     public float getTextWidth(FontMesh fontMesh, String text) {

@@ -14,7 +14,7 @@ import static org.lwjgl.opengl.GL33.*;
 public class FontMesh extends Mesh {
 
     public final static int BATCH_SIZE = 100;
-    public final static int VERTEX_SIZE = 8;
+    public final static int VERTEX_SIZE = 9;
     private final float[] vertices;
     private int size;
     private final CFont font;
@@ -53,6 +53,7 @@ public class FontMesh extends Mesh {
         vao.linkAttrib(vbo, 0, 3, GL_FLOAT, VERTEX_SIZE * Float.BYTES, 0);
         vao.linkAttrib(vbo, 1, 3, GL_FLOAT, VERTEX_SIZE * Float.BYTES, 3 * Float.BYTES);
         vao.linkAttrib(vbo, 2, 2, GL_FLOAT, VERTEX_SIZE * Float.BYTES, 6 * Float.BYTES);
+        vao.linkAttrib(vbo, 3, 1, GL_FLOAT, VERTEX_SIZE * Float.BYTES, 8 * Float.BYTES);
 
         vao.unbind();
         vbo.unbind();
