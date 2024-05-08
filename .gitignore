@@ -37,3 +37,4 @@ src/log/client-log.txt
 src/log/
 *.log
 skins/
+/plugins
