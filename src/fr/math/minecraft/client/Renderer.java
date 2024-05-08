@@ -14,6 +14,7 @@ import fr.math.minecraft.client.gui.menus.MenuBackgroundType;
 import fr.math.minecraft.client.manager.FontManager;
 import fr.math.minecraft.client.meshs.*;
 import fr.math.minecraft.client.meshs.model.ItemModelData;
+import fr.math.minecraft.client.network.AuthUser;
 import fr.math.minecraft.client.network.payload.ChatPayload;
 import fr.math.minecraft.client.texture.CubemapTexture;
 import fr.math.minecraft.logger.LogType;
@@ -546,6 +547,15 @@ public class Renderer {
         }
 
         if (menu instanceof MainMenu) {
+
+            AuthUser user = Game.getInstance().getUser();
+            float textHeight = fontManager.getTextHeight(fontMesh, "A");
+            if (user != null) {
+                this.renderText(camera, "Authentifié (" + user.getName() + ")", 0, GameConfiguration.WINDOW_HEIGHT - textHeight - 5, 0xFFFFFF, GameConfiguration.DEFAULT_SCALE);
+            } else {
+                this.renderText(camera, "Non authentifié", 0, GameConfiguration.WINDOW_HEIGHT - textHeight - 5, 0xFFFFFF, GameConfiguration.DEFAULT_SCALE);
+            }
+
             this.renderImage(camera, imageMesh, minecraftTitleTexture);
         }
 
