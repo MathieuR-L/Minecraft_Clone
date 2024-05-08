@@ -316,7 +316,7 @@ public class Renderer {
         texture.bind();
         camera.matrixNametag(nametagTextShader, entity);
 
-        fontManager.addText(fontMesh, entity.getName(), 0, 0, 0, 1.0f, 0xFFFFFF, true);
+        fontManager.addText(fontMesh, entity.getName(), 0, 0, 0, 1.0f, 0xFFFFFF, 1.0f, true);
 
         fontMesh.flush();
 
@@ -370,25 +370,33 @@ public class Renderer {
         terrainTexture.unbind();
     }
 
+    public void renderChatMsg(Camera camera, ChatMessage chatMessage, float x, float y, float alpha) {
+        if (chatMessage.getSenderName().equals("ANNOUNCE")) {
+            this.renderText(camera, chatMessage.getMessage(), x, y, -10, chatMessage.getColor().getHexCode(), alpha, GameConfiguration.DEFAULT_SCALE, 0.0f, new Vector3i(0 , 0, 0));
+        } else {
+            this.renderText(camera, chatMessage.getSenderName() + ": " + chatMessage.getMessage(), x, y, -10, chatMessage.getColor().getHexCode(), alpha, GameConfiguration.DEFAULT_SCALE, 0.0f, new Vector3i(0 , 0, 0));
+        }
+    }
+
     public void renderText(Camera camera, String text, float x, float y, int rgb, float scale) {
-        this.renderText(camera, text, x, y, -10, rgb, scale, 0.0f, new Vector3i(0 , 0, 0));
+        this.renderText(camera, text, x, y, -10, rgb, 1.0f, scale, 0.0f, new Vector3i(0 , 0, 0));
     }
 
     public void renderText(Camera camera, String text, float x, float y, int rgb, float scale, float rotateAngle, Vector3i normal) {
-        this.renderText(camera, text, x, y, -10, rgb, scale, rotateAngle, normal);
+        this.renderText(camera, text, x, y, -10, rgb, 1.0f, scale, rotateAngle, normal);
     }
     
     public void renderText(Camera camera, String text, float x, float y, float z, int rgb, float scale) {
-        this.renderText(camera, text, x, y, z, rgb, scale, 0.0f, new Vector3i(0 , 0, 0));
+        this.renderText(camera, text, x, y, z, rgb, 1.0f, scale, 0.0f, new Vector3i(0 , 0, 0));
     }
 
-    public void renderText(Camera camera, String text, float x, float y, float z, int rgb, float scale, float rotateAngle, Vector3i normal) {
-        this.renderString(camera, emptyText, -1000, -1000, 100, rgb, scale, rotateAngle, normal);
-        this.renderString(camera, text, x, y, z, rgb, scale, rotateAngle, normal);
-        this.renderString(camera, text, x + 2, y - 2, z - 1, 0x555555, scale, rotateAngle, normal);
+    public void renderText(Camera camera, String text, float x, float y, float z, int rgb, float alpha, float scale, float rotateAngle, Vector3i normal) {
+        this.renderString(camera, emptyText, -1000, -1000, 100, rgb, alpha, scale, rotateAngle, normal);
+        this.renderString(camera, text, x, y, z, rgb, alpha, scale, rotateAngle, normal);
+        this.renderString(camera, text, x + 2, y - 2, z - 1, 0x555555, alpha, scale, rotateAngle, normal);
     }
 
-    private void renderString(Camera camera, String text, float x, float y, float z, int rgb, float scale, float rotateAngle, Vector3i normal) {
+    private void renderString(Camera camera, String text, float x, float y, float z, int rgb, float alpha, float scale, float rotateAngle, Vector3i normal) {
         Texture texture = font.getTexture();
 
         fontShader.enable();
@@ -398,7 +406,7 @@ public class Renderer {
         texture.bind();
 
         camera.matrixOrtho(fontShader, rotateAngle, x, y, z, text, fontMesh, new Vector3f(normal.x, normal.y, normal.z));
-        fontManager.addText(fontMesh, text, x, y, z, scale, rgb);
+        fontManager.addText(fontMesh, text, x, y, z, scale, rgb, alpha);
 
         fontMesh.flush();
 
@@ -560,6 +568,7 @@ public class Renderer {
         }
 
         GuiText menuTitle = menu.getTitle();
+        GuiText menuSubtitle = menu.getSubTitle();
 
         if (menuTitle != null) {
             String title = menuTitle.getText();
@@ -567,6 +576,14 @@ public class Renderer {
             // float titleHeight = fontManager.getTextHeight(fontMesh, GameConfiguration.MENU_TITLE_SCALE, title);
             float titleX = GameConfiguration.WINDOW_CENTER_X - titleWidth / 2.0f;
             this.renderText(camera, menu.getTitle().getText(), titleX, menu.getTitle().getY(), -8, 0xFFFFFF, menu.getTitle().getScale());
+        }
+
+        if (menuSubtitle != null) {
+            String subTitle = menuSubtitle.getText();
+            float subTitleWidth = fontManager.getTextWidth(fontMesh, GameConfiguration.MENU_SUBTITLE_SCALE, subTitle);
+            // float titleHeight = fontManager.getTextHeight(fontMesh, GameConfiguration.MENU_TITLE_SCALE, title);
+            float subTitleX = GameConfiguration.WINDOW_CENTER_X - subTitleWidth / 2.0f;
+            this.renderText(camera, menu.getSubTitle().getText(), subTitleX, menuSubtitle.getY(), -8, menuSubtitle.getRgb(), menu.getSubTitle().getScale());
         }
 
         for (GuiText text : menu.getTexts()) {
@@ -577,6 +594,7 @@ public class Renderer {
                 text.getY(),
                 text.getZ(),
                 text.getRgb(),
+                1.0f,
                 text.getScale(),
                 text.getRotateAngle(),
                 new Vector3i(0, 0, 1)
@@ -1057,7 +1075,7 @@ public class Renderer {
     public void renderChatPayload(Camera camera, ChatPayload payload) {
 
         int width = 500;
-        int height = 25;
+        float height = fontManager.getTextHeight(fontMesh, "A");
         int margin = 10;
 
         this.renderRect(camera, margin, margin, width, height, 0x0, 0.45f, -12);
@@ -1067,12 +1085,13 @@ public class Renderer {
 
     }
 
-    public void renderChat(Camera camera, Map<String, ChatMessage> messages) {
+    public void renderChat(Camera camera, float opacity, Map<String, ChatMessage> messages) {
         int width = 500;
-        int height = Math.min(30 * 5, 30 * messages.size());
+        float charHeight = fontManager.getTextHeight(fontMesh, "A") + 6;
+        float height = Math.min(charHeight * 5, charHeight * messages.size());
         int margin = 10;
 
-        this.renderRect(camera, margin, margin + 50, width, height, 0x0, 0.45f, -11);
+        this.renderRect(camera, margin, margin + 50, width, height, 0x0, 0.45f * opacity, -12);
         float messageX = margin;
         float messageY = margin + 52;
         List<ChatMessage> sortedMessages = new ArrayList<>(messages.values());
@@ -1081,8 +1100,8 @@ public class Renderer {
         int messageDisplayed = 0;
 
         for (ChatMessage chatMessage : sortedMessages) {
-            this.renderText(camera, chatMessage.getSenderName() + ": " + chatMessage.getMessage(), messageX, messageY, 0xFFFFFF, GameConfiguration.DEFAULT_SCALE);
-            messageY += 30;
+            this.renderChatMsg(camera, chatMessage, messageX, messageY, opacity);
+            messageY += charHeight;
             messageDisplayed++;
             if (messageDisplayed == 5) break;
         }

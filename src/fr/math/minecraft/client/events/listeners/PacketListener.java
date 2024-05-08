@@ -7,6 +7,7 @@ import fr.math.minecraft.client.Renderer;
 import fr.math.minecraft.client.audio.Sounds;
 import fr.math.minecraft.client.entity.player.Player;
 import fr.math.minecraft.client.events.*;
+import fr.math.minecraft.client.manager.ChatManager;
 import fr.math.minecraft.client.manager.SoundManager;
 import fr.math.minecraft.client.network.FixedPacketSender;
 import fr.math.minecraft.client.handler.PlayerMovementHandler;
@@ -15,6 +16,7 @@ import fr.math.minecraft.client.network.packet.ChunkACKPacket;
 import fr.math.minecraft.client.network.packet.SkinRequestPacket;
 import fr.math.minecraft.client.network.payload.StatePayload;
 import fr.math.minecraft.client.texture.Texture;
+import fr.math.minecraft.shared.ChatColor;
 import fr.math.minecraft.shared.ChatMessage;
 import fr.math.minecraft.shared.GameConfiguration;
 import fr.math.minecraft.shared.entity.EntityType;
@@ -318,7 +320,7 @@ public class PacketListener implements PacketEventListener {
 
     @Override
     public void onChatState(ChatPayloadStateEvent event) {
-        Map<String, ChatMessage> chatMessages = game.getChatMessages();
+        Map<String, ChatMessage> chatMessages = game.getChatManager().getChatMessages();
         ArrayNode chatData = event.getChatData();
 
         for (int i = 0; i < chatData.size(); i++) {
@@ -327,12 +329,21 @@ public class PacketListener implements PacketEventListener {
             String senderUuid = chatNode.get("uuid").asText();
             String senderName = chatNode.get("name").asText();
             String message = chatNode.get("message").asText();
+            String colorName = chatNode.get("colorName").asText();
             long timestamp = chatNode.get("timestamp").asLong();
+            ChatColor color;
+            try {
+                color = ChatColor.valueOf(colorName);
+            } catch (IllegalArgumentException e) {
+                color = ChatColor.WHITE;
+            }
 
             ChatMessage chatMessage = chatMessages.get(messageId);
 
             if (chatMessage == null) {
-                chatMessage = new ChatMessage(messageId, timestamp, senderUuid, senderName, message);
+                ChatManager chatManager = game.getChatManager();
+                chatManager.setChatOpacity(1.0f);
+                chatMessage = new ChatMessage(messageId, timestamp, senderUuid, senderName, message, color);
                 chatMessages.put(chatMessage.getId(), chatMessage);
             }
         }

@@ -4,12 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import fr.math.minecraft.ServerMain;
 import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
 import fr.math.minecraft.server.Client;
 import fr.math.minecraft.server.MinecraftServer;
 import fr.math.minecraft.server.TimeoutHandler;
+import fr.math.minecraft.shared.ChatColor;
+import fr.math.minecraft.shared.network.HttpResponse;
+import fr.math.minecraft.shared.network.HttpUtils;
 import fr.math.minecraft.shared.world.World;
 import org.apache.log4j.Logger;
 
@@ -39,6 +41,27 @@ public class ConnectionInitHandler extends PacketHandler implements Runnable {
         Map<String, Client> clients = server.getClients();
         Map<String, Long> lastActivities = server.getLastActivities();
         String playerName = packetData.get("playerName").asText();
+        String token = packetData.get("token").asText();
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode tokenNode = mapper.createObjectNode();
+        tokenNode.put("token", token);
+        String uuid = null;
+
+        try {
+            HttpResponse response = HttpUtils.POST("http://localhost:3001/auth/validtoken", tokenNode);
+            JsonNode responseData = mapper.readTree(response.getResponse().toString());
+            JsonNode playerData = responseData.get("user");
+            uuid = playerData.get("id").asText();
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+            byte[] buffer = "INVALID_TOKEN".getBytes(StandardCharsets.UTF_8);
+            server.sendPacket(new DatagramPacket(buffer, buffer.length, address, clientPort));
+            return;
+        }
+
+        if (uuid == null) {
+            return;
+        }
 
         /*
         for (Client client : clients.values()) {
@@ -49,9 +72,7 @@ public class ConnectionInitHandler extends PacketHandler implements Runnable {
         }
          */
 
-        ObjectMapper mapper = new ObjectMapper();
         ObjectNode node = mapper.createObjectNode();
-        String uuid = UUID.randomUUID().toString();
         Client client = new Client(uuid, playerName, address, clientPort);
         World world = server.getWorld();
 
@@ -83,7 +104,8 @@ public class ConnectionInitHandler extends PacketHandler implements Runnable {
             }
 
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, clientPort);
-            logger.info(playerName + " a rejoint le serveur ! (" + clients.size() + "/???)");
+            logger.info(playerName + " (" + uuid + ") a rejoint le serveur ! (" + clients.size() + "/???)");
+            server.announceMessage(playerName + " a rejoint le serveur.", ChatColor.YELLOW);
 
             if (!lastActivities.containsKey(uuid)) {
                 lastActivities.put(uuid, System.currentTimeMillis());

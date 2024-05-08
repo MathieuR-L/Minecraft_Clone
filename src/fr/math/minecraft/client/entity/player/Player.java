@@ -3,6 +3,7 @@ package fr.math.minecraft.client.entity.player;
 import fr.math.minecraft.client.Camera;
 import fr.math.minecraft.client.Renderer;
 import fr.math.minecraft.client.entity.AttackRay;
+import fr.math.minecraft.client.manager.ChatManager;
 import fr.math.minecraft.client.manager.SoundManager;
 import fr.math.minecraft.client.network.payload.ChatPayload;
 import fr.math.minecraft.client.Game;
@@ -137,7 +138,7 @@ public class Player extends Entity {
         animations.add(new PlayerWalkAnimation(this));
     }
 
-    public void handleInputs(long window) {
+    public void handleInputs(long window, ChatManager chatManager) {
 
         if (chatPayload.isOpen() && glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             chatPayload.setOpen(false);
@@ -147,6 +148,7 @@ public class Player extends Entity {
         }
 
         if (chatPayload.isOpen()) {
+            chatManager.setChatOpacity(1.0f);
             if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) {
                 chatPayload.send();
                 chatPayload.getMessage().delete(0, chatPayload.getMessage().length());
