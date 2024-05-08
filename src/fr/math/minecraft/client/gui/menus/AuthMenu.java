@@ -10,6 +10,9 @@ import fr.math.minecraft.shared.GameConfiguration;
 
 public class AuthMenu extends Menu {
 
+    private GuiInputField emailInput;
+    private GuiInputField passwordInput;
+
     public AuthMenu(Game game) {
         super(game, "Authentification");
     }
@@ -21,6 +24,9 @@ public class AuthMenu extends Menu {
         BlockButton loginButton = new LoginButton();
         GuiInputField emailField = new GuiInputField(GuiInputField.Type.TEXT, GameConfiguration.WINDOW_CENTER_X - GuiInputField.WIDTH / 2.0f, 250, "Email");
         GuiInputField passwordField = new GuiInputField(GuiInputField.Type.PASSWORD, GameConfiguration.WINDOW_CENTER_X - GuiInputField.WIDTH / 2.0f, 150, "Mot de passe");
+
+        this.emailInput = emailField;
+        this.passwordInput = passwordField;
 
         this.buttons.add(backToTitle);
         this.buttons.add(loginButton);
@@ -39,14 +45,11 @@ public class AuthMenu extends Menu {
 
     }
 
-    @Override
-    public void close() {
-        super.close();
-        for (GuiInputField field : inputFields) {
-            if (field.getValue().length() == 0) {
-                continue;
-            }
-            field.getValue().delete(0, field.getValue().length() - 1);
-        }
+    public GuiInputField getEmailInput() {
+        return emailInput;
+    }
+
+    public GuiInputField getPasswordInput() {
+        return passwordInput;
     }
 }

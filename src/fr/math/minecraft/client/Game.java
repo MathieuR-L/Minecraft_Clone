@@ -3,16 +3,14 @@ package fr.math.minecraft.client;
 import fr.math.minecraft.client.audio.*;
 import fr.math.minecraft.client.entity.Ray;
 import fr.math.minecraft.client.gui.GuiInputField;
-import fr.math.minecraft.client.gui.menus.AuthMenu;
+import fr.math.minecraft.client.gui.menus.*;
 import fr.math.minecraft.client.handler.ChatInputsHandler;
+import fr.math.minecraft.client.network.AuthUser;
 import fr.math.minecraft.shared.ChatMessage;
 import fr.math.minecraft.shared.entity.Entity;
 import fr.math.minecraft.shared.PlayerAction;
 import fr.math.minecraft.client.events.listeners.PlayerListener;
 import fr.math.minecraft.client.gui.buttons.BlockButton;
-import fr.math.minecraft.client.gui.menus.ConnectionMenu;
-import fr.math.minecraft.client.gui.menus.MainMenu;
-import fr.math.minecraft.client.gui.menus.Menu;
 import fr.math.minecraft.client.handler.PlayerMovementHandler;
 import fr.math.minecraft.client.manager.*;
 import fr.math.minecraft.client.entity.player.Player;
@@ -93,6 +91,7 @@ public class Game {
     private GameConfiguration gameConfiguration;
     private List<Chunk> chunkUpdateQueue;
     private Map<String, ChatMessage> chatMessages;
+    private AuthUser user;
 
     private Game() {
         this.initWindow();
@@ -169,6 +168,7 @@ public class Game {
         this.lastPingTime = 0;
         this.chunkUpdateQueue = new ArrayList<>();
         this.gameConfiguration = GameConfiguration.getInstance();
+        this.user = user;
 
         player.addEventListener(new PlayerListener(this));
 
@@ -196,10 +196,14 @@ public class Game {
         Menu mainMenu = new MainMenu(this);
         Menu connectionMenu = new ConnectionMenu(this);
         Menu authMenu = new AuthMenu(this);
+        Menu authWaitingMenu = new AuthWaitingMenu(this);
+        Menu retryAuthMenu = new RetryAuthMenu(this);
 
         menuManager.registerMenu(mainMenu);
         menuManager.registerMenu(connectionMenu);
         menuManager.registerMenu(authMenu);
+        menuManager.registerMenu(authWaitingMenu);
+        menuManager.registerMenu(retryAuthMenu);
     }
 
     private void loadSplashText() {
@@ -619,4 +623,11 @@ public class Game {
         return chatMessages;
     }
 
+    public AuthUser getUser() {
+        return user;
+    }
+
+    public void setUser(AuthUser user) {
+        this.user = user;
+    }
 }
