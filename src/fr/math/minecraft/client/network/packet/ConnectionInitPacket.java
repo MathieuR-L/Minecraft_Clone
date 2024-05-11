@@ -96,10 +96,13 @@ public class ConnectionInitPacket extends ClientPacket implements Runnable {
             logger.info("Tentative de connexion...");
             String data = client.sendString(message);
 
-            if (data.equalsIgnoreCase("TIMEOUT_REACHED")) {
-                throw new RuntimeException("Impossible de se connecter au serveur (timeout)");
-            } else if (data.equalsIgnoreCase("INVALID_TOKEN")) {
-                throw new RuntimeException("Impossible de se connecter: session invalide (Essayez de vous reconnecter)");
+            switch (data) {
+                case "TIMEOUT_REACHED":
+                    throw new RuntimeException("Impossible de se connecter au serveur (timeout)");
+                case "INVALID_TOKEN":
+                    throw new RuntimeException("Impossible de se connecter: session invalide (Essayez de vous reconnecter)");
+                case "SERVER_ERROR":
+                    throw new RuntimeException("Le serveur a rencontré un problème.");
             }
 
             JsonNode serverData = mapper.readTree(data);
@@ -177,13 +180,7 @@ public class ConnectionInitPacket extends ClientPacket implements Runnable {
         node.put("clientVersion", "1.0.0");
         node.put("token", user.getToken());
 
-        BufferedImage skin = player.getSkin();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
         try {
-            ImageIO.write(skin, "png", baos);
-            node.put("skin", Base64.getEncoder().encodeToString(baos.toByteArray()));
-            baos.close();
             return mapper.writeValueAsString(node);
         } catch (IOException e) {
             e.printStackTrace();

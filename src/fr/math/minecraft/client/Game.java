@@ -482,7 +482,12 @@ public class Game {
         }
 
         if (selectedItem == null) {
-            renderer.renderHand(camera, player.getHand());
+            if (player.getSkinTexture() != null) {
+                if (!player.getSkinTexture().isLoaded()) {
+                    player.getSkinTexture().load();
+                }
+                renderer.renderHand(camera, player.getSkinTexture(), player.getHand());
+            }
         } else {
             if (selectedItem.getMaterial().isItem()) {
                 renderer.renderItemInHand(camera, player, selectedItem.getMaterial());

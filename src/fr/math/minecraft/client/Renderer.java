@@ -80,7 +80,7 @@ public class Renderer {
     private final Shader zombieShader;
     private final Shader hitboxShader;
     private final Texture terrainTexture;
-    private final Texture skinTexture;
+    private Texture skinTexture;
     private final Texture defaultSkinTexture;
     private final Texture minecraftTitleTexture;
     private final Texture widgetsTexture;
@@ -168,7 +168,7 @@ public class Renderer {
         this.minecraftTitleTexture = new Texture("res/textures/gui/title/minecraft_title.png", 3);
         this.panoramaTexture = new CubemapTexture(panoramas, 4);
         this.widgetsTexture = new Texture("res/textures/gui/widgets.png", 5);
-        this.skinTexture = new Texture(Game.getInstance().getPlayer().getSkinPath(), 6);
+        this.skinTexture = null;
         this.crosshairTexuture = new Texture("res/textures/gui/crosshair.png", 7);
         this.placeholdTexture = new Texture("res/textures/gui/placehold.png", 8);
         this.playerInventoryTexture = new Texture("res/textures/gui/inventory.png", 9);
@@ -189,7 +189,6 @@ public class Renderer {
         this.panoramaTexture.load();
         this.widgetsTexture.load();
         this.dirtTexture.load();
-        this.skinTexture.load();
         this.crosshairTexuture.load();
         this.placeholdTexture.load();
         this.playerInventoryTexture.load();
@@ -337,7 +336,7 @@ public class Renderer {
         terrainTexture.unbind();
     }
 
-    public void renderHand(Camera camera, PlayerHand hand) {
+    public void renderHand(Camera camera, Texture skinTexture, PlayerHand hand) {
 
         glDisable(GL_DEPTH_TEST);
 
