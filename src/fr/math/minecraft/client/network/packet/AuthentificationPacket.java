@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fr.math.minecraft.client.Game;
+import fr.math.minecraft.client.texture.Texture;
+import fr.math.minecraft.shared.Utils;
 import fr.math.minecraft.client.gui.buttons.LoginButton;
 import fr.math.minecraft.client.gui.menus.MainMenu;
 import fr.math.minecraft.client.gui.menus.RetryAuthMenu;
@@ -15,12 +17,8 @@ import fr.math.minecraft.shared.network.HttpResponse;
 import fr.math.minecraft.shared.network.HttpUtils;
 import org.apache.log4j.Logger;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 public class AuthentificationPacket extends ClientPacket implements Runnable {
 
@@ -69,19 +67,24 @@ public class AuthentificationPacket extends ClientPacket implements Runnable {
             String username = userData.get("name").asText();
             String email = userData.get("email").asText();
             String token = userData.get("token").asText();
+            String skinUrl = userData.get("skin").get("link").asText();
 
-            AuthUser user = new AuthUser(username, email, token);
+            logger.info("Skin fourni par le serveur d'authentification : " + skinUrl);
+
+            BufferedImage skinImage = Utils.loadBase64Skin(skinUrl);
+            Texture skinTexture = new Texture(skinImage, 6);
+            Game.getInstance().getPlayer().setSkinTexture(skinTexture);
+
+            AuthUser user = new AuthUser(username, email, skinUrl, token);
             Game.getInstance().setUser(user);
 
             menuManager.open(MainMenu.class);
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             menuManager.open(RetryAuthMenu.class);
             RetryAuthMenu menu = (RetryAuthMenu) menuManager.getOpenedMenu();
             menu.getSubTitle().setText("Email ou mot de passe incorrect.");
             logger.error(e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
