@@ -374,6 +374,7 @@ public class Game {
         player.getBuildRay().update(camera.getPosition(), camera.getFront(), world, false);
         player.getBreakRay().update(camera.getPosition(), camera.getFront(), world, false);
         player.getMiningAnimation().update(player);
+        player.updateText();
 
         if (!player.getBreakRay().isAimingBlock()) {
             player.getSprite().reset();

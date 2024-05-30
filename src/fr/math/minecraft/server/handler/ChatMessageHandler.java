@@ -35,4 +35,5 @@ public class ChatMessageHandler extends PacketHandler {
         server.getChatMessages().add(chatMessage);
     }
 
+
 }

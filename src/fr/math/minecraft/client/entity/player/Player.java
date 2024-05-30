@@ -46,7 +46,7 @@ public class Player extends Entity {
     private final Hotbar hotbar;
     private boolean firstMouse;
     private boolean movingLeft, movingRight, movingForward, movingBackward;
-    private boolean flying, sneaking, canBreakBlock, canPlaceBlock, jumping, sprinting;
+    private boolean flying, sneaking, canBreakBlock, canPlaceBlock, jumping, sprinting, deleteText;
     private boolean droppingItem;
     private boolean placingBlock, breakingBlock;
     private boolean canHoldItem, canPlaceHoldedItem;
@@ -122,6 +122,7 @@ public class Player extends Entity {
         this.jumping = false;
         this.placingBlock = false;
         this.breakingBlock = false;
+        this.deleteText = false;
         this.skin = null;
         this.skinPath = null;
         this.skinTexture = null;
@@ -158,9 +159,13 @@ public class Player extends Entity {
                 return;
             }
             if (glfwGetKey(window, GLFW_KEY_BACKSPACE) == GLFW_PRESS) {
-                if (chatPayload.getMessage().length() != 0) {
-                    chatPayload.getMessage().deleteCharAt(chatPayload.getMessage().length() - 1);
+                if(!deleteText) {
+                    if (chatPayload.getMessage().length() != 0) {
+                        deleteText = true;
+                        chatPayload.getMessage().deleteCharAt(chatPayload.getMessage().length() - 1);
+                    }
                 }
+
                 return;
             }
 
@@ -391,6 +396,14 @@ public class Player extends Entity {
             canPlaceBlock = true;
         }
 
+        if (glfwGetKey(window, GLFW_KEY_BACKSPACE) == GLFW_PRESS) {
+            deleteText = true;
+        }
+
+        if (glfwGetKey(window, GLFW_KEY_BACKSPACE) == GLFW_RELEASE) {
+            deleteText = false;
+        }
+
         if (movingLeft || movingRight || movingForward || movingBackward || sneaking || flying) {
             this.notifyEvent(new PlayerMoveEvent(this));
         }
@@ -430,6 +443,12 @@ public class Player extends Entity {
         if (canJump) {
             maxFall = 0.5f;
             canJump = false;
+        }
+    }
+
+    public void updateText() {
+        if(deleteText) {
+            deleteText = false;
         }
     }
 
@@ -583,6 +602,7 @@ public class Player extends Entity {
             this.resetMoving();
             placingBlock = false;
             breakingBlock = false;
+            deleteText = false;
         }
 
         PlayerInputData inputData = new PlayerInputData(movingLeft, movingRight, movingForward, movingBackward, flying, sneaking, jumping, yaw, pitch, sprinting, placingBlock, breakingBlock, droppingItem, hotbar.getSelectedSlot());
