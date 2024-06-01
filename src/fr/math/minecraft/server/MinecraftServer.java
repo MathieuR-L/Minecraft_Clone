@@ -132,8 +132,15 @@ public class MinecraftServer {
                     playersListHandler.run();
                     break;
                 case "CHAT_MSG":
-                    ChatMessageHandler chatMessageHandler = new ChatMessageHandler(packetData, address, clientPort);
-                    chatMessageHandler.run();
+                    //Disjonction de cas commande / message
+                    String content = packetData.get("content").asText();
+                    if(content.charAt(0) != '/') {
+                        ChatMessageHandler chatMessageHandler = new ChatMessageHandler(packetData, address, clientPort);
+                        chatMessageHandler.run();
+                    } else {
+                        CommandHandler commandHandler = new CommandHandler(packetData, address, clientPort);
+                        commandHandler.run();
+                    }
                     break;
                 default:
                     String message = "UNAUTHORIZED_PACKET";
