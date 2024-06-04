@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import fr.math.minecraft.client.network.packet.PlayerActionsPacket;
 import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
+import fr.math.minecraft.server.command.Command;
+import fr.math.minecraft.server.command.Team;
+import fr.math.minecraft.server.command.TeleportCommand;
 import fr.math.minecraft.server.handler.*;
 import fr.math.minecraft.server.manager.ChunkManager;
 import fr.math.minecraft.server.manager.PluginManager;
@@ -44,6 +47,7 @@ public class MinecraftServer {
     private final ChunkManager chunkManager;
     private final List<ChatMessage> chatMessages;
     private final PluginManager pluginManager;
+    private HashMap<String, Command> commands;
 
     private MinecraftServer(int port) {
         this.running = false;
@@ -62,6 +66,7 @@ public class MinecraftServer {
         this.tickHandler = new TickHandler();
         this.chunkManager = new ChunkManager();
         this.chatMessages = new ArrayList<>();
+        this.commands = new HashMap<>();
 
         try {
             this.pluginManager.loadPlugins("plugins");
@@ -73,6 +78,8 @@ public class MinecraftServer {
         world.addEntity(new Zombie("Dummy"));
         //logger.info("Un villageois a spawn !");
         logger.info("Un zombie a spawn !");
+
+        initCommands();
     }
 
     public void start() throws IOException {
@@ -210,6 +217,10 @@ public class MinecraftServer {
         }
     }
 
+    public void initCommands() {
+        commands.put("/tp", new TeleportCommand("tp", "Téléporte un joueur à une destinatio", Team.ADMIN));
+    }
+
     public void broadcastMessage(String message) {
         this.broadcastMessage(message, ChatColor.WHITE);
     }
@@ -256,5 +267,18 @@ public class MinecraftServer {
 
     public void setRunning(boolean running) {
         this.running = running;
+    }
+
+    public HashMap<String, Command> getCommands() {
+        return commands;
+    }
+
+    public Client getClientByName(String name) {
+        for (Client client: getClients().values()) {
+            if(client.getName().equals(name)) {
+                return client;
+            }
+        }
+        return null;
     }
 }

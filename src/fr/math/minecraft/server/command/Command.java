@@ -1,7 +1,14 @@
 package fr.math.minecraft.server.command;
 
-public class Command {
+import fr.math.minecraft.logger.LogType;
+import fr.math.minecraft.logger.LoggerUtility;
+import fr.math.minecraft.server.Client;
+import fr.math.minecraft.server.MinecraftServer;
+import org.apache.log4j.Logger;
 
+public abstract class Command {
+
+    private final static Logger logger = LoggerUtility.getServerLogger(Command.class, LogType.TXT);
     private String name;
     private String descpription;
     private Team team;
@@ -13,6 +20,8 @@ public class Command {
         this.team = team;
         this.tree = new Node("");
     }
+
+    public void run(String[] message, String sender, Client client, MinecraftServer server) {}
 
     public String getName() {
         return name;
