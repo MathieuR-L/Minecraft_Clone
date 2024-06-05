@@ -47,7 +47,7 @@ public class MinecraftServer {
     private final ChunkManager chunkManager;
     private final List<ChatMessage> chatMessages;
     private final PluginManager pluginManager;
-    private HashMap<String, Command> commands;
+    private final HashMap<String, Command> commands;
 
     private MinecraftServer(int port) {
         this.running = false;

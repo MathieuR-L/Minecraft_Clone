@@ -9,6 +9,7 @@ import fr.math.minecraft.logger.LoggerUtility;
 import fr.math.minecraft.server.Client;
 import fr.math.minecraft.server.MinecraftServer;
 import fr.math.minecraft.server.TimeoutHandler;
+import fr.math.minecraft.server.command.Command;
 import fr.math.minecraft.shared.ChatColor;
 import fr.math.minecraft.shared.Utils;
 import fr.math.minecraft.shared.network.HttpResponse;
@@ -101,6 +102,8 @@ public class ConnectionInitHandler extends PacketHandler implements Runnable {
             }
 
             server.sendPacket(packet);
+
+            server.getCommands().get("/tp").initTree(server);
 
         } catch (IOException e) {
             byte[] buffer = "INVALID_TOKEN".getBytes(StandardCharsets.UTF_8);

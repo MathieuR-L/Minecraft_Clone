@@ -8,6 +8,8 @@ import fr.math.minecraft.server.handler.CommandHandler;
 import org.apache.log4j.Logger;
 import org.joml.Vector3f;
 
+import java.util.HashMap;
+
 public class TeleportCommand extends Command{
 
     private final static Logger logger = LoggerUtility.getServerLogger(TeleportCommand.class, LogType.TXT);
@@ -35,6 +37,29 @@ public class TeleportCommand extends Command{
         playerTeleported.setPosition(new Vector3f(x, y, z));
 
         logger.trace("Le joueur " + client.getName() + " a [TP] le joueur " + message[1] + " en : [x:" + x +" y:" + y + " z:" + z +"]");
+    }
+
+    @Override
+    public Node initTree(MinecraftServer server) {
+        //Noeud de départ
+        Node tpNode = new Node("tp");
+        HashMap<String, Node> tpOptions = new HashMap<>();
+
+        //Noeuds des propositions de joueur
+        for (Client client : server.getClients().values()) {
+            String clientName = client.getName();
+            Node clientNode = new Node(clientName);
+            HashMap<String, Node> clientOptions = new HashMap<>();
+            for (Client subClient : server.getClients().values()) {
+                String subClientName = subClient.getName();
+                Node subClientNode = new Node(subClientName);
+                clientOptions.put(subClientName, subClientNode);
+            }
+            clientNode.setOptions(clientOptions);
+            tpOptions.put(clientName, clientNode);
+        }
+        tpNode.setOptions(tpOptions);
+        return tpNode;
     }
 
     public float getX() {

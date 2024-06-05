@@ -22,6 +22,9 @@ public abstract class Command {
     }
 
     public void run(String[] message, String sender, Client client, MinecraftServer server) {}
+    public Node initTree(MinecraftServer server) {
+        return null;
+    }
 
     public String getName() {
         return name;
