@@ -17,6 +17,9 @@ import fr.math.minecraft.client.handler.InventoryInputsHandler;
 import fr.math.minecraft.client.manager.ChunkManager;
 import fr.math.minecraft.client.meshs.NametagMesh;
 import fr.math.minecraft.client.texture.Texture;
+import fr.math.minecraft.logger.LogType;
+import fr.math.minecraft.logger.LoggerUtility;
+import fr.math.minecraft.server.MinecraftServer;
 import fr.math.minecraft.shared.inventory.*;
 import fr.math.minecraft.server.Utils;
 import fr.math.minecraft.shared.GameConfiguration;
@@ -30,6 +33,7 @@ import fr.math.minecraft.shared.inventory.PlayerInventory;
 import fr.math.minecraft.shared.network.GameMode;
 import fr.math.minecraft.shared.network.Hitbox;
 import fr.math.minecraft.shared.network.PlayerInputData;
+import org.apache.log4j.Logger;
 import org.joml.Math;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
@@ -44,6 +48,7 @@ import static org.lwjgl.glfw.GLFW.*;
 public class Player extends Entity {
 
     private final Hotbar hotbar;
+    private boolean askingForPlayer;
     private boolean firstMouse;
     private boolean movingLeft, movingRight, movingForward, movingBackward;
     private boolean flying, sneaking, canBreakBlock, canPlaceBlock, jumping, sprinting, deleteText;
@@ -75,6 +80,10 @@ public class Player extends Entity {
     private final CompletedCraftPlayerInventory completedCraftPlayerInventory;
     private final CraftingTableInventory craftingTableInventory;
     private Texture skinTexture;
+    private int cptDeleteChar = 0;
+
+    private final static Logger logger = LoggerUtility.getClientLogger(Player.class, LogType.TXT);
+
 
     public Player(String name) {
         super(null, EntityType.PLAYER);
@@ -135,6 +144,7 @@ public class Player extends Entity {
         this.completedCraftPlayerInventory = new CompletedCraftPlayerInventory();
         this.craftingTableInventory = new CraftingTableInventory();
         this.lastInventory = inventory;
+        this.askingForPlayer = false;
         this.initAnimations();
     }
 
@@ -161,12 +171,20 @@ public class Player extends Entity {
             if (glfwGetKey(window, GLFW_KEY_BACKSPACE) == GLFW_PRESS) {
                 if(!deleteText) {
                     if (chatPayload.getMessage().length() != 0) {
-                        deleteText = true;
-                        chatPayload.getMessage().deleteCharAt(chatPayload.getMessage().length() - 1);
+                        if (cptDeleteChar % 20 == 0) {
+                            deleteText = true;
+                            chatPayload.getMessage().deleteCharAt(chatPayload.getMessage().length() - 1);
+                        }
                     }
                 }
 
+                logger.debug("La valeur pour la suppression est : " + cptDeleteChar);
+                cptDeleteChar++;
                 return;
+            }
+
+            if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS) {
+                this.askingForPlayer = true;
             }
 
             ChatInputsHandler handler = new ChatInputsHandler();

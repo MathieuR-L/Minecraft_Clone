@@ -8,7 +8,7 @@ import fr.math.minecraft.client.network.packet.ChatMessagePacket;
 public class ChatPayload {
 
     private boolean open;
-    private final StringBuilder message;
+    private StringBuilder message;
     private final Player sender;
 
     public ChatPayload(Player player) {
@@ -36,5 +36,9 @@ public class ChatPayload {
 
     public StringBuilder getMessage() {
         return message;
+    }
+
+    public void setMessage(StringBuilder stringBuilder) {
+        this.message = stringBuilder;
     }
 }

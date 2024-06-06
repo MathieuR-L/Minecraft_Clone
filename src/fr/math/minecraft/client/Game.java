@@ -2,10 +2,12 @@ package fr.math.minecraft.client;
 
 import fr.math.minecraft.client.audio.*;
 import fr.math.minecraft.client.entity.Ray;
+import fr.math.minecraft.client.events.ChatPayloadStateEvent;
 import fr.math.minecraft.client.gui.GuiInputField;
 import fr.math.minecraft.client.gui.menus.*;
 import fr.math.minecraft.client.handler.ChatInputsHandler;
 import fr.math.minecraft.client.network.AuthUser;
+import fr.math.minecraft.client.network.payload.ChatPayload;
 import fr.math.minecraft.shared.ChatMessage;
 import fr.math.minecraft.shared.entity.Entity;
 import fr.math.minecraft.shared.PlayerAction;
@@ -531,7 +533,7 @@ public class Game {
         }
         return instance;
     }
-
+    
     public MinecraftClient getClient() {
         return this.client;
     }

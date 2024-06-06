@@ -5,6 +5,7 @@ import fr.math.minecraft.client.network.packet.PlayerActionsPacket;
 import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
 import fr.math.minecraft.server.command.Command;
+import fr.math.minecraft.server.command.StartCommand;
 import fr.math.minecraft.server.command.Team;
 import fr.math.minecraft.server.command.TeleportCommand;
 import fr.math.minecraft.server.handler.*;
@@ -219,6 +220,7 @@ public class MinecraftServer {
 
     public void initCommands() {
         commands.put("/tp", new TeleportCommand("tp", "Téléporte un joueur à une destinatio", Team.ADMIN));
+        commands.put("/start", new StartCommand("start", "Lance la partie", Team.PLAYER));
     }
 
     public void broadcastMessage(String message) {
