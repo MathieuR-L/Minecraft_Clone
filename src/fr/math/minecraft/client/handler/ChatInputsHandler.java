@@ -3,6 +3,9 @@ package fr.math.minecraft.client.handler;
 import fr.math.minecraft.client.Game;
 import fr.math.minecraft.client.entity.player.Player;
 import fr.math.minecraft.client.network.payload.ChatPayload;
+import fr.math.minecraft.logger.LogType;
+import fr.math.minecraft.logger.LoggerUtility;
+import org.apache.log4j.Logger;
 import org.lwjgl.glfw.GLFWCharCallback;
 import org.lwjgl.system.libffi.FFICIF;
 
@@ -20,6 +23,8 @@ public class ChatInputsHandler {
 
     private static class InputHandler extends GLFWCharCallback {
 
+        private final static Logger logger = LoggerUtility.getClientLogger(InputHandler.class, LogType.TXT);
+
         private final StringBuilder inputBuilder;
 
         public InputHandler(StringBuilder inputBuilder) {
@@ -31,7 +36,8 @@ public class ChatInputsHandler {
             char letter = (char) codepoint;
             if (letter == GLFW_KEY_TAB) {
                 ChatPayload chatPayload = Game.getInstance().getPlayer().getChatPayload();
-                chatPayload.setMessage();
+                logger.debug("Current msg :" + chatPayload.getMessage().toString());
+                //chatPayload.setMessage();
             }
             inputBuilder.append(letter);
         }

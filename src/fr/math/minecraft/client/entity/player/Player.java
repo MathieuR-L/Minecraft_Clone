@@ -20,6 +20,7 @@ import fr.math.minecraft.client.texture.Texture;
 import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
 import fr.math.minecraft.server.MinecraftServer;
+import fr.math.minecraft.server.command.Command;
 import fr.math.minecraft.shared.inventory.*;
 import fr.math.minecraft.server.Utils;
 import fr.math.minecraft.shared.GameConfiguration;
@@ -51,7 +52,7 @@ public class Player extends Entity {
     private boolean askingForPlayer;
     private boolean firstMouse;
     private boolean movingLeft, movingRight, movingForward, movingBackward;
-    private boolean flying, sneaking, canBreakBlock, canPlaceBlock, jumping, sprinting, deleteText;
+    private boolean flying, sneaking, canBreakBlock, canPlaceBlock, jumping, sprinting, deleteText, pressTab;
     private boolean droppingItem;
     private boolean placingBlock, breakingBlock;
     private boolean canHoldItem, canPlaceHoldedItem;
@@ -81,6 +82,9 @@ public class Player extends Entity {
     private final CraftingTableInventory craftingTableInventory;
     private Texture skinTexture;
     private int cptDeleteChar = 0;
+    private int commandOption = 0;
+    private String lastCommand ="";
+    private int cptTab = 0;
 
     private final static Logger logger = LoggerUtility.getClientLogger(Player.class, LogType.TXT);
 
@@ -132,6 +136,7 @@ public class Player extends Entity {
         this.placingBlock = false;
         this.breakingBlock = false;
         this.deleteText = false;
+        this.pressTab = false;
         this.skin = null;
         this.skinPath = null;
         this.skinTexture = null;
@@ -163,6 +168,30 @@ public class Player extends Entity {
 
         if (chatPayload.isOpen()) {
             chatManager.setChatOpacity(1.0f);
+            if(glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS) {
+                if(!pressTab) {
+                    if(chatPayload.getMessage().length() != 0) {
+                        if(cptTab % 20 == 0) {
+                            pressTab = true;
+                            MinecraftServer server = MinecraftServer.getInstance();
+                            if((Utils.isCommand(server.getCommands(), chatPayload.getMessage()))) {
+                                Command commandInChat = server.getCommands().get(chatPayload.getMessage().toString().replaceAll(" ", ""));
+                                if(commandInChat.getName().equals(lastCommand)) {
+                                    commandOption = commandInChat.incrementOption(commandOption);
+                                } else {
+                                    commandOption = 0;
+                                    lastCommand = commandInChat.getName();
+                                }
+                                System.out.println("N° option :" + commandOption);
+                                String newMessage = commandInChat.getName() + " " + commandInChat.getTree().displayOption(commandOption);
+                                chatPayload.setMessage(new StringBuilder(newMessage));
+                            }
+                        }
+                    }
+                }
+                cptTab++;
+                return;
+            }
             if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) {
                 chatPayload.send();
                 chatPayload.getMessage().delete(0, chatPayload.getMessage().length());
@@ -171,7 +200,7 @@ public class Player extends Entity {
             if (glfwGetKey(window, GLFW_KEY_BACKSPACE) == GLFW_PRESS) {
                 if(!deleteText) {
                     if (chatPayload.getMessage().length() != 0) {
-                        if (cptDeleteChar % 20 == 0) {
+                        if (cptDeleteChar % 15 == 0) {
                             deleteText = true;
                             chatPayload.getMessage().deleteCharAt(chatPayload.getMessage().length() - 1);
                         }
@@ -422,6 +451,14 @@ public class Player extends Entity {
             deleteText = false;
         }
 
+        if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS) {
+            pressTab = true;
+        }
+
+        if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_RELEASE) {
+            pressTab = false;
+        }
+
         if (movingLeft || movingRight || movingForward || movingBackward || sneaking || flying) {
             this.notifyEvent(new PlayerMoveEvent(this));
         }
@@ -467,6 +504,9 @@ public class Player extends Entity {
     public void updateText() {
         if(deleteText) {
             deleteText = false;
+        }
+        if(pressTab) {
+            pressTab = false;
         }
     }
 
@@ -621,6 +661,7 @@ public class Player extends Entity {
             placingBlock = false;
             breakingBlock = false;
             deleteText = false;
+            pressTab = false;
         }
 
         PlayerInputData inputData = new PlayerInputData(movingLeft, movingRight, movingForward, movingBackward, flying, sneaking, jumping, yaw, pitch, sprinting, placingBlock, breakingBlock, droppingItem, hotbar.getSelectedSlot());
@@ -816,5 +857,13 @@ public class Player extends Entity {
 
     public void setSkinTexture(Texture skinTexture) {
         this.skinTexture = skinTexture;
+    }
+
+    public String getLastCommand() {
+        return lastCommand;
+    }
+
+    public void setLastCommand(String lastCommand) {
+        this.lastCommand = lastCommand;
     }
 }

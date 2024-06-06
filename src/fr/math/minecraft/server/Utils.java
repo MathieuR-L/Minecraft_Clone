@@ -1,10 +1,13 @@
 package fr.math.minecraft.server;
 
 import fr.math.minecraft.client.entity.player.Player;
+import fr.math.minecraft.server.command.Command;
 import fr.math.minecraft.shared.world.Chunk;
 import fr.math.minecraft.shared.world.Coordinates;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
+
+import java.util.HashMap;
 
 public class Utils {
 
@@ -67,6 +70,15 @@ public class Utils {
         int chunkZ = (int) Math.floor(z / (double) Chunk.SIZE);
 
         return new Vector3i(chunkX, chunkY, chunkZ);
+    }
+
+    public static boolean isCommand(HashMap<String, Command> commands, StringBuilder message) {
+        String clearedMsg = message.toString();
+        int firstSpace = clearedMsg.indexOf(" ");
+        System.out.println("Message cleared :" + clearedMsg);
+        if(!clearedMsg.startsWith("/")) return false;
+        if(commands.containsKey(clearedMsg)) return true;
+        return false;
     }
 
 }

@@ -44,6 +44,7 @@ public class TeleportCommand extends Command{
         //Noeud de départ
         Node tpNode = new Node("tp");
         HashMap<String, Node> tpOptions = new HashMap<>();
+        int maxOption = this.getMaxOptions();
 
         //Noeuds des propositions de joueur
         for (Client client : server.getClients().values()) {
@@ -57,8 +58,11 @@ public class TeleportCommand extends Command{
             }
             clientNode.setOptions(clientOptions);
             tpOptions.put(clientName, clientNode);
+            maxOption++;
+            System.out.println("j'ajoute une option:" + maxOption);
         }
         tpNode.setOptions(tpOptions);
+        this.setMaxOptions(maxOption);
         return tpNode;
     }
 

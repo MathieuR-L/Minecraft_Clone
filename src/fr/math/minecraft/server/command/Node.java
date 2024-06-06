@@ -19,7 +19,7 @@ public class Node {
         return options.get(name);
     }
 
-    private String displayOption(int i) {
+    public String displayOption(int i) {
         int y = 0;
         if(i >= 0 && i < options.size()) {
             for (Map.Entry mapentry : options.entrySet()) {
