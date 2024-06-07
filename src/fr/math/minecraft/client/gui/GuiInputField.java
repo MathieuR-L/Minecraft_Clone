@@ -15,6 +15,8 @@ public class GuiInputField {
     private final StringBuilder value;
     private final float x, y;
     private boolean focused;
+    private int cptDeleteChar = 0;
+    private boolean deleteText = false;
 
     public GuiInputField(Type type, float x, float y, String label) {
         this.type = type;
@@ -73,10 +75,21 @@ public class GuiInputField {
             return;
         }
 
+        if (glfwGetKey(window, GLFW_KEY_BACKSPACE) == GLFW_RELEASE) {
+            deleteText = false;
+        }
+
         if (glfwGetKey(window, GLFW_KEY_BACKSPACE) == GLFW_PRESS) {
-            if (value.length() != 0) {
-                value.deleteCharAt(value.length() - 1);
+            if (!deleteText) {
+                if (value.length() != 0) {
+                    if (cptDeleteChar % 15 == 0) {
+                        deleteText = true;
+                        value.deleteCharAt(value.length() - 1);
+                    }
+                }
             }
+
+            cptDeleteChar++;
         }
     }
 

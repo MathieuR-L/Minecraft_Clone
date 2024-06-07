@@ -207,7 +207,6 @@ public class Player extends Entity {
                     }
                 }
 
-                logger.debug("La valeur pour la suppression est : " + cptDeleteChar);
                 cptDeleteChar++;
                 return;
             }
