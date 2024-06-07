@@ -26,10 +26,18 @@ public class TeleportCommand extends Command{
         logger.debug("Je run 1 fois la [TP]");
 
         String newPosition = message[2];
-        String[] coordinates = newPosition.split(":");
-        x = Float.parseFloat(coordinates[0]);
-        y = Float.parseFloat(coordinates[1]);
-        z = Float.parseFloat(coordinates[2]);
+        logger.debug("Bloc 2 du msg:" + newPosition);
+        if(server.getClientByName(newPosition) != null) {
+            Client destinationPlayer = server.getClientByName(newPosition);
+            x = destinationPlayer.getPosition().x;
+            y = destinationPlayer.getPosition().y;
+            z = destinationPlayer.getPosition().z;
+        } else {
+            String[] coordinates = newPosition.split(":");
+            x = Float.parseFloat(coordinates[0]);
+            y = Float.parseFloat(coordinates[1]);
+            z = Float.parseFloat(coordinates[2]);
+        }
 
         Client playerTeleported = server.getClientByName(message[1]);
         if(playerTeleported == null) return;
