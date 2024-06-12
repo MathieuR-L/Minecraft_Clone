@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import fr.math.minecraft.client.network.packet.PlayerActionsPacket;
 import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
-import fr.math.minecraft.server.command.Command;
-import fr.math.minecraft.server.command.StartCommand;
-import fr.math.minecraft.server.command.Team;
-import fr.math.minecraft.server.command.TeleportCommand;
+import fr.math.minecraft.server.command.*;
 import fr.math.minecraft.server.handler.*;
 import fr.math.minecraft.server.manager.ChunkManager;
 import fr.math.minecraft.server.manager.PluginManager;
@@ -219,8 +216,10 @@ public class MinecraftServer {
     }
 
     public void initCommands() {
-        commands.put("/tp", new TeleportCommand("tp", "Téléporte un joueur à une destinatio", Team.ADMIN));
+        commands.put("/tp", new TeleportCommand("tp", "Téléporte un joueur à une destination", Team.ADMIN));
         commands.put("/start", new StartCommand("start", "Lance la partie", Team.PLAYER));
+        commands.put("/load", new LoadSchematicCommand("load", "Charge un schematic", Team.ADMIN));
+        commands.put("/place", new PlaceBlockCommand("place", "Pose un block", Team.ADMIN));
     }
 
     public void broadcastMessage(String message) {

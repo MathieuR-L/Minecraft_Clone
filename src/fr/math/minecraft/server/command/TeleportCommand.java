@@ -4,7 +4,6 @@ import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
 import fr.math.minecraft.server.Client;
 import fr.math.minecraft.server.MinecraftServer;
-import fr.math.minecraft.server.handler.CommandHandler;
 import org.apache.log4j.Logger;
 import org.joml.Vector3f;
 
@@ -14,7 +13,7 @@ public class TeleportCommand extends Command{
 
     private final static Logger logger = LoggerUtility.getServerLogger(TeleportCommand.class, LogType.TXT);
 
-    float x, y, z;
+    private float x, y, z;
 
     public TeleportCommand(String name, String descpription, Team team) {
         super(name, descpription, team);

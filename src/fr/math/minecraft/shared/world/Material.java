@@ -25,7 +25,7 @@ public enum Material {
     GLASS("Glass", 58, 1, 12, 9, 4),
     CRAFTING_TABLE("Crafting Table", 56, new Vector2i(11, 12), new Vector2i(11, 12), new Vector2i(12, 12), new Vector2i(12, 12), new Vector2i(11, 13), new Vector2i(4, 15), 2, 1),
     FURNACE("Furnace", 70, new Vector2i(13, 13), new Vector2i(13, 13), new Vector2i(13, 13), new Vector2i(12, 13), new Vector2i(14, 12), new Vector2i(14, 12), 1, 5),
-    OAK_PLANKS("Oak planks", 13, 4, 15, 5, 8),
+    OAK_PLANKS("planks", 13, 4, 15, 5, 8),
     COBBLESTONE("Cobblestone", 16, 0, 14, 0, 8),
     CHEST("Chest", 17, new Vector2i(10, 14), new Vector2i(10, 14), new Vector2i(11, 14), new Vector2i(11, 14), new Vector2i(10, 14), new Vector2i(10, 14), 4, 1),
     STICK("Stick", 18, -1, -1, 14, 3, false, true),
@@ -210,6 +210,15 @@ public enum Material {
                 return Material.AIR;
         }
         return material;
+    }
+
+    public static Material getMaterialByName(String blockName) {
+        for(Material material : Material.values()) {
+            if(material.getName().equalsIgnoreCase(blockName)) {
+                return material;
+            }
+        }
+        return null;
     }
 
     public boolean isSolid() {
