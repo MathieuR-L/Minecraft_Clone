@@ -9,6 +9,7 @@ public class BiomeManager {
     private final AbstractBiome forestBiome;
     private final AbstractBiome plainBiome;
     private final AbstractBiome montainsBiome;
+    private final AbstractBiome superflatBiome;
 
     public BiomeManager() {
         this.noise = new NoiseGenerator(9, 30, 1500.0f, .25f, 25);
@@ -16,6 +17,7 @@ public class BiomeManager {
         this.forestBiome = new ForestBiome();
         this.plainBiome = new PlainBiome();
         this.montainsBiome = new MountainsBiome();
+        this.superflatBiome = new SuperFlatBiome();
     }
 
     public AbstractBiome getBiome(int x, int z,float seed){
