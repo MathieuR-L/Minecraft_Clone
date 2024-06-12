@@ -10,7 +10,7 @@ public class TestNBTFile {
         String filePath = "res/schematics/house.schematic";
 
         NbtHandler nbtHandler = new NbtHandler(filePath);
-        CompoundTag compoundTag = nbtHandler.nbtMainCompoud();
+        CompoundTag compoundTag = nbtHandler.getCompoundTag();
 
         nbtHandler.setMappingStruc(compoundTag);
 

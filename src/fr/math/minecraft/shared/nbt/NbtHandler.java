@@ -27,7 +27,7 @@ public class NbtHandler {
         this.mappingStruc = new HashMap<>();
     }
 
-    public CompoundTag nbtMainCompoud() {
+    public CompoundTag getCompoundTag() {
         if(mainTag instanceof CompoundTag) {
             CompoundTag compound = (CompoundTag) mainTag;
             return compound;
@@ -37,7 +37,7 @@ public class NbtHandler {
         }
     }
 
-    public CompoundTag nbtMainCompoud(Tag mainTag) {
+    public CompoundTag getCompoundTag(Tag mainTag) {
         if(mainTag instanceof CompoundTag) {
             CompoundTag compound = (CompoundTag) mainTag;
             return compound;
@@ -60,6 +60,24 @@ public class NbtHandler {
         if(compoundTag.getValue().containsKey("Blocks")) {
             ByteArrayTag blocksArray = (ByteArrayTag) compoundTag.getValue().get("Blocks");
             return blocksArray;
+        } else {
+            return null;
+        }
+    }
+
+    public ShortTag getNbtLength(CompoundTag compoundTag) {
+        if(compoundTag.getValue().containsKey("Length")) {
+            ShortTag length = (ShortTag) compoundTag.getValue().get("Length");
+            return length;
+        } else {
+            return null;
+        }
+    }
+
+    public ShortTag getNbtWidth(CompoundTag compoundTag) {
+        if(compoundTag.getValue().containsKey("Width")) {
+            ShortTag width = (ShortTag) compoundTag.getValue().get("Width");
+            return width;
         } else {
             return null;
         }
