@@ -6,6 +6,7 @@ import org.joml.Vector3i;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +23,6 @@ public class NbtHandler {
             NBTInputStream nbtInputStream = new NBTInputStream(fis);
             this.mainTag = nbtInputStream.readTag();
         } catch (IOException e) {
-            e.printStackTrace();
         }
         this.mappingStruc = new HashMap<>();
     }
@@ -65,9 +65,25 @@ public class NbtHandler {
         }
     }
 
+    public ArrayList<Byte> getCleanNbtBlocksArray(CompoundTag compoundTag) {
+        if(compoundTag.getValue().containsKey("Blocks")) {
+            ByteArrayTag blocksArray = (ByteArrayTag) compoundTag.getValue().get("Blocks");
+            ArrayList<Byte> blockList = new ArrayList<>();
+            System.out.println(blocksArray);
+            for (int i = 0; i < blocksArray.getValue().length; i++) {
+                blockList.add(blocksArray.getValue()[i]);
+            }
+            System.out.println(blockList);
+            return blockList;
+        } else {
+            return null;
+        }
+    }
+
     public ShortTag getNbtLength(CompoundTag compoundTag) {
         if(compoundTag.getValue().containsKey("Length")) {
             ShortTag length = (ShortTag) compoundTag.getValue().get("Length");
+            System.out.println("len :" + length);
             return length;
         } else {
             return null;
@@ -77,6 +93,7 @@ public class NbtHandler {
     public ShortTag getNbtWidth(CompoundTag compoundTag) {
         if(compoundTag.getValue().containsKey("Width")) {
             ShortTag width = (ShortTag) compoundTag.getValue().get("Width");
+            System.out.println("width :" + width);
             return width;
         } else {
             return null;
@@ -87,9 +104,13 @@ public class NbtHandler {
         Vector3i blockPosition = new Vector3i();
 
         int x = indice % width;
+        System.out.println("x:"+x);
         int reste = (indice - x)/width;
+        System.out.println("reste:"+reste);
         int z = reste % length;
+        System.out.println("z:"+z);
         int y = (reste - z)/length;
+        System.out.println("y:"+y +"\n");
 
         blockPosition.x = x;
         blockPosition.y = y;

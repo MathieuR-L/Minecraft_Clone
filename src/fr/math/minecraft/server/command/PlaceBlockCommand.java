@@ -5,6 +5,7 @@ import fr.math.minecraft.logger.LoggerUtility;
 import fr.math.minecraft.server.Client;
 import fr.math.minecraft.server.MinecraftServer;
 import fr.math.minecraft.server.Utils;
+import fr.math.minecraft.shared.world.Chunk;
 import fr.math.minecraft.shared.world.PlacedBlock;
 import org.apache.log4j.Logger;
 import org.joml.Vector3f;
@@ -40,6 +41,12 @@ public class PlaceBlockCommand extends Command{
         Vector3i localPosition = Utils.worldToLocal(worldPosition);
 
         PlacedBlock placedBlock = new PlacedBlock(client.getUuid(), worldPosition, localPosition, blockID);
+
+        synchronized (server.getWorld().getPlacedBlocks()) {
+            server.getWorld().getPlacedBlocks().put(placedBlock.getWorldPosition(), placedBlock);
+        }
+
+
 
         logger.trace("Le joueur " + client.getName() + " a [TP] le joueur " + message[1] + " en : [x:" + x +" y:" + y + " z:" + z +"]");
     }
