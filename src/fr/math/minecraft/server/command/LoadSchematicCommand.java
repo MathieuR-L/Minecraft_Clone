@@ -81,9 +81,15 @@ public class LoadSchematicCommand extends Command{
             synchronized (server.getWorld().getPlacedBlocks()) {
                 server.getWorld().getPlacedBlocks().put(placedBlock.getWorldPosition(), placedBlock);
                 Chunk aimedChunk = server.getWorld().getChunkAt(blockWorldPosition);
+                if(aimedChunk == null) {
+                    Vector3i chunkPos = Utils.getChunkPosition(blockWorldPosition.x, blockWorldPosition.y, blockWorldPosition.z);
+                    aimedChunk = new Chunk(chunkPos.x, chunkPos.y, chunkPos.z);
+                    System.out.println("Génération d'un chunk...");
+                    aimedChunk.generate(server.getWorld(), server.getWorld().getTerrainGenerator());
+                    server.getWorld().addChunk(aimedChunk);
+                }
                 aimedChunk.setBlock(blockLocalPosition.x, blockLocalPosition.y, blockLocalPosition.z, placedBlock.getBlock());
             }
-
 
             logger.debug("Block de " + currentMaterial + " ajouté à la liste en :" + blockWorldPosition);
         }

@@ -44,9 +44,16 @@ public class PlaceBlockCommand extends Command{
 
         synchronized (server.getWorld().getPlacedBlocks()) {
             server.getWorld().getPlacedBlocks().put(placedBlock.getWorldPosition(), placedBlock);
+            Chunk aimedChunk = server.getWorld().getChunkAt(worldPosition);
+            if(aimedChunk == null) {
+                Vector3i chunkPos = Utils.getChunkPosition(worldPosition.x, worldPosition.y, worldPosition.z);
+                aimedChunk = new Chunk(chunkPos.x, chunkPos.y, chunkPos.z);
+                System.out.println("Génération d'un chunk...");
+                aimedChunk.generate(server.getWorld(), server.getWorld().getTerrainGenerator());
+                server.getWorld().addChunk(aimedChunk);
+            }
+            aimedChunk.setBlock(worldPosition.x, worldPosition.y, worldPosition.z, placedBlock.getBlock());
         }
-
-
 
         logger.trace("Le joueur " + client.getName() + " a [TP] le joueur " + message[1] + " en : [x:" + x +" y:" + y + " z:" + z +"]");
     }
