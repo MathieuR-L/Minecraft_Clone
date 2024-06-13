@@ -14,6 +14,7 @@ public class NbtHandler {
 
     private String filePath;
     private Tag mainTag;
+    private final static int maxBlocPerList = 1000;
 
     private HashMap<Integer, Material> mappingStruc;
 
@@ -65,16 +66,29 @@ public class NbtHandler {
         }
     }
 
-    public ArrayList<Byte> getCleanNbtBlocksArray(CompoundTag compoundTag) {
+    public ArrayList<ArrayList<Byte>> getCleanNbtBlocksArray(CompoundTag compoundTag) {
         if(compoundTag.getValue().containsKey("Blocks")) {
             ByteArrayTag blocksArray = (ByteArrayTag) compoundTag.getValue().get("Blocks");
-            ArrayList<Byte> blockList = new ArrayList<>();
-            System.out.println(blocksArray);
-            for (int i = 0; i < blocksArray.getValue().length; i++) {
-                blockList.add(blocksArray.getValue()[i]);
+
+            int size = blocksArray.getValue().length;
+            int segmentationNumber = size / maxBlocPerList;
+            int reste = size % maxBlocPerList;
+
+            ArrayList<ArrayList<Byte>> segmentationList = new ArrayList<>();
+            for (int i = 0; i < segmentationNumber; i++) {
+                ArrayList<Byte> blocks = new ArrayList<>();
+                for (int j = 0; j < maxBlocPerList; j++) {
+                    blocks.add(blocksArray.getValue()[i]);
+                }
+                segmentationList.add(blocks);
             }
-            System.out.println(blockList);
-            return blockList;
+            ArrayList<Byte> lastBlocks = new ArrayList<>();
+            for (int i = 0; i < reste; i++) {
+                lastBlocks.add(blocksArray.getValue()[i]);
+            }
+            segmentationList.add(lastBlocks);
+
+            return segmentationList;
         } else {
             return null;
         }
@@ -102,15 +116,11 @@ public class NbtHandler {
 
     public Vector3i getBlockPosition(int indice, short length, short width){
         Vector3i blockPosition = new Vector3i();
-
+        //System.out.println("Indice :"+ indice);
         int x = indice % width;
-        System.out.println("x:"+x);
         int reste = (indice - x)/width;
-        System.out.println("reste:"+reste);
         int z = reste % length;
-        System.out.println("z:"+z);
         int y = (reste - z)/length;
-        System.out.println("y:"+y +"\n");
 
         blockPosition.x = x;
         blockPosition.y = y;

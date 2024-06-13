@@ -16,7 +16,7 @@ public class SuperFlatBiome extends AbstractBiome{
 
     @Override
     public float getHeight(int x, int z,float seed) {
-        return 0.5f;
+        return 1f;
     }
 
     @Override
