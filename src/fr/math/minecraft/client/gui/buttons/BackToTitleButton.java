@@ -19,7 +19,7 @@ public class BackToTitleButton extends BlockButton {
         super(
             "Retour à l'écran titre",
             GameConfiguration.WINDOW_CENTER_X - ButtonMesh.BUTTON_WIDTH / 2.0f,
-            GameConfiguration.WINDOW_CENTER_Y - ButtonMesh.BUTTON_HEIGHT / 2.0f - 50,
+            GameConfiguration.WINDOW_CENTER_Y - ButtonMesh.BUTTON_HEIGHT / 2.0f - 100,
             -9
         );
     }
