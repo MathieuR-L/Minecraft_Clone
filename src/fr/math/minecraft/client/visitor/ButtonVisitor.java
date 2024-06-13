@@ -9,5 +9,6 @@ public interface ButtonVisitor<T> {
     T onClick(AuthButton button);
     T onClick(LoginButton button);
     T onClick(BackToAuthMenuButton button);
+    T onClick(CyberPlayButton button);
 
 }

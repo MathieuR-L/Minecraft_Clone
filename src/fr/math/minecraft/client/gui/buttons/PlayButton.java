@@ -6,7 +6,7 @@ import fr.math.minecraft.client.visitor.ButtonVisitor;
 
 public class PlayButton extends BlockButton {
     public PlayButton() {
-        super("Jouer", GameConfiguration.WINDOW_CENTER_X - ButtonMesh.BUTTON_WIDTH / 2.0f, GameConfiguration.WINDOW_CENTER_Y - ButtonMesh.BUTTON_HEIGHT / 2.0f);
+        super("Jouer à la version classique", GameConfiguration.WINDOW_CENTER_X - ButtonMesh.BUTTON_WIDTH / 2.0f, GameConfiguration.WINDOW_CENTER_Y - ButtonMesh.BUTTON_HEIGHT / 2.0f);
     }
 
     @Override
