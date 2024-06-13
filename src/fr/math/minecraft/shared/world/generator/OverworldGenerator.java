@@ -1,6 +1,7 @@
 package fr.math.minecraft.shared.world.generator;
 
 import fr.math.minecraft.server.world.biome.ForestBiome;
+import fr.math.minecraft.server.world.biome.SuperFlatBiome;
 import fr.math.minecraft.shared.world.*;
 import fr.math.minecraft.server.MinecraftServer;
 import fr.math.minecraft.server.manager.BiomeManager;
@@ -146,7 +147,7 @@ public class OverworldGenerator implements TerrainGenerator {
                     } else if (worldY == worldHeight) {
                         material = currentBiome.getUpperBlock();
                     } else {
-                        if (worldY <= WATER_LEVEL) {
+                        if (worldY <= WATER_LEVEL && !(currentBiome instanceof SuperFlatBiome)) {
                             material = Material.WATER;
                         }
                     }
@@ -157,7 +158,6 @@ public class OverworldGenerator implements TerrainGenerator {
                 }
             }
         }
-
         cavesGenerator.generateCaves(world, chunk);
     }
 }

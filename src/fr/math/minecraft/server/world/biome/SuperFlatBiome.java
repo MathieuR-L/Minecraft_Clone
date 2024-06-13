@@ -4,16 +4,29 @@ import fr.math.minecraft.server.world.Structure;
 import fr.math.minecraft.shared.world.Material;
 import fr.math.minecraft.shared.world.Region;
 import fr.math.minecraft.shared.world.World;
+import fr.math.minecraft.shared.world.generator.NoiseGenerator;
 
 public class SuperFlatBiome extends AbstractBiome{
+
+    public SuperFlatBiome() {
+        this.noise = new NoiseGenerator(9, 30, 1000.0f, 0.6f, 25);
+        this.biomeName = "SuperFlat";
+        this.biomeID = 4;
+    }
+
+    @Override
+    public float getHeight(int x, int z,float seed) {
+        return 0.5f;
+    }
+
     @Override
     public Material getUpperBlock() {
-        return null;
+        return Material.GRASS;
     }
 
     @Override
     public Material getSecondBlock() {
-        return null;
+        return Material.DIRT;
     }
 
     @Override

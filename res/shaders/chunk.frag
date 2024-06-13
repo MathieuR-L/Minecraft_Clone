@@ -30,6 +30,8 @@ void main() {
             tex.rgb *= vec3(0.39, 0.66, 0.28);
         } else if (biome == 3) {
             tex.rgb *= vec3(0.33 + 0.086, 0.66 + 0.037, 0.15);
+        } else if(biome == 4) {
+            tex.rgb *= vec3(0.33 + 0.086, 0.66 + 0.037, 0.15);
         } else {
             tex.rgb *= vec3(100, 100, 100);
         }
@@ -43,7 +45,9 @@ void main() {
         } else if(biome == 2) {
             tex.rgb *= vec3(0.511, 0.755, 0.3591);
         } else if(biome == 3) {
-            tex.rgb *= vec3(0.511, 0.755, 0.3591);
+            tex.rgb *= vec3(0.33 + 0.086, 0.66 + 0.037, 0.15);
+        } else if(biome == 4) {
+            tex.rgb *= vec3(0.33 + 0.086, 0.66 + 0.037, 0.15);
         } else {
             tex.rgb *= vec3(100, 100, 100);
         }
@@ -57,7 +61,9 @@ void main() {
         } else if(biome == 2) {
             tex.rgb *= vec3(1.55, 1.55, 1.55);
         } else if(biome == 3) {
-            tex.rgb *= vec3(1 + 0.38, 1 + 0.38, 1 + 0.35);
+            tex.rgb *= vec3(0.33 + 0.086, 0.66 + 0.037, 0.15);
+        } else if(biome == 4) {
+            tex.rgb *= vec3(0.33 + 0.086, 0.66 + 0.037, 0.15);
         } else {
             tex.rgb *= vec3(100, 100, 100);
         }
