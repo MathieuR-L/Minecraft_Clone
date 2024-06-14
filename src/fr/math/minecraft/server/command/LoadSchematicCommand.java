@@ -67,9 +67,8 @@ public class LoadSchematicCommand extends Command{
 
         for (int j = 0; j < segmentationNumber; j++) {
             ArrayList<Byte> blockList = segmenttationList.get(j);
-            System.out.println("Segment n°" + j);
             for (int i = 0; i < blockList.size(); i++) {
-                int element = blockList.get(i);lo
+                int element = blockList.get(i);
                 if(element < 0) continue;
                 Material currentMaterial = nbtHandler.getMappingStruc().get(element);
 
