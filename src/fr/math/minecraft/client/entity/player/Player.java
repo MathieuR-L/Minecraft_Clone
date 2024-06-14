@@ -103,7 +103,7 @@ public class Player extends Entity {
         this.sprite = new Sprite();
         this.miningAnimation = new MiningAnimation();
         this.action = PlayerAction.MINING;
-        this.gameMode = GameMode.SURVIVAL;
+        this.gameMode = GameMode.CREATIVE;
         this.chatPayload = new ChatPayload(this);
         this.firstMouse = true;
         this.lastMouseX = 0.0f;

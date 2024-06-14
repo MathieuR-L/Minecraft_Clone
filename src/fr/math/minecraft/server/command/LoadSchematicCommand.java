@@ -69,8 +69,7 @@ public class LoadSchematicCommand extends Command{
             ArrayList<Byte> blockList = segmenttationList.get(j);
             System.out.println("Segment n°" + j);
             for (int i = 0; i < blockList.size(); i++) {
-                System.out.println("bloc"+ i);
-                int element = blockList.get(i);
+                int element = blockList.get(i);lo
                 if(element < 0) continue;
                 Material currentMaterial = nbtHandler.getMappingStruc().get(element);
 
@@ -81,18 +80,20 @@ public class LoadSchematicCommand extends Command{
 
                 PlacedBlock placedBlock = new PlacedBlock(client.getUuid(), blockWorldPosition, blockLocalPosition, currentMaterial.getId());
 
+                Chunk aimedChunk = server.getWorld().getChunkAt(blockWorldPosition);
+
+                if(aimedChunk == null) {
+                    Vector3i chunkPos = Utils.getChunkPosition(blockWorldPosition.x, blockWorldPosition.y, blockWorldPosition.z);
+                    aimedChunk = new Chunk(chunkPos.x, chunkPos.y, chunkPos.z);
+                    System.out.println("Génération d'un chunk...");
+                    aimedChunk.generate(server.getWorld(), server.getWorld().getTerrainGenerator());
+                    server.getWorld().addChunk(aimedChunk);
+                }
                 synchronized (server.getWorld().getPlacedBlocks()) {
-                    Chunk aimedChunk = server.getWorld().getChunkAt(blockWorldPosition);
-                    if(aimedChunk == null) {
-                        Vector3i chunkPos = Utils.getChunkPosition(blockWorldPosition.x, blockWorldPosition.y, blockWorldPosition.z);
-                        aimedChunk = new Chunk(chunkPos.x, chunkPos.y, chunkPos.z);
-                        System.out.println("Génération d'un chunk...");
-                        aimedChunk.generate(server.getWorld(), server.getWorld().getTerrainGenerator());
-                        server.getWorld().addChunk(aimedChunk);
-                    }
-                    aimedChunk.setBlock(blockLocalPosition.x, blockLocalPosition.y, blockLocalPosition.z, placedBlock.getBlock());
                     server.getWorld().getPlacedBlocks().put(placedBlock.getWorldPosition(), placedBlock);
                 }
+                aimedChunk.setBlock(blockLocalPosition.x, blockLocalPosition.y, blockLocalPosition.z, placedBlock.getBlock());
+
             }
         }
 

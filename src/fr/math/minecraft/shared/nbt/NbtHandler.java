@@ -78,12 +78,12 @@ public class NbtHandler {
             for (int i = 0; i < segmentationNumber; i++) {
                 ArrayList<Byte> blocks = new ArrayList<>();
                 for (int j = 0; j < maxBlocPerList; j++) {
-                    blocks.add(blocksArray.getValue()[i]);
+                    blocks.add(blocksArray.getValue()[j + i*maxBlocPerList]);
                 }
                 segmentationList.add(blocks);
             }
             ArrayList<Byte> lastBlocks = new ArrayList<>();
-            for (int i = 0; i < reste; i++) {
+            for (int i = segmentationNumber*maxBlocPerList - 1; i < reste + (segmentationNumber*maxBlocPerList - 1); i++) {
                 lastBlocks.add(blocksArray.getValue()[i]);
             }
             segmentationList.add(lastBlocks);
