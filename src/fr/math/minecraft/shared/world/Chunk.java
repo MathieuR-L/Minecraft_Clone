@@ -1,5 +1,6 @@
 package fr.math.minecraft.shared.world;
 
+import fr.math.minecraft.client.Game;
 import fr.math.minecraft.client.meshs.WaterMesh;
 import fr.math.minecraft.server.world.biome.AbstractBiome;
 import fr.math.minecraft.shared.GameConfiguration;
@@ -60,14 +61,11 @@ public class Chunk {
         this.generated = true;
     }
 
-    public void update() {
+    public void free() {
         if (loaded) {
             mesh.delete();
             waterMesh.delete();
         }
-
-        mesh = new ChunkMesh(this);
-        waterMesh = new WaterMesh(this);
     }
 
     public boolean isOnBorders(Vector3i position) {

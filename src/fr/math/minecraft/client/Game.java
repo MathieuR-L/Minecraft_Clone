@@ -316,7 +316,10 @@ public class Game {
 
         synchronized (this.getChunkUpdateQueue()) {
             for (Chunk chunk : chunkUpdateQueue) {
-                chunk.update();
+                chunk.free();
+                synchronized (this.getPendingMeshs()) {
+                    this.getPendingMeshs().add(chunk);
+                }
             }
             chunkUpdateQueue.clear();
         }
