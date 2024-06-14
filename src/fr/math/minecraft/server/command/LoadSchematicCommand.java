@@ -13,13 +13,8 @@ import org.apache.log4j.Logger;
 import org.jnbt.ByteArrayTag;
 import org.jnbt.CompoundTag;
 import org.jnbt.ShortTag;
-import org.joml.Vector3f;
 import org.joml.Vector3i;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class LoadSchematicCommand extends Command{
 

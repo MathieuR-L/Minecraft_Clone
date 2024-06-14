@@ -34,7 +34,7 @@ public class GameConfiguration {
     public final static float KNOCK_BACK_X = 0.03f;
     public final static float KNOCK_BACK_Y = 0.14f;
     public final static float KNOCK_BACK_Z = 0.03f;
-    public static String WORLD_TYPE = "PROUT";
+    public static String WORLD_TYPE = "SUPERFLAT_WORLD";
 
     private boolean entityInterpolation;
     private boolean occlusionEnabled;
@@ -103,6 +103,10 @@ public class GameConfiguration {
 
     public void setEntitesPathEnabled(boolean entitesPathEnabled) {
         this.entitesPathEnabled = entitesPathEnabled;
+    }
+
+    public static void setWorldType(String worldType) {
+        WORLD_TYPE = worldType;
     }
 
     public static GameConfiguration getInstance() {

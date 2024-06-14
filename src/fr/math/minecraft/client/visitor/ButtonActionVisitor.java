@@ -14,6 +14,7 @@ import fr.math.minecraft.client.manager.SoundManager;
 import fr.math.minecraft.client.network.AuthUser;
 import fr.math.minecraft.client.network.packet.AuthentificationPacket;
 import fr.math.minecraft.client.network.packet.ConnectionInitPacket;
+import fr.math.minecraft.shared.GameConfiguration;
 
 public class ButtonActionVisitor implements ButtonVisitor<Void> {
 
@@ -34,6 +35,7 @@ public class ButtonActionVisitor implements ButtonVisitor<Void> {
         if (user == null) {
             return null;
         }
+        GameConfiguration.setWorldType("CLASSIC_WORLD");
 
         menuManager.open(ConnectionMenu.class);
         ConnectionMenu menu = (ConnectionMenu) menuManager.getOpenedMenu();
@@ -129,6 +131,7 @@ public class ButtonActionVisitor implements ButtonVisitor<Void> {
             return null;
         }
 
+        GameConfiguration.setWorldType("SUPERFLAT_WORLD");
         menuManager.open(ConnectionMenu.class);
         ConnectionMenu menu = (ConnectionMenu) menuManager.getOpenedMenu();
         menu.getTitle().setText("Connexion en cours...");
@@ -138,6 +141,7 @@ public class ButtonActionVisitor implements ButtonVisitor<Void> {
         Thread thread = new Thread(packet);
         thread.start();
         i++;
+
 
         return null;
     }
