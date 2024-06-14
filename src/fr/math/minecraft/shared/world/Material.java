@@ -19,11 +19,11 @@ public enum Material {
     DEAD_BUSH("Dead bush", 10, 7, 12, 14, 3, false, true),
     BIRCH_LOG("Birch log", 64, new Vector2i(5, 8), new Vector2i(5, 8), new Vector2i(5, 8), new Vector2i(5, 8), new Vector2i(10, 7), new Vector2i(10, 7), 8, 7),
     BIRCH_LEAVES("Oak leaves", 12, 4, 7, 1, 0),
-    SAND_STONE("Sand stone", 61, new Vector2i(0, 3), new Vector2i(0, 3), new Vector2i(0, 3), new Vector2i(0, 3), new Vector2i(0, 4), new Vector2i(0, 2), 1, 7),
+    SAND_STONE("Sandstone", 61, new Vector2i(0, 3), new Vector2i(0, 3), new Vector2i(0, 3), new Vector2i(0, 3), new Vector2i(0, 4), new Vector2i(0, 2), 1, 7),
     CUT_SANDSTONE("Cut sandstone", 60, new Vector2i(0, 1), new Vector2i(0, 1), new Vector2i(0, 1), new Vector2i(0, 1), new Vector2i(0, 4), new Vector2i(0, 4), 3, 7),
     SMOOTH_SANDSTONE("Smooth sandstone", 59, 0, 4, 0, 8),
     GLASS("Glass", 58, 1, 12, 9, 4),
-    CRAFTING_TABLE("Crafting Table", 56, new Vector2i(11, 12), new Vector2i(11, 12), new Vector2i(12, 12), new Vector2i(12, 12), new Vector2i(11, 13), new Vector2i(4, 15), 2, 1),
+    CRAFTING_TABLE("Crafting_Table", 56, new Vector2i(11, 12), new Vector2i(11, 12), new Vector2i(12, 12), new Vector2i(12, 12), new Vector2i(11, 13), new Vector2i(4, 15), 2, 1),
     FURNACE("Furnace", 70, new Vector2i(13, 13), new Vector2i(13, 13), new Vector2i(13, 13), new Vector2i(12, 13), new Vector2i(14, 12), new Vector2i(14, 12), 1, 5),
     OAK_PLANKS("planks", 13, 4, 15, 5, 8),
     COBBLESTONE("Cobblestone", 16, 0, 14, 0, 8),
@@ -67,7 +67,7 @@ public enum Material {
     APPLE("Apple", 54, 4, 4, 21, 1, false, true, true),
     BREAD("Bread", 80, -1, -1, 19, 1, false, true, true),
     SNOW("Snow", 55, 2, 11, 8, 4, true, false),
-    DIAMOND_ORE("Diamond Ore", 91, 2, 12, 0, 4),
+    DIAMOND_ORE("Diamond_Ore", 91, 2, 12, 0, 4),
     BREAKING_ANIMATION("", -3, 0, 0, 0, 0);
 
     private final int blockIconX, x;

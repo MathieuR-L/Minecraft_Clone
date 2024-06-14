@@ -456,6 +456,11 @@ public class Game {
             }
         }
 
+        if (player.getChatPayload().isOpen()) {
+            renderer.renderChatPayload(camera, player.getChatPayload());
+        }
+        renderer.renderChat(camera, chatManager.getChatOpacity(), chatManager.getChatMessages());
+
         synchronized (this.getPlayers()) {
             for (Player player : this.getPlayers().values()) {
                 if (!player.getNametagMesh().isInitiated()) {
@@ -519,11 +524,6 @@ public class Game {
             renderer.renderInventory(camera, player.getInventory(), player.getCraftingTableInventory().getType());
             renderer.renderInventory(camera, player.getCompletedCraftPlayerInventory(), player.getInventory().getType());
         }
-
-        if (player.getChatPayload().isOpen()) {
-            renderer.renderChatPayload(camera, player.getChatPayload());
-        }
-        renderer.renderChat(camera, chatManager.getChatOpacity(), chatManager.getChatMessages());
     }
 
     public static Game getInstance() {
