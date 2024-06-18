@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class TestNBTFile {
 
     public static void main(String[] args){
-        String filePath = "res/schematics/montagne.schematic";
+        String filePath = "res/schematics/t.schematic";
 
         NbtHandler nbtHandler = new NbtHandler(filePath);
         CompoundTag compoundTag = nbtHandler.getCompoundTag();
@@ -18,6 +18,6 @@ public class TestNBTFile {
 
         System.out.println(nbtHandler.getMappingStruc());
 
-        //System.out.println(bloc.get(6381));
+        System.out.println(nbtHandler.getCleanNbtBlocksArray(compoundTag));
     }
 }

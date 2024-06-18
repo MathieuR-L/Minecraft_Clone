@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fr.math.minecraft.client.entity.AttackRay;
 import fr.math.minecraft.client.entity.Ray;
+import fr.math.minecraft.server.blockFunctionality.UsableBlock;
 import fr.math.minecraft.shared.entity.EntityType;
 import fr.math.minecraft.shared.inventory.*;
 import fr.math.minecraft.shared.math.MathUtils;
@@ -97,7 +98,7 @@ public class Client {
         this.position = new Vector3f(0.0f, 100.0f, 0.0f);
         this.hitbox = new Hitbox(new Vector3f(0, 0, 0), new Vector3f(0.25f, 0.9f, 0.25f));
         this.stateBuffer = new StatePayload[GameConfiguration.BUFFER_SIZE];
-        this.gameMode = GameMode.SURVIVAL;
+        this.gameMode = GameMode.CREATIVE;
         this.yaw = 0.0f;
         this.pitch = 0.0f;
         this.speed = GameConfiguration.DEFAULT_SPEED;
@@ -395,7 +396,6 @@ public class Client {
 
             if (inputData.isClosingCraftInventory()) {
                 craftingTableInventory.setOpen(false);
-                System.out.println("?");
             }
 
             if (inputData.isPlacingBlock()) {
@@ -404,6 +404,14 @@ public class Client {
 
                 if (canPlaceBlock && block == Material.CRAFTING_TABLE.getId()) {
                     craftingTableInventory.setOpen(true);
+                }
+
+                if(canPlaceBlock && world.getUsableBlockList().contains(Material.getMaterialById(block))){
+                    Vector3i blockPosition = buildRay.getBlockWorldPosition();
+                    Material blockMat = Material.getMaterialById(block);
+                    System.out.println("Le mat :" + blockMat);
+                    UsableBlock usableBlock = world.getUsableBlockHashMap().get(blockPosition);
+                    usableBlock.run(this, MinecraftServer.getInstance());
                 }
 
                 if (canPlaceBlock && hotbarItem != null && hotbarItem.getMaterial() != Material.AIR) {

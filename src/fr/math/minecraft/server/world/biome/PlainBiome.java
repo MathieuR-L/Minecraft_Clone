@@ -1,10 +1,8 @@
 package fr.math.minecraft.server.world.biome;
 
-import fr.math.minecraft.client.Game;
 import fr.math.minecraft.server.Utils;
 import fr.math.minecraft.server.builder.StructureBuilder;
 import fr.math.minecraft.server.world.*;
-import fr.math.minecraft.shared.entity.Entity;
 import fr.math.minecraft.shared.entity.Villager;
 import fr.math.minecraft.shared.world.*;
 import fr.math.minecraft.shared.world.generator.NoiseGenerator;

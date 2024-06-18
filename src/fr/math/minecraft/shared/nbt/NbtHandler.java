@@ -66,7 +66,7 @@ public class NbtHandler {
         }
     }
 
-    public ArrayList<ArrayList<Byte>> getCleanNbtBlocksArray(CompoundTag compoundTag) {
+    public ArrayList<ArrayList<Integer>> getCleanNbtBlocksArray(CompoundTag compoundTag) {
         if(compoundTag.getValue().containsKey("Blocks")) {
             ByteArrayTag blocksArray = (ByteArrayTag) compoundTag.getValue().get("Blocks");
 
@@ -74,24 +74,24 @@ public class NbtHandler {
             int segmentationNumber = size / maxBlocPerList;
             int reste = size % maxBlocPerList;
 
-            ArrayList<ArrayList<Byte>> segmentationList = new ArrayList<>();
+            ArrayList<ArrayList<Integer>> segmentationList = new ArrayList<>();
             for (int i = 0; i < segmentationNumber; i++) {
-                ArrayList<Byte> blocks = new ArrayList<>();
+                ArrayList<Integer> blocks = new ArrayList<>();
                 for (int j = 0; j < maxBlocPerList; j++) {
-                    blocks.add(blocksArray.getValue()[j + i*maxBlocPerList]);
+                    blocks.add(Byte.toUnsignedInt(blocksArray.getValue()[j + i*maxBlocPerList]));
                 }
                 segmentationList.add(blocks);
             }
             if(reste != 0 && segmentationNumber != 0) {
-                ArrayList<Byte> lastBlocks = new ArrayList<>();
+                ArrayList<Integer> lastBlocks = new ArrayList<>();
                 for (int i = segmentationNumber*maxBlocPerList - 1; i < reste + (segmentationNumber*maxBlocPerList - 1); i++) {
-                    lastBlocks.add(blocksArray.getValue()[i]);
+                    lastBlocks.add(Byte.toUnsignedInt(blocksArray.getValue()[i]));
                 }
                 segmentationList.add(lastBlocks);
             } else {
-                ArrayList<Byte> littleSchem = new ArrayList<>();
+                ArrayList<Integer> littleSchem = new ArrayList<>();
                 for (int i = 0; i < size; i++) {
-                    littleSchem.add(blocksArray.getValue()[i]);
+                    littleSchem.add(Byte.toUnsignedInt(blocksArray.getValue()[i]));
                 }
                 segmentationList.add(littleSchem);
             }

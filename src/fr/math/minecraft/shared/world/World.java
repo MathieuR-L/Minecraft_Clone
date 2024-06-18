@@ -11,6 +11,9 @@ import fr.math.minecraft.client.meshs.ChunkMesh;
 import fr.math.minecraft.client.meshs.WaterMesh;
 import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
+import fr.math.minecraft.server.blockFunctionality.CraftingTable;
+import fr.math.minecraft.server.blockFunctionality.MailTeleportationBlock;
+import fr.math.minecraft.server.blockFunctionality.UsableBlock;
 import fr.math.minecraft.server.pathfinding.Graph;
 import fr.math.minecraft.shared.entity.Entity;
 import fr.math.minecraft.shared.entity.EntityType;
@@ -45,6 +48,8 @@ public class World {
     private final int SPAWN_SIZE = 2;
     private final Graph graph;
     private float seed;
+    private final ArrayList<Material> usableBlockList;
+    private HashMap<Vector3i, UsableBlock> usableBlockHashMap;
 
     public World() {
         this.chunks = new HashMap<>();
@@ -63,6 +68,8 @@ public class World {
         this.entities = new HashMap<>();
         this.graph = new Graph();
         this.seed = 0;
+        this.usableBlockList = initUsableBlocksList();
+        this.usableBlockHashMap = new HashMap<>();
 
         for (Material material : Material.values()) {
             if (material.isSolid()) {
@@ -211,6 +218,25 @@ public class World {
     public Set<Coordinates> getLoadingChunks() {
         return loadingChunks;
     }
+
+    public ArrayList<Material> initUsableBlocksList() {
+        ArrayList<Material> usableBlocks = new ArrayList<>();
+        usableBlocks.add(Material.CRAFTING_TABLE);
+        usableBlocks.add(Material.MAIL_TELEPORTATION);
+        return usableBlocks;
+    }
+
+    public UsableBlock createUsableBlock(Material material, Vector3i position) {
+        switch (material) {
+            case CRAFTING_TABLE:
+                CraftingTable craftingTable = new CraftingTable(material, position);
+                return craftingTable;
+            case MAIL_TELEPORTATION:
+                MailTeleportationBlock mailTeleportationBlock = new MailTeleportationBlock(material, position);
+                return mailTeleportationBlock;
+        }
+        return null;
+    }
     
     public ArrayList<Byte> initTransparents() {
         ArrayList<Byte> transparent = new ArrayList<>();
@@ -222,6 +248,7 @@ public class World {
         transparent.add(Material.CACTUS.getId());
         transparent.add(Material.DEAD_BUSH.getId());
         transparent.add(Material.GLASS.getId());
+        transparent.add(Material.BARRIER.getId());
         return transparent;
     }
 
@@ -369,5 +396,13 @@ public class World {
 
     public void setSeed(float seed) {
         this.seed = seed;
+    }
+
+    public ArrayList<Material> getUsableBlockList() {
+        return usableBlockList;
+    }
+
+    public HashMap<Vector3i, UsableBlock> getUsableBlockHashMap() {
+        return usableBlockHashMap;
     }
 }

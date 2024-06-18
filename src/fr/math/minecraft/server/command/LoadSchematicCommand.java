@@ -54,14 +54,14 @@ public class LoadSchematicCommand extends Command{
         compoundTag = nbtHandler.getCompoundTag();
         nbtHandler.setMappingStruc(compoundTag);
 
-        ArrayList<ArrayList<Byte>> segmenttationList = nbtHandler.getCleanNbtBlocksArray(compoundTag);
+        ArrayList<ArrayList<Integer>> segmenttationList = nbtHandler.getCleanNbtBlocksArray(compoundTag);
         segmentationNumber = segmenttationList.size();
         System.out.println("Nombre de seg" + segmentationNumber);
         length = nbtHandler.getNbtLength(compoundTag);
         width = nbtHandler.getNbtWidth(compoundTag);
 
         for (int j = 0; j < segmentationNumber; j++) {
-            ArrayList<Byte> blockList = segmenttationList.get(j);
+            ArrayList<Integer> blockList = segmenttationList.get(j);
             for (int i = 0; i < blockList.size(); i++) {
                 int element = blockList.get(i);
                 if(element < 0) continue;

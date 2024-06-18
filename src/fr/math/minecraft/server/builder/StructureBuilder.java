@@ -1,9 +1,11 @@
 package fr.math.minecraft.server.builder;
 
 import fr.math.minecraft.server.RandomSeed;
+import fr.math.minecraft.server.blockFunctionality.CraftingTable;
 import fr.math.minecraft.server.world.Structure;
 import fr.math.minecraft.shared.world.Material;
 import fr.math.minecraft.shared.world.World;
+import org.joml.Vector3i;
 
 public class  StructureBuilder {
 
@@ -546,6 +548,7 @@ public class  StructureBuilder {
                 structure.setBlock(x + i, y, z + 4, Material.SAND_STONE.getId());
             }
         }
+        structure.setBlock(x + 1, y + 1, z + 1, Material.MAIL_TELEPORTATION.getId());
         for (int i = 0; i < 5; i++) {
             if(i == 1 || i == 3) {
                 structure.setBlock(x, y, z + i, Material.CUT_SANDSTONE.getId());

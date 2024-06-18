@@ -2,6 +2,7 @@ package fr.math.minecraft.shared.world;
 
 import fr.math.minecraft.client.Game;
 import fr.math.minecraft.client.meshs.WaterMesh;
+import fr.math.minecraft.server.MinecraftServer;
 import fr.math.minecraft.server.world.biome.AbstractBiome;
 import fr.math.minecraft.shared.GameConfiguration;
 import fr.math.minecraft.client.entity.player.Player;
@@ -93,6 +94,15 @@ public class Chunk {
         if (empty && block != Material.AIR.getId()) {
             empty = false;
         }
+        if(MinecraftServer.getInstance().getWorld().getUsableBlockList().contains(Material.getMaterialById(block))) {
+            World world = MinecraftServer.getInstance().getWorld();
+            int worldX = x + this.position.x * Chunk.SIZE;
+            int worldY = y + this.position.y * Chunk.SIZE;
+            int worldZ = z + this.position.z * Chunk.SIZE;
+            Vector3i blockPositionInWorld = new Vector3i(worldX, worldY, worldZ);
+            world.getUsableBlockHashMap().put(blockPositionInWorld, world.createUsableBlock(Material.getMaterialById(block), blockPositionInWorld));
+        }
+
         blocks[x + y * AREA + z * SIZE] = block;
     }
 
