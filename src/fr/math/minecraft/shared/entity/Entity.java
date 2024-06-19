@@ -139,7 +139,8 @@ public abstract class Entity {
                 float minDistance = Float.MAX_VALUE;
                 Client target = null;
                 for (Client client : clients.values()) {
-                    float clientDistance = client.getPosition().distance(position);
+                    //float clientDistance = client.getPosition().distance(position);
+                    /*
                     if (clientDistance < 1.5f) {
                         Vector2f entityPosition = new Vector2f(position.x, position.z);
                         Vector2f direction = new Vector2f(client.getPosition().x, client.getPosition().z).sub(entityPosition);
@@ -151,10 +152,13 @@ public abstract class Entity {
                         logger.debug("Un " + type.getName() + " a attaqué " + client.getName() + " (" + client.getUuid() + ") " + client.getHealth() + "/" + client.getMaxHealth());
                         continue;
                     }
+
                     if (clientDistance < 10 && clientDistance < minDistance) {
                         target = client;
                         minDistance = clientDistance;
                     }
+                    */
+                    target = client;
                 }
                 if (target != null) {
                     Node start = new Node(new Vector3f(position));

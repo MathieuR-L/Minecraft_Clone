@@ -78,9 +78,10 @@ public class MinecraftServer {
         logger.info("Point de spawn calculé en " + world.getSpawnPosition());
         Villager villager = new Villager("Hello");
         world.addEntity(villager);
-        villager.setPosition(new Vector3f(0, 5, 0));
-        villager.getCheckpoints().add(new Node(100, 100));
-        //world.addEntity(new Zombie("Dummy"));
+        //villager.setPosition(new Vector3f(0, 5, 0));
+        villager.getCheckpoints().add(new Vector3f(10.0f, 0.0f, 0.0f));
+        villager.getCheckpoints().add(new Vector3f(10.0f, 0.0f, 10.0f));
+        world.addEntity(new Zombie("Dummy"));
         logger.info("Un villageois a spawn !");
         //logger.info("Un zombie a spawn !");
 
