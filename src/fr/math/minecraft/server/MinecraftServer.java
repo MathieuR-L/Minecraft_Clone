@@ -60,9 +60,6 @@ public class MinecraftServer {
         this.lastActivities = new HashMap<>();
         this.world = new World();
         this.pluginManager = new PluginManager();
-        //this.world.buildSpawn();
-        //this.world.calculateSpawnPosition();
-        //AStar.initGraph(world, world.getSpawnPosition());
         this.packetQueue = (ThreadPoolExecutor) Executors.newFixedThreadPool(4);
         this.pathfindingQueue = (ThreadPoolExecutor) Executors.newFixedThreadPool(4);
         this.tickHandler = new TickHandler();
@@ -76,15 +73,7 @@ public class MinecraftServer {
             logger.error(e.getMessage());
         }
         logger.info("Point de spawn calculé en " + world.getSpawnPosition());
-        Villager villager = new Villager("Hello");
-        world.addEntity(villager);
-        //villager.setPosition(new Vector3f(0, 5, 0));
-        villager.getCheckpoints().add(new Vector3f(10.0f, 0.0f, 0.0f));
-        villager.getCheckpoints().add(new Vector3f(10.0f, 0.0f, 10.0f));
-        world.addEntity(new Zombie("Dummy"));
-        logger.info("Un villageois a spawn !");
-        //logger.info("Un zombie a spawn !");
-
+        //world.addEntity(new Zombie("Dummy"));
         initCommands();
     }
 

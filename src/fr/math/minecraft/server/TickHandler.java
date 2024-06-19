@@ -217,6 +217,7 @@ public class TickHandler extends Thread {
             List<Entity> deadEntities = new ArrayList<>();
             for (Entity entity : world.getEntities().values()) {
                 try {
+                    System.out.println("Entité" + entity);
                     entity.update(world);
                     byte[] entityBuffer = mapper.writeValueAsBytes(entity.toJSONObject());
                     server.broadcast(entityBuffer);

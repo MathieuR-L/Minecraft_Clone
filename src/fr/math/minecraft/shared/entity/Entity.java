@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import fr.math.minecraft.client.Camera;
 import fr.math.minecraft.client.Renderer;
 import fr.math.minecraft.client.animations.Animation;
+import fr.math.minecraft.client.entity.player.Player;
 import fr.math.minecraft.client.events.PlayerMoveEvent;
 import fr.math.minecraft.client.events.listeners.EntityUpdate;
 import fr.math.minecraft.client.events.listeners.EventListener;
@@ -61,6 +62,8 @@ public abstract class Entity {
     private EntityType lastAttackerType;
     private int patternUpdateCooldown;
     protected int hitMarkDelay;
+    private ArrayList<Vector3f> checkpoints;
+    private int checkpointStep;
     private final static Logger logger = LoggerUtility.getClientLogger(Entity.class, LogType.TXT);
     public Entity(String uuid, EntityType type) {
         this.type = type;
@@ -92,6 +95,8 @@ public abstract class Entity {
         this.hitMarkDelay = 0;
         this.hunger = type.getHunger();
         this.maxHunger = type.getMaxHunger();
+        this.checkpoints = new ArrayList<>();
+        this.checkpointStep = 0;
     }
 
     public void notifyEvent(PlayerMoveEvent event) {
@@ -121,7 +126,7 @@ public abstract class Entity {
 
         patternUpdateCooldown++;
 
-        if (patternUpdateCooldown == GameConfiguration.TICK_PER_SECONDS && (this instanceof Zombie)) {
+        if (patternUpdateCooldown == GameConfiguration.TICK_PER_SECONDS && ((this instanceof Zombie) || (this instanceof Villager))) {
 
             int chunkX = (int) java.lang.Math.floor(position.x / (double) Chunk.SIZE);
             int chunkY = (int) java.lang.Math.floor(position.y / (double) Chunk.SIZE);
@@ -135,39 +140,50 @@ public abstract class Entity {
                 });
             }
 
-            synchronized (server.getClients()) {
-                float minDistance = Float.MAX_VALUE;
-                Client target = null;
-                for (Client client : clients.values()) {
-                    //float clientDistance = client.getPosition().distance(position);
-                    /*
-                    if (clientDistance < 1.5f) {
-                        Vector2f entityPosition = new Vector2f(position.x, position.z);
-                        Vector2f direction = new Vector2f(client.getPosition().x, client.getPosition().z).sub(entityPosition);
-                        client.setHealth(client.getHealth() - damage);
-                        client.getVelocity().y = GameConfiguration.KNOCK_BACK_Y;
-                        client.getVelocity().x = direction.x * GameConfiguration.KNOCK_BACK_X;
-                        client.getVelocity().z = direction.y * GameConfiguration.KNOCK_BACK_Z;
-                        client.setMaxSpeed(.4f);
-                        logger.debug("Un " + type.getName() + " a attaqué " + client.getName() + " (" + client.getUuid() + ") " + client.getHealth() + "/" + client.getMaxHealth());
-                        continue;
-                    }
+            Node targetNode = null;
 
-                    if (clientDistance < 10 && clientDistance < minDistance) {
+            if(this instanceof Zombie) {
+                synchronized (server.getClients()) {
+                    float minDistance = Float.MAX_VALUE;
+                    Client target = null;
+                    for (Client client : clients.values()) {
+                        float clientDistance = client.getPosition().distance(position);
+
+                        if (clientDistance < 1.5f) {
+                            Vector2f entityPosition = new Vector2f(position.x, position.z);
+                            Vector2f direction = new Vector2f(client.getPosition().x, client.getPosition().z).sub(entityPosition);
+                            client.setHealth(client.getHealth() - damage);
+                            client.getVelocity().y = GameConfiguration.KNOCK_BACK_Y;
+                            client.getVelocity().x = direction.x * GameConfiguration.KNOCK_BACK_X;
+                            client.getVelocity().z = direction.y * GameConfiguration.KNOCK_BACK_Z;
+                            client.setMaxSpeed(.4f);
+                            logger.debug("Un " + type.getName() + " a attaqué " + client.getName() + " (" + client.getUuid() + ") " + client.getHealth() + "/" + client.getMaxHealth());
+                            continue;
+                        }
+
+                        if (clientDistance < 10 && clientDistance < minDistance) {
+                            target = client;
+                            minDistance = clientDistance;
+                        }
                         target = client;
-                        minDistance = clientDistance;
+                        targetNode = new Node(new Vector3f(target.getPosition()));
                     }
-                    */
-                    target = client;
                 }
-                if (target != null) {
-                    Node start = new Node(new Vector3f(position));
-                    Node end = new Node(new Vector3f(target.getPosition()));
-                    Vector2f entityPosition = new Vector2f(position.x, position.z);
-                    Vector2f direction = new Vector2f(target.getPosition().x, target.getPosition().z).sub(entityPosition);
-                    pattern = new Pattern(AStar.shortestPath(world, start, end), start, end);
-                    yaw = (float) Math.toDegrees(Math.atan2(direction.y, direction.x));
+            } else if(this instanceof Villager) {
+                if (this.checkpoints != null && !this.checkpoints.isEmpty()) {
+                    Node endCheckpoint = new Node(this.checkpoints.get(checkpointStep));
+                    if (endCheckpoint.getPosition().x >= (this.getPosition().x * 0.93f)&& endCheckpoint.getPosition().y >= (this.getPosition().z * 0.93f)) {
+                        nextCheckpoint();
+                    }
                 }
+            }
+            if (targetNode != null) {
+                Node start = new Node(new Vector3f(position));
+                Node end = targetNode;
+                Vector2f entityPosition = new Vector2f(position.x, position.z);
+                Vector2f direction = new Vector2f(targetNode.getPosition().x, targetNode.getPosition().y).sub(entityPosition);
+                pattern = new Pattern(AStar.shortestPath(world, start, end), start, end);
+                yaw = (float) Math.toDegrees(Math.atan2(direction.y, direction.x));
             }
             patternUpdateCooldown = 0;
         }
@@ -215,13 +231,19 @@ public abstract class Entity {
 
         if (pattern != null && !pattern.getPath().isEmpty()) {
             float distance = (float) new Vector2i((int) position.x, (int) position.z).distance(pattern.getPath().get(0).getPosition());
-            //System.out.println("distance : " + distance);
             if (distance <= 1.0) {
                 pattern = pattern.next();
             }
         }
-
         velocity.mul(0.95f);
+    }
+
+    private void nextCheckpoint() {
+        if(checkpointStep < checkpoints.size()) {
+            Collections.reverse(checkpoints);
+        } else {
+            checkpointStep++;
+        }
     }
 
     public void updateAnimations() {
@@ -583,5 +605,9 @@ public abstract class Entity {
 
     public void setPatternUpdateCooldown(int patternUpdateCooldown) {
         this.patternUpdateCooldown = patternUpdateCooldown;
+    }
+
+    public ArrayList<Vector3f> getCheckpoints() {
+        return checkpoints;
     }
 }
