@@ -572,4 +572,12 @@ public abstract class Entity {
     public void setHitMarkDelay(int hitMarkDelay) {
         this.hitMarkDelay = hitMarkDelay;
     }
+
+    public int getPatternUpdateCooldown() {
+        return patternUpdateCooldown;
+    }
+
+    public void setPatternUpdateCooldown(int patternUpdateCooldown) {
+        this.patternUpdateCooldown = patternUpdateCooldown;
+    }
 }
