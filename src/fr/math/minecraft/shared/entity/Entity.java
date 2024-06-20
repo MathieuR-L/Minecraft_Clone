@@ -119,10 +119,11 @@ public abstract class Entity {
     }
 
     public void update(World world) {
-
         MinecraftServer server = MinecraftServer.getInstance();
+
         Map<String, Client> clients = server.getClients();
         velocity.add(gravity);
+
 
         patternUpdateCooldown++;
 
@@ -143,6 +144,7 @@ public abstract class Entity {
             Node targetNode = null;
 
             if(this instanceof Zombie) {
+                System.out.println("Zombie :" + this.getPosition());
                 synchronized (server.getClients()) {
                     float minDistance = Float.MAX_VALUE;
                     Client target = null;
@@ -161,20 +163,31 @@ public abstract class Entity {
                             continue;
                         }
 
-                        if (clientDistance < 10 && clientDistance < minDistance) {
+                        if (clientDistance < GameConfiguration.MIN_AGGRO_DISTANCE && clientDistance < minDistance) {
                             target = client;
                             minDistance = clientDistance;
                         }
-                        target = client;
                         targetNode = new Node(new Vector3f(target.getPosition()));
                     }
                 }
-            } else if(this instanceof Villager) {
+            }
+            if(this instanceof Villager){
+                System.out.println("Villageois :" + this.getPosition() + " Objectif:" + this.getCheckpoints().get(this.getCheckpointStep()));
                 if (this.checkpoints != null && !this.checkpoints.isEmpty()) {
                     Node endCheckpoint = new Node(this.checkpoints.get(checkpointStep));
-                    if (endCheckpoint.getPosition().x >= (this.getPosition().x * 0.93f)&& endCheckpoint.getPosition().y >= (this.getPosition().z * 0.93f)) {
-                        nextCheckpoint();
+                    targetNode = endCheckpoint;
+
+                    float xMaxIncertitude = endCheckpoint.getPosition().x + (endCheckpoint.getPosition().x * 0.20f);
+                    float xMinIncertitude = endCheckpoint.getPosition().x - (endCheckpoint.getPosition().x * 0.20f);
+                    float zMaxIncertitude = endCheckpoint.getPosition().y + (endCheckpoint.getPosition().y * 0.20f);
+                    float zMinIncertitude = endCheckpoint.getPosition().y - (endCheckpoint.getPosition().y * 0.20f);
+
+                    Vector3f villagerPos = this.getPosition();
+                    if ((xMinIncertitude <= villagerPos.x) && (villagerPos.x <= xMaxIncertitude) && ((zMinIncertitude <= villagerPos.z) && (villagerPos.z <= zMaxIncertitude))) {
+                        System.out.println("Je passe à l'autre");
+                        this.nextCheckpoint();
                     }
+
                 }
             }
             if (targetNode != null) {
@@ -240,9 +253,10 @@ public abstract class Entity {
 
     private void nextCheckpoint() {
         if(checkpointStep < checkpoints.size()) {
-            Collections.reverse(checkpoints);
-        } else {
             checkpointStep++;
+            System.out.println("J'augmente");
+        } else {
+            Collections.reverse(checkpoints);
         }
     }
 
@@ -609,5 +623,9 @@ public abstract class Entity {
 
     public ArrayList<Vector3f> getCheckpoints() {
         return checkpoints;
+    }
+
+    public int getCheckpointStep() {
+        return checkpointStep;
     }
 }

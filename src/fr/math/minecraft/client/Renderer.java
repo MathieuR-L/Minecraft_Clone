@@ -28,6 +28,8 @@ import fr.math.minecraft.shared.entity.Entity;
 import fr.math.minecraft.shared.entity.Villager;
 import fr.math.minecraft.shared.entity.mob.MobType;
 import fr.math.minecraft.shared.entity.mob.Zombie;
+import fr.math.minecraft.shared.entity.network.MainPC;
+import fr.math.minecraft.shared.entity.network.Router;
 import fr.math.minecraft.shared.inventory.*;
 import fr.math.minecraft.shared.inventory.Hotbar;
 import fr.math.minecraft.shared.inventory.Inventory;
@@ -93,6 +95,7 @@ public class Renderer {
     private final Texture villagerTexture;
     private final Texture zombieTexture;
     private final Texture craftingTableInventoryTexture;
+    private final Texture routerTexture;
     private final CrosshairMesh crosshairMesh;
     private final ImageMesh imageMesh;
     private final ImageMesh screenMesh;
@@ -177,6 +180,7 @@ public class Renderer {
         this.guiBlocksTexture = new Texture("res/textures/gui/gui_blocks2.png", 11);
         this.villagerTexture = new Texture("res/textures/entity/villager2.png", 13);
         this.zombieTexture = new Texture("res/textures/zombie.png", 12);
+        this.routerTexture = new Texture("res/textures/entity/villager.png", 14);
 
         this.dirtTexture = TextureBuilder.buildDirtBackgroundTexture();
 
@@ -197,6 +201,7 @@ public class Renderer {
         this.villagerTexture.load();
         this.zombieTexture.load();
         this.craftingTableInventoryTexture.load();
+        this.routerTexture.load();
     }
 
     public void render(Camera camera, Player player) {
@@ -252,6 +257,35 @@ public class Renderer {
         villagerTexture.unbind();
     }
 
+    public void render(Camera camera, Router router) {
+
+        villagerShader.enable();
+        villagerShader.sendInt("uTexture", routerTexture.getSlot());
+
+        glActiveTexture(GL_TEXTURE0 + routerTexture.getSlot());
+        routerTexture.bind();
+
+        camera.matrix(villagerShader, router);
+
+        villagerMesh.draw();
+
+        routerTexture.unbind();
+    }
+
+    public void render(Camera camera, MainPC mainPC) {
+
+        villagerShader.enable();
+        villagerShader.sendInt("uTexture", villagerTexture.getSlot());
+
+        glActiveTexture(GL_TEXTURE0 + villagerTexture.getSlot());
+        villagerTexture.bind();
+
+        camera.matrix(villagerShader, mainPC);
+
+        villagerMesh.draw();
+
+        villagerTexture.unbind();
+    }
     public void render(Camera camera, Zombie zombie) {
 
         zombieShader.enable();

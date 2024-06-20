@@ -20,7 +20,7 @@ public class AStar {
     private final static Logger logger = LoggerUtility.getServerLogger(AStar.class, LogType.TXT);
 
     public static void initGraph(World world, Vector3f startPosition) {
-        int distance = 2;
+        int distance = 10;
         int startX = (int) (Math.floor(startPosition.x / (double) Chunk.SIZE) - distance);
         int startY = (int) (Math.floor(startPosition.y / (double) Chunk.SIZE) - distance);
         int startZ = (int) (Math.floor(startPosition.z / (double) Chunk.SIZE) - distance);

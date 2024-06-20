@@ -16,6 +16,8 @@ import fr.math.minecraft.shared.entity.Entity;
 import fr.math.minecraft.shared.entity.EntityFactory;
 import fr.math.minecraft.shared.entity.Villager;
 import fr.math.minecraft.shared.entity.mob.Zombie;
+import fr.math.minecraft.shared.entity.network.MainPC;
+import fr.math.minecraft.shared.entity.network.Router;
 import fr.math.minecraft.shared.world.World;
 import org.apache.log4j.Logger;
 import org.joml.Vector3f;
@@ -73,8 +75,26 @@ public class MinecraftServer {
             logger.error(e.getMessage());
         }
         logger.info("Point de spawn calculé en " + world.getSpawnPosition());
-        Villager villager = new Villager("JNP");
-        villager.addCheckpoint(new Vector3f());
+
+        Villager villager = new Villager("Gustavo");
+        Router router = new Router("Pablo");
+        MainPC mainPC = new MainPC("Carlos");
+
+        villager.setPosition(new Vector3f(10, 7, 0));
+        router.setPosition(new Vector3f(30, 7, 0));
+        mainPC.setPosition(new Vector3f(30, 7, 20));
+
+        router.getRoutingTable().put(mainPC.getPosition(), router.setRoute(mainPC.getPosition()));
+
+        villager.setServiceRequested(mainPC);
+
+        router.giveCheckpoints(villager);
+
+        world.addEntity(villager);
+        world.addEntity(router);
+        world.addEntity(mainPC);
+
+        logger.debug(villager.getCheckpoints());
         initCommands();
     }
 

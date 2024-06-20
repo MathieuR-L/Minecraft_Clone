@@ -34,8 +34,9 @@ public class GameConfiguration {
     public final static float KNOCK_BACK_X = 0.03f;
     public final static float KNOCK_BACK_Y = 0.14f;
     public final static float KNOCK_BACK_Z = 0.03f;
+    public final static float MIN_AGGRO_DISTANCE = 10;
     public static String WORLD_TYPE = "SUPERFLAT_WORLD";
-    public final static float MAX_ASTAR_DISTANCE = 30.0f;
+    public final static float MAX_ASTAR_DISTANCE = 150;
 
     private boolean entityInterpolation;
     private boolean occlusionEnabled;
