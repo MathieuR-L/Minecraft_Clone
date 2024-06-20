@@ -19,13 +19,14 @@ public class Villager extends Entity {
     private Entity serviceRequested;
     private Client sender;
 
+
     private Vector3f firstPosition;
     public Villager(String name) {
         super(UUID.randomUUID().toString(), EntityType.VILLAGER);
         this.name = name;
         this.hitbox = new Hitbox(new Vector3f(0, 0, 0), new Vector3f(0.25f, 1.0f, 0.25f));
-        this.speed = 0.05f;
-        this.maxSpeed = 0.05f;
+        this.speed = 0.11f;
+        this.maxSpeed = 0.11f;
         this.gravity = new Vector3f(0, 0,0);
         this.firstPosition = new Vector3f(0,0,0);
         this.serviceRequested = null;

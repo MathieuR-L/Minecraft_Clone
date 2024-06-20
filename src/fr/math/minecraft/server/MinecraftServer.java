@@ -84,6 +84,8 @@ public class MinecraftServer {
         router.setPosition(new Vector3f(30, 7, 0));
         mainPC.setPosition(new Vector3f(30, 7, 20));
 
+        villager.getCheckpoints().add(villager.getPosition());
+
         router.getRoutingTable().put(mainPC.getPosition(), router.setRoute(mainPC.getPosition()));
 
         villager.setServiceRequested(mainPC);
