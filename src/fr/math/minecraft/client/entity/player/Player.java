@@ -182,7 +182,6 @@ public class Player extends Entity {
                                     commandOption = 0;
                                     lastCommand = commandInChat.getName();
                                 }
-                                System.out.println("N° option :" + commandOption);
                                 String newMessage = commandInChat.getName() + " " + commandInChat.getTree().displayOption(commandOption);
                                 chatPayload.setMessage(new StringBuilder(newMessage));
                             }

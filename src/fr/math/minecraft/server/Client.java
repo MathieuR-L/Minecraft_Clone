@@ -416,7 +416,6 @@ public class Client {
 
                 if (canPlaceBlock && hotbarItem != null && hotbarItem.getMaterial() != Material.AIR) {
                     if(hotbarItem.getMaterial().isFood()) {
-                        System.out.println("Faim du joueur :"+(int)this.getHunger());
                         if((int)this.getHunger() <= this.getMaxHunger()) {
                             float hungerValue = 0.0f;
                             if((int)this.getHunger() + 2.0f <= this.getMaxHunger()) {

@@ -136,7 +136,6 @@ public class ButtonActionVisitor implements ButtonVisitor<Void> {
         ConnectionMenu menu = (ConnectionMenu) menuManager.getOpenedMenu();
         menu.getTitle().setText("Connexion en cours...");
 
-        System.out.println("Je suis à l'itération numéro : " + i);
         ConnectionInitPacket packet = new ConnectionInitPacket(player, user);
         Thread thread = new Thread(packet);
         thread.start();

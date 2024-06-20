@@ -73,7 +73,8 @@ public class MinecraftServer {
             logger.error(e.getMessage());
         }
         logger.info("Point de spawn calculé en " + world.getSpawnPosition());
-        //world.addEntity(new Zombie("Dummy"));
+        Villager villager = new Villager("JNP");
+        villager.addCheckpoint(new Vector3f());
         initCommands();
     }
 
