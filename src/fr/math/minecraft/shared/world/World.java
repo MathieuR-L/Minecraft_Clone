@@ -249,6 +249,7 @@ public class World {
         transparent.add(Material.DEAD_BUSH.getId());
         transparent.add(Material.GLASS.getId());
         transparent.add(Material.BARRIER.getId());
+        transparent.add(Material.STAINED_GLASS.getId());
         return transparent;
     }
 

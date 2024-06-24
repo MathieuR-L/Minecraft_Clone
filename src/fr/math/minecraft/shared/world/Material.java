@@ -2,6 +2,8 @@ package fr.math.minecraft.shared.world;
 
 import org.joml.Vector2i;
 
+import java.util.ArrayList;
+
 public enum Material {
 
     AIR("Air", -1, -1, -1, -1, -1, false, false),
@@ -75,6 +77,14 @@ public enum Material {
     BREAD("Bread", 80, -1, -1, 19, 1, false, true, true),
     SNOW("Snow", 55, 2, 11, 8, 4, true, false),
     DIAMOND_ORE("Diamond_Ore", 91, 2, 12, 0, 4),
+    WOOL("wool:0", 71, 0, 11, 2, 4, true, false),
+    BLACK_WOOL("wool:15", 72, 1, 8, 0, 3, true, false),
+    GRAY_WOOL("wool:7", 73, 2, 8, 3, 4, true, false),
+    LIGHT_GRAY_WOOL("wool:8", 74, 1, 1, 7, 3, true, false),
+    CLAY("clay", 75, 8, 11, 0, 7, true, false),
+    GRAY_CONCRETE("stained_hardened_clay:7", 76, 6, 5, 0, 7, true, false),
+    WHITE_CONCRETE("stained_hardened_clay:0", 77, 7, 5, 0, 7, true, false),
+    STAINED_GLASS("stained_glass", 78, 8, 5, 0, 7, true, false),
     BREAKING_ANIMATION("", -3, 0, 0, 0, 0);
 
     private final int blockIconX, x;
@@ -219,13 +229,26 @@ public enum Material {
         return material;
     }
 
-    public static Material getMaterialByName(String blockName) {
+    public static ArrayList<Material> getMaterialByName(String blockName) {
+        ArrayList<Material> materials = new ArrayList<>();
+        if(blockName.equalsIgnoreCase("stained_glass")) {
+            materials.add(GLASS);
+            return materials;
+        }
         for(Material material : Material.values()) {
-            if(material.getName().equalsIgnoreCase(blockName)) {
-                return material;
+            String materialName = material.getName();
+            if(materialName.contains(":")) {
+                if(materialName.split(":")[0].equalsIgnoreCase(blockName)) {
+                    materials.add(material);
+                }
+            } else if(materialName.equalsIgnoreCase(blockName)) {
+                materials.add(material);
             }
         }
-        return null;
+        if(materials.isEmpty()) {
+            materials.add(Material.DEBUG);
+        }
+        return materials;
     }
 
     public boolean isSolid() {

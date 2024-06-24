@@ -16,7 +16,7 @@ public class NbtHandler {
     private Tag mainTag;
     private final static int maxBlocPerList = 1000;
 
-    private HashMap<Integer, Material> mappingStruc;
+    private HashMap<String, Material> mappingStruc;
 
     public NbtHandler(String filePath) {
         this.filePath = filePath;
@@ -66,6 +66,14 @@ public class NbtHandler {
         }
     }
 
+    public ByteArrayTag getNbtDataArray(CompoundTag compoundTag) {
+        if(compoundTag.getValue().containsKey("Blocks")) {
+            ByteArrayTag blocksArray = (ByteArrayTag) compoundTag.getValue().get("Data");
+            return blocksArray;
+        } else {
+            return null;
+        }
+    }
     public ArrayList<ArrayList<Integer>> getCleanNbtBlocksArray(CompoundTag compoundTag) {
         if(compoundTag.getValue().containsKey("Blocks")) {
             ByteArrayTag blocksArray = (ByteArrayTag) compoundTag.getValue().get("Blocks");
@@ -147,19 +155,25 @@ public class NbtHandler {
                 String blockName = minecraftBloc.getName();
                 blockName = blockName.replaceAll("minecraft:", "");
                 int blokcID = minecraftBloc.getValue();
-
-                Material blockMaterial = Material.getMaterialByName(blockName);
-                if(blockMaterial != null && !mappingStruc.containsKey(blockMaterial)) {
-                    mappingStruc.put(blokcID, blockMaterial);
-                } else if(blockMaterial == null){
-                    mappingStruc.put(blokcID, Material.DEBUG);
+                ArrayList<Material> materialsVariant = Material.getMaterialByName(blockName);
+                for (Material materialInList : materialsVariant) {
+                    String materialName = materialInList.getName();
+                    String blockID = "" + blokcID;
+                    if(materialName.contains(":")) {
+                        String variante = materialName.split(":")[1];
+                        blockID = "" + blokcID + ":" + variante;
+                    }
+                    if(!mappingStruc.containsKey(blockID)) {
+                        mappingStruc.put(blockID, materialInList);
+                    }
                 }
+
 
             }
         }
     }
 
-    public HashMap<Integer, Material> getMappingStruc() {
+    public HashMap<String, Material> getMappingStruc() {
         return mappingStruc;
     }
 }

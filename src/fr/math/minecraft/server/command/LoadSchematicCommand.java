@@ -54,19 +54,32 @@ public class LoadSchematicCommand extends Command{
         compoundTag = nbtHandler.getCompoundTag();
         nbtHandler.setMappingStruc(compoundTag);
 
+        System.out.println(nbtHandler.getMappingStruc());
+
         ArrayList<ArrayList<Integer>> segmenttationList = nbtHandler.getCleanNbtBlocksArray(compoundTag);
         segmentationNumber = segmenttationList.size();
         System.out.println("Nombre de seg" + segmentationNumber);
         length = nbtHandler.getNbtLength(compoundTag);
         width = nbtHandler.getNbtWidth(compoundTag);
+        ByteArrayTag dataArray = nbtHandler.getNbtDataArray(compoundTag);
 
         for (int j = 0; j < segmentationNumber; j++) {
             ArrayList<Integer> blockList = segmenttationList.get(j);
             for (int i = 0; i < blockList.size(); i++) {
+                Material currentMaterial;
                 int element = blockList.get(i);
                 if(element < 0) continue;
-                Material currentMaterial = nbtHandler.getMappingStruc().get(element);
+                if(nbtHandler.getMappingStruc().get(""+element) != null) {
+                    currentMaterial = nbtHandler.getMappingStruc().get(""+element);
+                } else {
+                    String elementVariante = "" + element + ":" + dataArray.getValue()[j*(blockList.size()) + i];
+                    currentMaterial = nbtHandler.getMappingStruc().get(elementVariante);
 
+                }
+                if(currentMaterial == null) {
+                    currentMaterial = Material.DEBUG;
+                }
+                if(currentMaterial == Material.AIR) continue;
                 Vector3i blockPosition = nbtHandler.getBlockPosition(i + (j*1000), length.getValue(), width.getValue());
                 Vector3i blockWorldPosition = new Vector3i(blockPosition.x + x, blockPosition.y + y, blockPosition.z + z);
 

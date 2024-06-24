@@ -76,6 +76,7 @@ public class MinecraftServer {
         }
         logger.info("Point de spawn calculé en " + world.getSpawnPosition());
 
+        /*
         Villager villager = new Villager("Gustavo");
         Router router = new Router("Pablo");
         MainPC mainPC = new MainPC("Carlos");
@@ -95,6 +96,7 @@ public class MinecraftServer {
         world.addEntity(mainPC);
 
         logger.debug(villager.getCheckpoints());
+         */
         initCommands();
     }
 

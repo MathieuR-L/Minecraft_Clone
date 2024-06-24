@@ -177,10 +177,10 @@ public abstract class Entity {
                     Node endCheckpoint = new Node(this.checkpoints.get(checkpointStep));
                     targetNode = endCheckpoint;
 
-                    float xMaxIncertitude = endCheckpoint.getPosition().x + (endCheckpoint.getPosition().x * 0.20f);
-                    float xMinIncertitude = endCheckpoint.getPosition().x - (endCheckpoint.getPosition().x * 0.20f);
-                    float zMaxIncertitude = endCheckpoint.getPosition().y + (endCheckpoint.getPosition().y * 0.20f);
-                    float zMinIncertitude = endCheckpoint.getPosition().y - (endCheckpoint.getPosition().y * 0.20f);
+                    float xMaxIncertitude = endCheckpoint.getPosition().x + (endCheckpoint.getPosition().x * 0.1f);
+                    float xMinIncertitude = endCheckpoint.getPosition().x - (endCheckpoint.getPosition().x * 0.1f);
+                    float zMaxIncertitude = endCheckpoint.getPosition().y + (endCheckpoint.getPosition().y * 0.1f);
+                    float zMinIncertitude = endCheckpoint.getPosition().y - (endCheckpoint.getPosition().y * 0.1f);
 
                     Vector3f villagerPos = this.getPosition();
                     if ((xMinIncertitude <= villagerPos.x) && (villagerPos.x <= xMaxIncertitude) && ((zMinIncertitude <= villagerPos.z) && (villagerPos.z <= zMaxIncertitude))) {
