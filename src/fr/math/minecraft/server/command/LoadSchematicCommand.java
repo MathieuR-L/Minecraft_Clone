@@ -74,8 +74,12 @@ public class LoadSchematicCommand extends Command{
                 } else {
                     String elementVariante = "" + element + ":" + dataArray.getValue()[j*(blockList.size()) + i];
                     currentMaterial = nbtHandler.getMappingStruc().get(elementVariante);
-
                 }
+
+                if(currentMaterial == Material.BLACK_CONCRETE) {
+                    System.out.println("COUCOUCUUU" + "Texture:" + currentMaterial.getX() + "|" + currentMaterial.getY());
+                }
+
                 if(currentMaterial == null) {
                     currentMaterial = Material.DEBUG;
                 }

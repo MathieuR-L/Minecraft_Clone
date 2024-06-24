@@ -29,6 +29,7 @@ bool equals(float a, float b) {
 
 vec4 calculatePosition() {
     vec3 position = aPosition.xyz;
+
     if (equals(aBlockID, 7.0f) && equals(occlusionEnabled, 1.0f)) {
         position.x += sin((time + position.y + position.z) * 1.5f) / 15.0f;
         position.z -= cos((time + position.x + position.y) * 1.5f) / 15.0f;
@@ -62,6 +63,9 @@ void main() {
     textureCoord = aTexture;
     blockID=aBlockID;
     blockFace=aBlockFace;
+    if(equals(blockID, 81) || equals(blockID, 58)) {
+        return;
+    }
     if (equals(occlusionEnabled, 1.0f)) {
         brightnessFace = brigthness[int(blockFace)] * occlusion[int(aOcclusion)];
     } else {

@@ -69,6 +69,10 @@ void main() {
         }
     }
 
+    if(equals(blockID, 81.0f)) {
+        tex.rgb *= vec3(1.16f, 0.9f, 0.9f);
+    }
+
     tex.rgb *= brightnessFace;
 
     FragColor = vec4(tex, opacity);

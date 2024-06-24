@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class TestNBTFile {
 
     public static void main(String[] args){
-        String filePath = "res/schematics/dns.schematic";
+        String filePath = "res/schematics/dnsColors.schematic";
 
         NbtHandler nbtHandler = new NbtHandler(filePath);
         CompoundTag compoundTag = nbtHandler.getCompoundTag();

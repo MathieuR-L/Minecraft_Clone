@@ -84,7 +84,9 @@ public enum Material {
     CLAY("clay", 75, 8, 11, 0, 7, true, false),
     GRAY_CONCRETE("stained_hardened_clay:7", 76, 6, 5, 0, 7, true, false),
     WHITE_CONCRETE("stained_hardened_clay:0", 77, 7, 5, 0, 7, true, false),
-    STAINED_GLASS("stained_glass", 78, 8, 5, 0, 7, true, false),
+    LITTLE_GRAY_CONCRETE("stained_hardened_clay:8", 78, 8, 5, 0, 7, true, false),
+    BLACK_CONCRETE("stained_hardened_clay:15", 79, 9, 5, 0, 7, true, false),
+    STAINED_GLASS("stained_glass", 81, 1, 12, 9, 4),
     BREAKING_ANIMATION("", -3, 0, 0, 0, 0);
 
     private final int blockIconX, x;
@@ -231,10 +233,6 @@ public enum Material {
 
     public static ArrayList<Material> getMaterialByName(String blockName) {
         ArrayList<Material> materials = new ArrayList<>();
-        if(blockName.equalsIgnoreCase("stained_glass")) {
-            materials.add(GLASS);
-            return materials;
-        }
         for(Material material : Material.values()) {
             String materialName = material.getName();
             if(materialName.contains(":")) {
