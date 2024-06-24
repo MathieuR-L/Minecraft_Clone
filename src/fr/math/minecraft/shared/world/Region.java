@@ -43,7 +43,7 @@ public class Region {
 
     public void generateStructure(World world) {
 
-        logger.info("Generation des structures de la région " + position + "...");
+        //logger.info("Generation des structures de la région " + position + "...");
 
         OverworldGenerator generator = new OverworldGenerator();
         for (int x = 0; x < SIZE * Chunk.SIZE; x+= 2) {
@@ -67,7 +67,7 @@ public class Region {
             }
         }
 
-        logger.info("Structure généré avec succès ! ");
+        //logger.info("Structure généré avec succès ! ");
     }
 
     private boolean inVillageArea(int x, int y, int z) {

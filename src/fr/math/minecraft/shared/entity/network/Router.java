@@ -63,19 +63,18 @@ public class Router extends Entity {
             route.add(lastCheckpointX);
         }
 
-
+        float lastXPosition = (route.get(route.size()-1)).x;
         int zSegment = (int)Math.floor(zVector.z / GameConfiguration.MAX_ASTAR_DISTANCE);
         float zReste = zVector.z % GameConfiguration.MAX_ASTAR_DISTANCE;
 
         for (int i = 1; i <= zSegment; i++) {
-            Vector3f checkpoint = new Vector3f(0, 0, i*GameConfiguration.MAX_ASTAR_DISTANCE);
+            Vector3f checkpoint = new Vector3f(lastXPosition, 0, i*GameConfiguration.MAX_ASTAR_DISTANCE);
             route.add(checkpoint);
         }
         if(zReste != 0) {
-            Vector3f lastCheckpointZ = new Vector3f(0, 0, zReste + zSegment * GameConfiguration.MAX_ASTAR_DISTANCE);
+            Vector3f lastCheckpointZ = new Vector3f(lastXPosition, 0, zReste + zSegment * GameConfiguration.MAX_ASTAR_DISTANCE);
             route.add(lastCheckpointZ);
         }
-
 
         return route;
     }
@@ -101,7 +100,7 @@ public class Router extends Entity {
             synchronized (server.getWorld().getEntities()) {
 
                 for (Entity entity : entities.values()) {
-                    if(entity instanceof Villager && entity.getPosition().distance(position) <= 10) {
+                    if(entity instanceof Villager && entity.getPosition().distance(position) <= 1) {
                         Villager packet = (Villager)entity;
                         packetWaiting.add(packet);
                     }

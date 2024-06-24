@@ -64,6 +64,7 @@ public abstract class Entity {
     protected int hitMarkDelay;
     private ArrayList<Vector3f> checkpoints;
     private int checkpointStep;
+    protected boolean finished;
     private final static Logger logger = LoggerUtility.getClientLogger(Entity.class, LogType.TXT);
     public Entity(String uuid, EntityType type) {
         this.type = type;
@@ -97,6 +98,7 @@ public abstract class Entity {
         this.maxHunger = type.getMaxHunger();
         this.checkpoints = new ArrayList<>();
         this.checkpointStep = 0;
+        this.finished = false;
     }
 
     public void notifyEvent(PlayerMoveEvent event) {
@@ -172,8 +174,8 @@ public abstract class Entity {
                 }
             }
             if(this instanceof Villager){
-                System.out.println("Villageois :" + this.getPosition() + " Objectif:" + this.getCheckpoints().get(this.getCheckpointStep()));
-                if (this.checkpoints != null && !this.checkpoints.isEmpty()) {
+                System.out.println("Villageois :" + this.getPosition() + " | Objectif :" + this.checkpoints.get(checkpointStep));
+                if (this.checkpoints != null && !this.checkpoints.isEmpty() && !this.isFinished()) {
                     Node endCheckpoint = new Node(this.checkpoints.get(checkpointStep));
                     targetNode = endCheckpoint;
 
@@ -252,11 +254,14 @@ public abstract class Entity {
     }
 
     private void nextCheckpoint() {
-        if(checkpointStep < checkpoints.size()) {
+        if(checkpointStep < checkpoints.size() - 1) {
             checkpointStep++;
             System.out.println("J'augmente");
         } else {
+            System.out.println("Finit ! on repart");
             Collections.reverse(checkpoints);
+            checkpointStep = 0;
+            System.out.println(checkpoints);
         }
     }
 
@@ -627,5 +632,9 @@ public abstract class Entity {
 
     public int getCheckpointStep() {
         return checkpointStep;
+    }
+
+    public boolean isFinished() {
+        return finished;
     }
 }

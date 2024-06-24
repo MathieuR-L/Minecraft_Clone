@@ -80,8 +80,8 @@ public class AStar {
             }
         }
 
-        logger.info("[Pathfinding] Les noeuds du graphes ont été construits.");
-        logger.info("[Pathfinding] Construction des connexions entre les noeuds.");
+        //logger.info("[Pathfinding] Les noeuds du graphes ont été construits.");
+        //logger.info("[Pathfinding] Construction des connexions entre les noeuds.");
         Set<Node> graphNodes = new HashSet<>(graph.getNodes().keySet());
 
         for (Node node : graphNodes) {
@@ -99,7 +99,7 @@ public class AStar {
         }
 
         logger.info("[Pathfinding] Graphe mis à jour avec succès.");
-        logger.info("[Pathfinding] Nodes size : " + graph.getNodes().size());
+        //logger.info("[Pathfinding] Nodes size : " + graph.getNodes().size());
     }
 
     public static List<Node> getAdjacentsNode(Vector2i position) {
