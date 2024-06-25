@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class LoadSchematicCommand extends Command{
 
-    private final static Logger logger = LoggerUtility.getServerLogger(TeleportCommand.class, LogType.TXT);
+    private final static Logger logger = LoggerUtility.getServerLogger(LoadSchematicCommand.class, LogType.TXT);
     private NbtHandler nbtHandler;
     private String filePath;
     private CompoundTag compoundTag;
@@ -84,7 +84,7 @@ public class LoadSchematicCommand extends Command{
                     currentMaterial = Material.DEBUG;
                 }
                 if(currentMaterial == Material.AIR) continue;
-                Vector3i blockPosition = nbtHandler.getBlockPosition(i + (j*1000), length.getValue(), width.getValue());
+                Vector3i blockPosition = nbtHandler.getBlockPosition(i + (j*NbtHandler.maxBlocPerList), length.getValue(), width.getValue());
                 Vector3i blockWorldPosition = new Vector3i(blockPosition.x + x, blockPosition.y + y, blockPosition.z + z);
 
                 Vector3i blockLocalPosition = Utils.worldToLocal(blockWorldPosition);
