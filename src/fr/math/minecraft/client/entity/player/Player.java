@@ -85,7 +85,6 @@ public class Player extends Entity {
     private int commandOption = 0;
     private String lastCommand ="";
     private int cptTab = 0;
-
     private final static Logger logger = LoggerUtility.getClientLogger(Player.class, LogType.TXT);
 
 

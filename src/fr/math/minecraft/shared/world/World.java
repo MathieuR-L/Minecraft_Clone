@@ -51,6 +51,7 @@ public class World {
     private float seed;
     private final ArrayList<Material> usableBlockList;
     private HashMap<Vector3i, UsableBlock> usableBlockHashMap;
+    private ArrayList<PlacedBlock> loadMapData;
 
     public World() {
         this.chunks = new HashMap<>();
@@ -71,6 +72,7 @@ public class World {
         this.seed = 0;
         this.usableBlockList = initUsableBlocksList();
         this.usableBlockHashMap = new HashMap<>();
+        this.loadMapData = new ArrayList<>();
 
         for (Material material : Material.values()) {
             if (material.isSolid()) {
@@ -412,5 +414,9 @@ public class World {
 
     public HashMap<Vector3i, UsableBlock> getUsableBlockHashMap() {
         return usableBlockHashMap;
+    }
+
+    public ArrayList<PlacedBlock> getLoadMapData() {
+        return loadMapData;
     }
 }

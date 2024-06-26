@@ -227,9 +227,28 @@ public class NbtHandler {
                     world.addChunk(aimedChunk);
                 }
                 world.getPlacedBlocks().put(placedBlock.getWorldPosition(), placedBlock);
-
-                aimedChunk.setBlock(blockLocalPosition.x, blockLocalPosition.y, blockLocalPosition.z, currentMaterial.getId());
+                world.getLoadMapData().add(placedBlock);
             }
+        }
+    }
+
+    public void placeBlockSchematic(ArrayList<PlacedBlock> mapData, World world) {
+        for (PlacedBlock block : mapData) {
+            Vector3i blockWorldPos = block.getWorldPosition();
+            Vector3i blockLocalPos = block.getLocalPosition();
+
+            Chunk aimedChunk = world.getChunkAt(blockWorldPos);
+
+            if(aimedChunk == null) {
+                Vector3i chunkPos = Utils.getChunkPosition(blockWorldPos.x, blockWorldPos.y, blockWorldPos.y);
+                aimedChunk = new Chunk(chunkPos.x, chunkPos.y, chunkPos.z);
+                logger.debug("Génération d'un chunk");
+                aimedChunk.generate(world, world.getTerrainGenerator());
+                world.addChunk(aimedChunk);
+            }
+
+            world.getPlacedBlocks().put(blockWorldPos, block);
+            aimedChunk.setBlock(blockLocalPos.x, blockLocalPos.y, blockLocalPos.z, block.getBlock());
         }
     }
 

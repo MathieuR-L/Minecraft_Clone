@@ -138,7 +138,6 @@ public class ConnectionInitPacket extends ClientPacket implements Runnable {
             world.setSeed(seed);
             world.buildSpawn();
             world.buildSpawnMesh();
-            //world.buildMap(GameConfiguration.MAP_FILE_PATH);
 
             if (uuid.contains("USERNAME_NOT_AVAILABLE")) {
                 throw new RuntimeException("Le joueur " + player.getName() + " est déjà connecté !");

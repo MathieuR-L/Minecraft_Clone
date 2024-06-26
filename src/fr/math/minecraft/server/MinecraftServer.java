@@ -75,30 +75,6 @@ public class MinecraftServer {
             logger.error(e.getMessage());
         }
         logger.info("Point de spawn calculé en " + world.getSpawnPosition());
-
-        /*
-        Villager villager = new Villager("Gustavo");
-        Router router = new Router("Pablo");
-        MainPC mainPC = new MainPC("Carlos");
-
-        villager.setPosition(new Vector3f(10, 7, 0));
-        router.setPosition(new Vector3f(30, 7, 0));
-        mainPC.setPosition(new Vector3f(30, 7, 20));
-
-        villager.getCheckpoints().add(villager.getPosition());
-
-        router.getRoutingTable().put(mainPC.getPosition(), router.setRoute(mainPC.getPosition()));
-
-        villager.setServiceRequested(mainPC);
-
-        router.giveCheckpoints(villager);
-
-        world.addEntity(villager);
-        world.addEntity(router);
-        world.addEntity(mainPC);
-
-        logger.debug(villager.getCheckpoints());
-         */
         initCommands();
     }
 
@@ -159,7 +135,6 @@ public class MinecraftServer {
                     playersListHandler.run();
                     break;
                 case "CHAT_MSG":
-                    //Disjonction de cas commande / message
                     String content = packetData.get("content").asText();
                     if(content.charAt(0) != '/') {
                         ChatMessageHandler chatMessageHandler = new ChatMessageHandler(packetData, address, clientPort);
