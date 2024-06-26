@@ -38,6 +38,7 @@ public class GameConfiguration {
     public static String WORLD_TYPE = "SUPERFLAT_WORLD";
     public final static float MAX_ASTAR_DISTANCE = 150;
     public final static String MAP_FILE_PATH = "res/schematics/house.schematic";
+    public final static int MAX_BLOCK_PACKET = 500;
 
     private boolean entityInterpolation;
     private boolean occlusionEnabled;

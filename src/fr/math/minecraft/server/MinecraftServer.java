@@ -144,6 +144,8 @@ public class MinecraftServer {
                         commandHandler.run();
                     }
                     break;
+                case "LOADING_MAP_ACK":
+                    break;
                 default:
                     String message = "UNAUTHORIZED_PACKET";
                     buffer = message.getBytes(StandardCharsets.UTF_8);

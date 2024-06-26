@@ -13,5 +13,6 @@ public interface PacketEventListener {
     void onPlacedBlockState(PlacedBlockStateEvent event);
     void onBrokenBlockState(BrokenBlockStateEvent event);
     void onChatState(ChatPayloadStateEvent event);
+    void onLoadMapData(ReceiveMapEvent event);
 
 }

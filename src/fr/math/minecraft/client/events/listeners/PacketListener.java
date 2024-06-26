@@ -13,6 +13,7 @@ import fr.math.minecraft.client.network.FixedPacketSender;
 import fr.math.minecraft.client.handler.PlayerMovementHandler;
 import fr.math.minecraft.client.manager.ChunkManager;
 import fr.math.minecraft.client.network.packet.ChunkACKPacket;
+import fr.math.minecraft.client.network.packet.ReceiveMapACKPacket;
 import fr.math.minecraft.client.network.packet.SkinRequestPacket;
 import fr.math.minecraft.client.network.payload.StatePayload;
 import fr.math.minecraft.client.texture.Texture;
@@ -348,4 +349,35 @@ public class PacketListener implements PacketEventListener {
             }
         }
     }
+
+    @Override
+    public void onLoadMapData(ReceiveMapEvent event) {
+        ArrayNode blocksData = event.getBlocksNode();
+
+        for (int i = 0; i < blocksData.size(); i++) {
+            PlacedBlock placedBlock = new PlacedBlock(blocksData.get(i));
+            World world = Game.getInstance().getWorld();
+
+            Vector3i worldPosition = placedBlock.getWorldPosition();
+            Vector3i localPosition = placedBlock.getLocalPosition();
+            byte block = placedBlock.getBlock();
+            Chunk chunk = world.getChunkAt(worldPosition);
+
+            if (chunk == null) {
+                world.getPlacedBlocks().put(worldPosition, placedBlock);
+                continue;
+            }
+
+            ChunkManager chunkManager = new ChunkManager();
+            byte chunkBlock = chunk.getBlock(localPosition.x, localPosition.y, localPosition.z);
+
+            if (chunkBlock != block) {
+                chunkManager.placeBlock(chunk, localPosition, world, Material.getMaterialById(block));
+            }
+        }
+
+        ReceiveMapACKPacket receiveMapACKPacket = new ReceiveMapACKPacket(event.getSerie());
+        FixedPacketSender.getInstance().enqueue(receiveMapACKPacket);
+    }
+
 }
