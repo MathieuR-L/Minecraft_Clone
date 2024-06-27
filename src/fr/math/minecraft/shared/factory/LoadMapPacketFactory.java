@@ -14,7 +14,7 @@ public class LoadMapPacketFactory {
         ObjectMapper mapper = new ObjectMapper();
         ArrayNode blocksNode = mapper.createArrayNode();
 
-        int blockToSend, nextSerie;
+        int nextSerie;
         int blockInMap = world.getLoadMapData().size();
 
         for (int i = serie * maxBlock; i < (serie + 1)* maxBlock; i++) {
@@ -29,10 +29,11 @@ public class LoadMapPacketFactory {
             nextSerie = -1;
         }
         ObjectNode node = mapper.createObjectNode();
-        node.put("mapData", blocksNode);
+        node.set("mapData", blocksNode);
         node.put("serie", serie);
         node.put("nextSerie", nextSerie);
         node.put("type", "LOADING_MAP");
+        node.put("uuid", "server");
         return node;
     }
 }

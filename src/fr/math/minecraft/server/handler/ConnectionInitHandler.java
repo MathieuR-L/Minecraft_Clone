@@ -63,8 +63,8 @@ public class ConnectionInitHandler extends PacketHandler implements Runnable {
             Client client = new Client(uuid, playerName, address, clientPort);
             World world = server.getWorld();
 
-            LoadingMapHandler loadingMapHandler = new LoadingMapHandler(null, address, clientPort);
-            loadingMapHandler.run();
+            LoadingMapHandler loadingMapHandler = new LoadingMapHandler(packetData, address, clientPort);
+            //loadingMapHandler.run();
 
             client.getPosition().x = world.getSpawnPosition().x;
             client.getPosition().y = world.getSpawnPosition().y;

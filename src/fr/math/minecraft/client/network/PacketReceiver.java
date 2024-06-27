@@ -188,6 +188,9 @@ public class PacketReceiver extends Thread {
                     EntityStateHandler stateHandler = new EntityStateHandler(game.getWorld(), responseData);
                     game.getPacketPool().submit(stateHandler);
                     break;
+                case "LOADING_MAP_ACK":
+                    this.notifyEvent(new ReceiveMapEvent(responseData.get("serie").asInt(), responseData.get("nextSerie").asInt(),(ArrayNode) responseData.get("mapData")));
+                    break;
                 default:
                     logger.warn("Le packet " + packetType + " est inconnu et a été ignoré.");
             }
@@ -271,6 +274,12 @@ public class PacketReceiver extends Thread {
     private void notifyEvent(BlockPlaceEvent event) {
         for (EventListener listener : eventListeners) {
             listener.onBlockPlace(event);
+        }
+    }
+
+    private void notifyEvent(ReceiveMapEvent event) {
+        for (PacketEventListener listener : packetListeners) {
+            listener.onLoadMapData(event);
         }
     }
 

@@ -145,6 +145,8 @@ public class MinecraftServer {
                     }
                     break;
                 case "LOADING_MAP_ACK":
+                    LoadingMapACKHandler loadingMapACKHandler = new LoadingMapACKHandler(packetData, address, clientPort);
+                    loadingMapACKHandler.run();
                     break;
                 default:
                     String message = "UNAUTHORIZED_PACKET";

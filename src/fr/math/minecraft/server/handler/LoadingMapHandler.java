@@ -27,21 +27,14 @@ public class LoadingMapHandler extends PacketHandler{
 
     public void run() {
         ObjectMapper mapper = new ObjectMapper();
-        ArrayNode blocksNode = mapper.createArrayNode();
-        ObjectNode node = mapper.createObjectNode();
+        ObjectNode node;
         MinecraftServer server = MinecraftServer.getInstance();
-        String uuid = packetData.get("uuid").asText();
 
         World world = server.getWorld();
 
         blockInMap = world.getLoadMapData().size();
 
-        if(server.getClients().get(uuid) == null) {
-            return;
-        }
-
         int serie = 0;
-        int blockToSend;
 
         node = LoadMapPacketFactory.createMapNode(world, serie, maxBlockPacket);
         try {
