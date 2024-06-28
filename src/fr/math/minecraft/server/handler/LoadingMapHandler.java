@@ -37,6 +37,11 @@ public class LoadingMapHandler extends PacketHandler{
         int serie = 0;
 
         node = LoadMapPacketFactory.createMapNode(world, serie, maxBlockPacket);
+        node.put("spawnX", world.getSpawnPosition().x);
+        node.put("spawnY", world.getSpawnPosition().y);
+        node.put("spawnZ", world.getSpawnPosition().z);
+        node.put("seed", world.getSeed());
+        node.set("worldData", world.toJSONObject());
         try {
             byte[] buffer = mapper.writeValueAsString(node).getBytes(StandardCharsets.UTF_8);
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, clientPort);
