@@ -21,6 +21,7 @@ import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
 import fr.math.minecraft.server.MinecraftServer;
 import fr.math.minecraft.server.command.Command;
+import fr.math.minecraft.shared.entity.Villager;
 import fr.math.minecraft.shared.inventory.*;
 import fr.math.minecraft.server.Utils;
 import fr.math.minecraft.shared.GameConfiguration;
@@ -433,6 +434,10 @@ public class Player extends Entity {
 
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
             placingBlock = true;
+            Entity target = this.getAttackRay().getTarget();
+            if (target != null && this.getAttackRay().getTarget().getType() == EntityType.VILLAGER) {
+                this.inventory.setOpen(true);
+            }
         }
 
 
