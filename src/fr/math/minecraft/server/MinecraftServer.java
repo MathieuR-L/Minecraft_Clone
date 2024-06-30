@@ -6,14 +6,19 @@ import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
 import fr.math.minecraft.server.handler.*;
 import fr.math.minecraft.server.manager.ChunkManager;
-import fr.math.minecraft.shared.world.Region;
+import fr.math.minecraft.server.pathfinding.AStar;
+import fr.math.minecraft.shared.ChatMessage;
+import fr.math.minecraft.shared.entity.Villager;
+import fr.math.minecraft.shared.entity.mob.Zombie;
 import fr.math.minecraft.shared.world.World;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -24,7 +29,7 @@ public class MinecraftServer {
     private DatagramSocket socket;
     private boolean running;
     private final byte[] buffer;
-    private final int port;
+    private int port;
     private final static Logger logger = LoggerUtility.getServerLogger(MinecraftServer.class, LogType.TXT);;
     private final Map<String, Client> clients;
     private final Map<String, String> sockets;
@@ -32,8 +37,10 @@ public class MinecraftServer {
     private final World world;
     private final static int MAX_REQUEST_SIZE = 16384;
     private final ThreadPoolExecutor packetQueue;
+    private final ThreadPoolExecutor pathfindingQueue;
     private final TickHandler tickHandler;
     private final ChunkManager chunkManager;
+    private final List<ChatMessage> chatMessages;
 
     private MinecraftServer(int port) {
         this.running = false;
@@ -43,13 +50,20 @@ public class MinecraftServer {
         this.sockets = new HashMap<>();
         this.lastActivities = new HashMap<>();
         this.world = new World();
-        this.world.buildSpawn();
-        this.world.calculateSpawnPosition();
+        //this.world.buildSpawn();
+        //this.world.calculateSpawnPosition();
+        //AStar.initGraph(world, world.getSpawnPosition());
         this.packetQueue = (ThreadPoolExecutor) Executors.newFixedThreadPool(4);
+        this.pathfindingQueue = (ThreadPoolExecutor) Executors.newFixedThreadPool(4);
         this.tickHandler = new TickHandler();
         this.chunkManager = new ChunkManager();
+        this.chatMessages = new ArrayList<>();
 
         logger.info("Point de spawn calculé en " + world.getSpawnPosition());
+        //world.addEntity(new Villager("Dummy"));
+        world.addEntity(new Zombie("Dummy"));
+        //logger.info("Un villageois a spawn !");
+        logger.info("Un zombie a spawn !");
     }
 
     public void start() throws IOException {
@@ -108,6 +122,10 @@ public class MinecraftServer {
                     PlayersListHandler playersListHandler = new PlayersListHandler(packetData, address, clientPort);
                     playersListHandler.run();
                     break;
+                case "CHAT_MSG":
+                    ChatMessageHandler chatMessageHandler = new ChatMessageHandler(packetData, address, clientPort);
+                    chatMessageHandler.run();
+                    break;
                 default:
                     String message = "UNAUTHORIZED_PACKET";
                     buffer = message.getBytes(StandardCharsets.UTF_8);
@@ -159,6 +177,20 @@ public class MinecraftServer {
         }
     }
 
+    public void broadcast(byte[] buffer) {
+        synchronized (this.getClients()) {
+            DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+            for (Client client : this.getClients().values()) {
+                if (!client.isActive()) continue;
+
+                packet.setAddress(client.getAddress());
+                packet.setPort(client.getPort());
+
+                this.sendPacket(packet);
+            }
+        }
+    }
+
     public DatagramSocket getSocket() {
         return socket;
     }
@@ -169,5 +201,17 @@ public class MinecraftServer {
 
     public ChunkManager getChunkManager() {
         return chunkManager;
+    }
+
+    public List<ChatMessage> getChatMessages() {
+        return chatMessages;
+    }
+
+    public ThreadPoolExecutor getPathfindingQueue() {
+        return pathfindingQueue;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
     }
 }

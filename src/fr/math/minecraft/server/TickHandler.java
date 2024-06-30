@@ -5,11 +5,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import fr.math.minecraft.server.payload.BrokenBlockPayload;
-import fr.math.minecraft.server.payload.InputPayload;
-import fr.math.minecraft.server.payload.PlacedBlockPayload;
-import fr.math.minecraft.server.payload.StatePayload;
+import fr.math.minecraft.server.payload.*;
 import fr.math.minecraft.shared.GameConfiguration;
+import fr.math.minecraft.shared.entity.Entity;
 import fr.math.minecraft.shared.world.BreakedBlock;
 import fr.math.minecraft.shared.world.DroppedItem;
 import fr.math.minecraft.shared.world.PlacedBlock;
@@ -18,6 +16,8 @@ import org.joml.Vector3i;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TickHandler extends Thread {
 
@@ -132,7 +132,25 @@ public class TickHandler extends Thread {
         }
         this.sendPlayers();
         this.sendWorld();
+        this.sendChat();
         tick++;
+    }
+
+    private void sendChat() {
+        MinecraftServer server = MinecraftServer.getInstance();
+        synchronized (server.getChatMessages()) {
+            ChatStatePayload payload = new ChatStatePayload(server.getChatMessages());
+            synchronized (server.getClients()) {
+                for (Client client : server.getClients().values()) {
+
+                    if (!client.isActive()) {
+                        continue;
+                    }
+
+                    payload.send(client);
+                }
+            }
+        }
     }
 
     private void sendWorld() {
@@ -157,21 +175,7 @@ public class TickHandler extends Thread {
 
             try {
                 byte[] buffer = mapper.writeValueAsBytes(node);
-                DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-
-                synchronized (server.getClients()) {
-                    for (Client client : server.getClients().values()) {
-
-                        if (!client.isActive()) {
-                            continue;
-                        }
-
-                        packet.setAddress(client.getAddress());
-                        packet.setPort(client.getPort());
-
-                        server.sendPacket(packet);
-                    }
-                }
+                server.broadcast(buffer);
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
@@ -205,6 +209,27 @@ public class TickHandler extends Thread {
 
                         payload.send(client);
                     }
+                }
+            }
+        }
+
+        synchronized (world.getEntities()) {
+            List<Entity> deadEntities = new ArrayList<>();
+            for (Entity entity : world.getEntities().values()) {
+                try {
+                    entity.update(world);
+                    byte[] entityBuffer = mapper.writeValueAsBytes(entity.toJSONObject());
+                    server.broadcast(entityBuffer);
+                    if (entity.getHealth() <= 0.0f) {
+                        deadEntities.add(entity);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            for (Entity entity : deadEntities) {
+                synchronized (world.getEntities()) {
+                    world.getEntities().remove(entity.getUuid());
                 }
             }
         }

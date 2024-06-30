@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import fr.math.minecraft.client.Game;
 import fr.math.minecraft.client.Renderer;
+import fr.math.minecraft.client.audio.Sounds;
 import fr.math.minecraft.client.entity.player.Player;
 import fr.math.minecraft.client.events.*;
+import fr.math.minecraft.client.manager.SoundManager;
 import fr.math.minecraft.client.network.FixedPacketSender;
 import fr.math.minecraft.client.handler.PlayerMovementHandler;
 import fr.math.minecraft.client.manager.ChunkManager;
@@ -13,8 +15,10 @@ import fr.math.minecraft.client.network.packet.ChunkACKPacket;
 import fr.math.minecraft.client.network.packet.SkinRequestPacket;
 import fr.math.minecraft.client.network.payload.StatePayload;
 import fr.math.minecraft.client.texture.Texture;
+import fr.math.minecraft.shared.ChatMessage;
 import fr.math.minecraft.shared.GameConfiguration;
-import fr.math.minecraft.shared.MathUtils;
+import fr.math.minecraft.shared.entity.EntityType;
+import fr.math.minecraft.shared.math.MathUtils;
 import fr.math.minecraft.shared.PlayerAction;
 import fr.math.minecraft.shared.world.*;
 import fr.math.minecraft.logger.LogType;
@@ -27,7 +31,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Base64;
+import java.util.*;
 
 public class PacketListener implements PacketEventListener {
 
@@ -48,8 +52,9 @@ public class PacketListener implements PacketEventListener {
 
     @Override
     public void onPlayerListPacket(PlayerListPacketEvent event) {
-
         ArrayNode playersNode = event.getPlayers();
+
+        Set<String> trustedPlayers = new HashSet<>();
 
         for (int i = 0; i < playersNode.size(); i++) {
             JsonNode playerNode = playersNode.get(i);
@@ -87,9 +92,16 @@ public class PacketListener implements PacketEventListener {
             float pitch = playerNode.get("pitch").floatValue();
             float yaw = playerNode.get("yaw").floatValue();
             float bodyYaw = playerNode.get("bodyYaw").floatValue();
+            float health = playerNode.get("health").floatValue();
+            float maxHealth = playerNode.get("maxHealth").floatValue();
+            float hunger = playerNode.get("hunger").floatValue();
+            float maxHunger = playerNode.get("maxHunger").floatValue();
 
             String actionId = playerNode.get("action").asText();
             int spriteIndex = playerNode.get("spriteIndex").asInt();
+
+            String lastAttackerID = playerNode.get("lastAttacker").asText();
+            String lastAttackerTypeValue = playerNode.get("lastAttackerType").asText();
 
             PlayerAction action = null;
             if (!actionId.equalsIgnoreCase("NONE")) {
@@ -107,6 +119,18 @@ public class PacketListener implements PacketEventListener {
                 player.getPosition().z = playerZ;
             }
 
+            if (!lastAttackerID.equals("NONE")) {
+                if (health < player.getHealth()) {
+                    player.setHitMarkDelay(20);
+                    if (player.getPosition().distance(game.getPlayer().getPosition()) < 10.0f) {
+                        SoundManager soundManager = SoundManager.getInstance();
+                        soundManager.play(Sounds.HIT);
+                    }
+                }
+            }
+
+            trustedPlayers.add(player.getUuid());
+
             player.setMovingRight(movingRight);
             player.setMovingLeft(movingLeft);
             player.setMovingBackward(movingBackward);
@@ -115,6 +139,9 @@ public class PacketListener implements PacketEventListener {
             player.setYaw(yaw);
             player.setBodyYaw(bodyYaw);
             player.setPitch(pitch);
+            player.setHealth(health);
+            player.setMaxHealth(maxHealth);
+            player.setMaxHunger(maxHunger);
 
             player.getBuildRay().getBlockWorldPosition().x = rayX;
             player.getBuildRay().getBlockWorldPosition().y = rayY;
@@ -122,6 +149,18 @@ public class PacketListener implements PacketEventListener {
 
             player.setAction(action);
             player.getSprite().setIndex(spriteIndex);
+        }
+
+        synchronized (game.getPlayers()) {
+            List<Player> disconnectedPlayers = new ArrayList<>();
+            for (Player player : game.getPlayers().values()) {
+                if (!trustedPlayers.contains(player.getUuid())) {
+                    disconnectedPlayers.add(player);
+                }
+            }
+            for (Player player : disconnectedPlayers) {
+                game.getPlayers().remove(player.getUuid());
+            }
         }
     }
 
@@ -213,6 +252,7 @@ public class PacketListener implements PacketEventListener {
                 Vector3f position = new Vector3f(itemX, itemY, itemZ);
 
                 if (droppedItem == null) {
+                    System.out.println("Materiau : " + material + " ID " + materialID);
                     droppedItem = new DroppedItem(uuid, position, material);
                     world.getDroppedItems().put(uuid, droppedItem);
                 } else {
@@ -273,6 +313,28 @@ public class PacketListener implements PacketEventListener {
 
         if (chunkBlock != Material.AIR.getId()) {
             chunkManager.removeBlock(chunk, localPosition, world);
+        }
+    }
+
+    @Override
+    public void onChatState(ChatPayloadStateEvent event) {
+        Map<String, ChatMessage> chatMessages = game.getChatMessages();
+        ArrayNode chatData = event.getChatData();
+
+        for (int i = 0; i < chatData.size(); i++) {
+            JsonNode chatNode = chatData.get(i);
+            String messageId = chatNode.get("id").asText();
+            String senderUuid = chatNode.get("uuid").asText();
+            String senderName = chatNode.get("name").asText();
+            String message = chatNode.get("message").asText();
+            long timestamp = chatNode.get("timestamp").asLong();
+
+            ChatMessage chatMessage = chatMessages.get(messageId);
+
+            if (chatMessage == null) {
+                chatMessage = new ChatMessage(messageId, timestamp, senderUuid, senderName, message);
+                chatMessages.put(chatMessage.getId(), chatMessage);
+            }
         }
     }
 }

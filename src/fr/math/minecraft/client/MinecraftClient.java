@@ -15,10 +15,11 @@ public class MinecraftClient {
     private InetAddress address;
     private final int serverPort;
     private final static Logger logger = LoggerUtility.getClientLogger(MinecraftClient.class, LogType.TXT);
-    private static final String IP_SERVER = "localhost";
     private final byte[] responseBuffer;
+    private final String serverIp;
 
-    public MinecraftClient(int serverPort) {
+    public MinecraftClient(String serverIp, int serverPort) {
+        this.serverIp = serverIp;
         this.serverPort = serverPort;
         this.responseBuffer = new byte[MAX_RESPONSE_LENGTH];
         this.connect();
@@ -28,14 +29,13 @@ public class MinecraftClient {
         try {
             this.socket = new DatagramSocket();
             this.socket.setSoTimeout(10000);
-            this.address = InetAddress.getByName(IP_SERVER);
-
+            this.address = InetAddress.getByName(serverIp);
         } catch (UnknownHostException | SocketException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public  void sendMessage(String message) throws IOException {
+    public void sendMessage(String message) throws IOException {
         byte[] buffer = message.getBytes(StandardCharsets.UTF_8);
         DatagramPacket packet = new DatagramPacket(buffer, buffer.length, this.address, this.serverPort);
         this.getSocket().send(packet);

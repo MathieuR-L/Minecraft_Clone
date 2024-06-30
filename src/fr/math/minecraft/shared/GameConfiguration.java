@@ -20,8 +20,9 @@ public class GameConfiguration {
     public final static int BUFFER_SIZE = 1024;
     public final static float CHUNK_TICK = 60.0f;
     public final static float CHUNK_TICK_RATE = 1000.0f / CHUNK_TICK;
-    public final static float ATTACK_REACH = 3f;
+    public final static float ATTACK_REACH = 3.5f;
     public final static float BUILDING_REACH = 4.5f;
+    public final static float BREAKING_REACH = 4.5f;
     public final static float DEFAULT_SPEED= 0.0125f;
     public final static float SPRINT_SPEED = DEFAULT_SPEED * 2f ;
     public final static int BLOCK_BREAK_COOLDOWN = (int) UPS / 3;
@@ -29,19 +30,24 @@ public class GameConfiguration {
     public final static float INVENTORY_TEXTURE_WIDTH = 256.0f;
     public final static float INVENTORY_TEXTURE_HEIGHT = 256.0f;
     public final static int PLAYER_INVENTORY_SIZE = 27;
+    public final static float KNOCK_BACK_X = 0.03f;
+    public final static float KNOCK_BACK_Y = 0.14f;
+    public final static float KNOCK_BACK_Z = 0.03f;
 
     private boolean entityInterpolation;
     private boolean occlusionEnabled;
     private boolean debugging;
     private boolean musicEnabled;
     private float guiScale;
+    private boolean entitesPathEnabled;
     private static GameConfiguration instance = null;
 
     private GameConfiguration() {
         this.entityInterpolation = true;
         this.occlusionEnabled = true;
         this.debugging = true;
-        this.musicEnabled = false;
+        this.musicEnabled = true;
+        this.entitesPathEnabled = true;
         this.guiScale = 1.0f;
     }
 
@@ -87,6 +93,14 @@ public class GameConfiguration {
 
     public void setGuiScale(float guiScale) {
         this.guiScale = guiScale;
+    }
+
+    public boolean isEntitesPathEnabled() {
+        return entitesPathEnabled;
+    }
+
+    public void setEntitesPathEnabled(boolean entitesPathEnabled) {
+        this.entitesPathEnabled = entitesPathEnabled;
     }
 
     public static GameConfiguration getInstance() {

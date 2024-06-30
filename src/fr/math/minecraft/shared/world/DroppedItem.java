@@ -39,7 +39,16 @@ public class DroppedItem {
     }
 
     public DroppedItem(Vector3f position, Material material) {
-        this(UUID.randomUUID().toString(), position, material);
+        this.uuid = UUID.randomUUID().toString();
+        this.position = position;
+        this.velocity = new Vector3f();
+        this.acceleration = new Vector3f();
+        this.lastPosition = new Vector3f(position);
+        this.material = material;
+        this.time = 0.0f;
+        this.onFloor = false;
+        this.hitbox = new Hitbox(new Vector3f(), new Vector3f(0.025f, 0.025f, 0.025f));
+        this.rotationAngle = 0.0f;
     }
 
     public void handleCollisions(Vector3f velocity) {
@@ -160,5 +169,9 @@ public class DroppedItem {
 
     public void setRotationAngle(float rotationAngle) {
         this.rotationAngle = rotationAngle;
+    }
+
+    public boolean isOnFloor() {
+        return onFloor;
     }
 }

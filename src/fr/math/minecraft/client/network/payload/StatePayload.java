@@ -8,7 +8,7 @@ import fr.math.minecraft.client.network.FixedPacketSender;
 import fr.math.minecraft.client.network.packet.PlayerActionsPacket;
 import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
-import fr.math.minecraft.shared.MathUtils;
+import fr.math.minecraft.shared.math.MathUtils;
 import fr.math.minecraft.shared.inventory.Inventory;
 import fr.math.minecraft.shared.inventory.ItemStack;
 import fr.math.minecraft.shared.network.PlayerInputData;
@@ -30,8 +30,9 @@ public class StatePayload {
     private Vector3f velocity;
     private List<BreakedBlock> breakedBlockData;
     private List<PlacedBlock> placedBlocks;
-    private float yaw, pitch;
-    private ArrayNode inventoryItems, hotbarItems, craftItems, completedCraftItems;
+    private float yaw, pitch, health, maxHealth, maxSpeed, hunger, maxHunger;
+    private ArrayNode inventoryItems, hotbarItems, craftItems, completedCraftItems, craftingTableItems;
+    private boolean craftTableOpen;
     private final static Logger logger = LoggerUtility.getClientLogger(StatePayload.class, LogType.TXT);
 
 
@@ -54,6 +55,8 @@ public class StatePayload {
         this.hotbarItems = (ArrayNode) stateData.get("hotbar");
         this.craftItems = (ArrayNode) stateData.get("craftInventory");
         this.completedCraftItems = (ArrayNode) stateData.get("completedCraftInventory");
+        this.craftingTableItems = (ArrayNode) stateData.get("craftingTableInventory");
+        this.craftTableOpen = stateData.get("craftingTableOpen").booleanValue();
 
         this.extractBrokenBlocks(stateData);
         this.extractPlacedBlocks(stateData);
@@ -66,6 +69,11 @@ public class StatePayload {
         velocity.z = stateData.get("vz").floatValue();
         yaw = stateData.get("yaw").floatValue();
         pitch = stateData.get("pitch").floatValue();
+        health = stateData.get("health").floatValue();
+        maxHealth = stateData.get("maxHealth").floatValue();
+        maxSpeed = stateData.get("maxSpeed").floatValue();
+        hunger = stateData.get("hunger").floatValue();
+        maxHunger = stateData.get("maxHunger").floatValue();
     }
 
     public void reconcileMovement(World world, Player player, Vector3f playerPosition, Vector3f playerVelocity) {
@@ -82,9 +90,9 @@ public class StatePayload {
 
             Vector3f acceleration = new Vector3f(0,0,0);
 
-            front.x = (float) (Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
-            front.y = (float) Math.sin(Math.toRadians(0.0f));
-            front.z = (float) (Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
+            front.x = Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch));
+            front.y = Math.sin(Math.toRadians(0.0f));
+            front.z = Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch));
 
             front.normalize();
             Vector3f right = new Vector3f(front).cross(new Vector3f(0, 1, 0)).normalize();
@@ -118,35 +126,28 @@ public class StatePayload {
             if (inputData.isJumping()) {
                 // this.handleJump();
                 if (player.canJump()) {
-                    player.setMaxFallSpeed(0.5f);
-                    acceleration.y += 10.0f;
+                    player.getVelocity().y = Player.JUMP_VELOCITY;
                     player.setCanJump(false);
                 }
             }
 
             player.getVelocity().add(acceleration.mul(player.getSpeed()));
 
-            if (new Vector3f(velocity.x, 0, velocity.z).length() > player.getMaxSpeed()) {
-                Vector3f velocityNorm = new Vector3f(velocity.x, velocity.y, velocity.z);
+            if (new Vector3f(player.getVelocity().x, 0, player.getVelocity().z).length() > player.getMaxSpeed()) {
+                Vector3f velocityNorm = new Vector3f(player.getVelocity().x, player.getVelocity().y, player.getVelocity().z);
                 velocityNorm.normalize().mul(player.getMaxSpeed());
                 player.getVelocity().x = velocityNorm.x;
                 player.getVelocity().z = velocityNorm.z;
             }
 
-            if (new Vector3f(0, velocity.y, 0).length() > player.getMaxFallSpeed()) {
-                Vector3f velocityNorm = new Vector3f(velocity.x, velocity.y, velocity.z);
-                velocityNorm.normalize().mul(player.getMaxFallSpeed());
-                player.getVelocity().y = velocityNorm.y;
-            }
-
             player.getPosition().x += player.getVelocity().x;
-            player.handleCollisions(world, new Vector3f(player.getVelocity().x, 0, 0));
+            player.handleCollisions(world, new Vector3f(player.getVelocity().x, 0, 0), false);
 
             player.getPosition().z += player.getVelocity().z;
-            player.handleCollisions(world, new Vector3f(0, 0, player.getVelocity().z));
+            player.handleCollisions(world, new Vector3f(0, 0, player.getVelocity().z), false);
 
             player.getPosition().y += player.getVelocity().y;
-            player.handleCollisions(world, new Vector3f(0, player.getVelocity().y, 0));
+            player.handleCollisions(world, new Vector3f(0, player.getVelocity().y, 0), false);
 
             player.getVelocity().mul(0.95f);
         }
@@ -215,6 +216,7 @@ public class StatePayload {
         Inventory hotbar = player.getHotbar();
         Inventory craftInventory = player.getCraftInventory();
         Inventory completedCraftInventory = player.getCompletedCraftPlayerInventory();
+        Inventory craftingTableInventory = player.getCraftingTableInventory();
 
         for (int slot = 0; slot < inventoryItems.size(); slot++) {
             JsonNode itemNode = inventoryItems.get(slot);
@@ -255,6 +257,18 @@ public class StatePayload {
                 completedCraftInventory.setItem(item, slot);
             }
         }
+
+        craftingTableInventory.setOpen(craftTableOpen);
+
+        for (int slot = 0; slot < craftingTableItems.size(); slot++) {
+            JsonNode itemNode = craftingTableItems.get(slot);
+            ItemStack item = new ItemStack(itemNode);
+            if (item.getMaterial() == Material.AIR) {
+                craftingTableInventory.setItem(null, slot);
+            } else {
+                craftingTableInventory.setItem(item, slot);
+            }
+        }
     }
 
     public void send(Player player) {
@@ -271,7 +285,6 @@ public class StatePayload {
             BreakedBlock breakedBlock = new BreakedBlock(position, block);
             this.breakedBlockData.add(breakedBlock);
         }
-
     }
 
     public void extractPlacedBlocks(JsonNode data) {
@@ -305,6 +318,10 @@ public class StatePayload {
         return payload;
     }
 
+    public void setVelocity(Vector3f velocity) {
+        this.velocity = velocity;
+    }
+
     public void setPosition(Vector3f position) {
         this.position = position;
     }
@@ -315,6 +332,14 @@ public class StatePayload {
 
     public float getPitch() {
         return pitch;
+    }
+
+    public float getHealth() {
+        return health;
+    }
+
+    public float getMaxHealth() {
+        return maxHealth;
     }
 
     public Vector3f getVelocity() {
@@ -343,5 +368,17 @@ public class StatePayload {
 
     public ArrayNode getInventoryItems() {
         return inventoryItems;
+    }
+
+    public float getMaxSpeed() {
+        return maxSpeed;
+    }
+
+    public float getHunger() {
+        return hunger;
+    }
+
+    public float getMaxHunger() {
+        return maxHunger;
     }
 }

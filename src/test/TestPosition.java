@@ -63,21 +63,19 @@ public class TestPosition {
 
         InputPayload inputPayload = new InputPayload(node);
 
+        System.out.println("Client (Speed) " + client.getSpeed());
+        System.out.println("Player (Speed) " + player.getSpeed());
 
-        for (int i = 0; i < 1; i++) {
-            client.update(world, inputPayload);
-        }
-
-        /*
         player.setMovingForward(true);
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 10; i++) {
+            client.update(world, inputPayload);
             player.updatePosition(world);
         }
-         */
 
         StatePayload payload = new StatePayload(new fr.math.minecraft.client.network.payload.InputPayload(0, inputs));
-
-        payload.reconcileMovement(world, player, new Vector3f(), new Vector3f());
+        for (int i = 0; i < 10; i++) {
+            //payload.reconcileMovement(world, player, new Vector3f(), new Vector3f());
+        }
 
         System.out.println(payload.getPosition());
 

@@ -1,27 +1,30 @@
 package fr.math.minecraft.client.entity;
 
 import fr.math.minecraft.client.meshs.Face;
+import fr.math.minecraft.logger.LogType;
+import fr.math.minecraft.logger.LoggerUtility;
 import fr.math.minecraft.server.Utils;
-import fr.math.minecraft.shared.MathUtils;
+import fr.math.minecraft.shared.GameConfiguration;
+import fr.math.minecraft.shared.math.MathUtils;
 import fr.math.minecraft.shared.world.Chunk;
 import fr.math.minecraft.shared.world.Material;
 import fr.math.minecraft.shared.world.World;
+import org.apache.log4j.Logger;
 import org.joml.Math;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
-
-import java.util.Arrays;
 
 public class Ray {
 
     private Chunk aimedChunk;
     private byte aimedBlock;
     private Vector3i blockWorldPosition, blockChunkPosition;
-    private float reach;
-    private final int xAxis = 0;
-    private final int yAxis= 1;
-    private final int zAxis = 2;
+    protected final float reach;
+    protected final int xAxis = 0;
+    protected final int yAxis= 1;
+    protected final int zAxis = 2;
     private Face faceAimed;
+    private final static Logger logger = LoggerUtility.getClientLogger(Ray.class, LogType.TXT);
 
     public Ray(float reach) {
         this.aimedChunk = null;
@@ -32,7 +35,6 @@ public class Ray {
         this.faceAimed = null;
     }
 
-
     public void update(Vector3f position, Vector3f front, World world, boolean isServer) {
 
         int direction = 0;
@@ -42,7 +44,6 @@ public class Ray {
         Vector3f startPoint = new Vector3f(position).add(0.0f, 0.5f, 0.0f);
         Vector3i rayPosition = new Vector3i((int)startPoint.x, (int)startPoint.y, (int)startPoint.z);
         Vector3f endPoint = new Vector3f(startPoint);
-
         endPoint.add(new Vector3f(front).mul(reach));
 
         float dx, dy, dz, tDeltaX, tDeltaY, tDeltaZ, tMaxX, tMaxY, tMaxZ;
@@ -178,10 +179,6 @@ public class Ray {
         this.aimedChunk = aimedChunk;
     }
 
-    public void setReach(float reach) {
-        this.reach = reach;
-    }
-
     public void reset() {
         this.aimedChunk = null;
         this.aimedBlock = Material.AIR.getId();
@@ -192,4 +189,5 @@ public class Ray {
     public boolean isAimingBlock() {
         return aimedChunk != null && aimedBlock != Material.AIR.getId() && aimedBlock != Material.WATER.getId();
     }
+
 }

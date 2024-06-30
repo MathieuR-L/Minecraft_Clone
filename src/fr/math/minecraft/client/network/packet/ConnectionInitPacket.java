@@ -20,6 +20,7 @@ import fr.math.minecraft.logger.LoggerUtility;
 import fr.math.minecraft.shared.world.World;
 import fr.math.minecraft.shared.world.WorldLoader;
 import org.apache.log4j.Logger;
+import org.joml.Vector3f;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -98,8 +99,12 @@ public class ConnectionInitPacket extends ClientPacket implements Runnable {
             }
 
             JsonNode serverData = mapper.readTree(data);
-
             logger.info("Connexion initié, Réponse : " + serverData);
+
+            if (serverData.get("uuid") == null) {
+                client.connect();
+                throw new RuntimeException("Impossible de se connecter au serveur, veuillez réessayez");
+            }
 
             String uuid = serverData.get("uuid").asText();
 
@@ -121,7 +126,8 @@ public class ConnectionInitPacket extends ClientPacket implements Runnable {
                 ConnectionMenu connectionMenu = (ConnectionMenu) menu;
                 connectionMenu.getTitle().setText("Construction du monde...");
             }
-
+            float seed = serverData.get("seed").floatValue();
+            world.setSeed(seed);
             world.buildSpawn();
             world.buildSpawnMesh();
 
@@ -134,6 +140,12 @@ public class ConnectionInitPacket extends ClientPacket implements Runnable {
             player.getPosition().x = spawnX;
             player.getPosition().y = spawnY;
             player.getPosition().z = spawnZ;
+
+            Player dummy = new Player("dummy");
+            dummy.setUuid("1");
+            dummy.setPosition(new Vector3f(0, 65, 0));
+            System.out.println("Dummy pos : " + dummy.getPosition());
+            Game.getInstance().getPlayers().put("1", dummy);
 
             Game.getInstance().getCamera().update(player);
 

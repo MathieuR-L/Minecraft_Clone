@@ -11,6 +11,7 @@ import fr.math.minecraft.client.events.listeners.EventListener;
 import fr.math.minecraft.client.events.listeners.PacketEventListener;
 import fr.math.minecraft.client.events.listeners.PacketListener;
 import fr.math.minecraft.client.events.listeners.PlayerListener;
+import fr.math.minecraft.client.handler.EntityStateHandler;
 import fr.math.minecraft.client.network.payload.StatePayload;
 import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
@@ -180,11 +181,24 @@ public class PacketReceiver extends Thread {
                     ItemStack item = new ItemStack(material, 1);
                     this.notifyEvent(new ItemGiveEvent(droppedItemId, item));
                     break;
+                case "CHAT_PAYLOAD":
+                    this.notifyEvent(new ChatPayloadStateEvent((ArrayNode) responseData.get("chat")));
+                    break;
+                case "ENTITY_STATE":
+                    EntityStateHandler stateHandler = new EntityStateHandler(game.getWorld(), responseData);
+                    game.getPacketPool().submit(stateHandler);
+                    break;
                 default:
                     logger.warn("Le packet " + packetType + " est inconnu et a été ignoré.");
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void notifyEvent(ChatPayloadStateEvent event) {
+        for (PacketEventListener listener : packetListeners) {
+            listener.onChatState(event);
         }
     }
 

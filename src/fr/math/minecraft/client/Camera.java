@@ -10,6 +10,7 @@ import fr.math.minecraft.client.math.FrustrumCulling;
 import fr.math.minecraft.client.math.ViewBobbing;
 import fr.math.minecraft.client.meshs.FontMesh;
 import fr.math.minecraft.client.meshs.model.ItemModelData;
+import fr.math.minecraft.shared.entity.Entity;
 import fr.math.minecraft.shared.world.Chunk;
 import fr.math.minecraft.shared.GameConfiguration;
 import org.joml.Math;
@@ -61,10 +62,10 @@ public class Camera {
         pitch = player.getPitch();
     }
 
-    private void calculateFront(Vector3f front) {
-        front.x = (float) (Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
-        front.y = (float) Math.sin(Math.toRadians(pitch));
-        front.z = (float) (Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch)));
+    public void calculateFront(Vector3f front) {
+        front.x = Math.cos(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch));
+        front.y = Math.sin(Math.toRadians(pitch));
+        front.z = Math.sin(Math.toRadians(yaw)) * Math.cos(Math.toRadians(pitch));
         front.normalize();
     }
 
@@ -161,7 +162,7 @@ public class Camera {
 
     }
 
-    public void matrix(Shader shader, Player player) {
+    public void matrix(Shader shader, Entity entity) {
 
         this.calculateFront(front);
 
@@ -174,18 +175,18 @@ public class Camera {
 
         projection.perspective((float) Math.toRadians(fov), width / height, nearPlane ,farPlane);
 
-        Vector3f offset = new Vector3f(0, 0.25f, 0);
+        Vector3f offset = entity.getType().getOffset();
         view.lookAt(new Vector3f(position).sub(offset), new Vector3f(position).sub(offset).add(front), up);
 
-        model.translate(player.getPosition().x, player.getPosition().y, player.getPosition().z);
+        model.translate(entity.getPosition().x, entity.getPosition().y, entity.getPosition().z);
         model.rotate((float) Math.toRadians(90.0f), new Vector3f(0.0f, 1.0f, 0.0f), model);
 
-        shader.sendFloat("bodyYaw", (float) Math.toRadians(player.getBodyYaw()));
-        shader.sendFloat("yaw", (float) Math.toRadians(player.getYaw()));
-        shader.sendFloat("pitch", (float) Math.toRadians(player.getPitch()));
+        shader.sendFloat("bodyYaw", (float) Math.toRadians(entity.getBodyYaw()));
+        shader.sendFloat("yaw", (float) Math.toRadians(entity.getYaw()));
+        shader.sendFloat("pitch", (float) Math.toRadians(entity.getPitch()));
         shader.sendFloat("time", Game.getInstance().getTime());
 
-        for (Animation animation : player.getAnimations()) {
+        for (Animation animation : entity.getAnimations()) {
             animation.sendUniforms(shader);
         }
 
@@ -194,7 +195,7 @@ public class Camera {
         shader.sendMatrix("model", model, modelBuffer);
     }
 
-    public void matrixNametag(Shader shader, Player player) {
+    public void matrixNametag(Shader shader, Entity entity) {
 
         this.calculateFront(front);
 
@@ -209,10 +210,10 @@ public class Camera {
 
         Vector3f offset = new Vector3f(0, 0.25f, 0);
         view.lookAt(new Vector3f(position).sub(offset), new Vector3f(position).sub(offset).add(front), up);
-        model.translate(player.getPosition().x, player.getPosition().y + 0.8f, player.getPosition().z);
+        model.translate(entity.getPosition().x, entity.getPosition().y + 0.8f, entity.getPosition().z);
         model.rotate((float) Math.toRadians(90.0f), new Vector3f(0.0f, 1.0f, 0.0f), model);
 
-        shader.sendFloat("yaw", (float) Math.toRadians(player.getYaw()));
+        shader.sendFloat("yaw", (float) Math.toRadians(entity.getYaw()));
 
         shader.sendMatrix("projection", projection, projectionBuffer);
         shader.sendMatrix("view", view, viewBuffer);
@@ -351,12 +352,12 @@ public class Camera {
         model.translate(0, viewBobbing.getY(), 0);
         model.translate(viewBobbing.getPosition());
 
-
         projection.perspective(Math.toRadians(fov), width / height, nearPlane ,farPlane);
 
         shader.sendMatrix("projection", projection, projectionBuffer);
         shader.sendMatrix("view", view, viewBuffer);
         shader.sendMatrix("model", model, modelBuffer);
+
 
         //projection.perspective((float) Math.toRadians(fov), width / height, nearPlane ,farPlane);
 

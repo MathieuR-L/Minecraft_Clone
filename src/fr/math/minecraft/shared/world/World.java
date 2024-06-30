@@ -11,6 +11,10 @@ import fr.math.minecraft.client.meshs.ChunkMesh;
 import fr.math.minecraft.client.meshs.WaterMesh;
 import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
+import fr.math.minecraft.server.pathfinding.Graph;
+import fr.math.minecraft.shared.entity.Entity;
+import fr.math.minecraft.shared.entity.EntityType;
+import fr.math.minecraft.shared.entity.Villager;
 import fr.math.minecraft.shared.world.generator.OverworldGenerator;
 import fr.math.minecraft.shared.world.generator.TerrainGenerator;
 import org.apache.log4j.Logger;
@@ -23,6 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class World {
 
     private final HashMap<Coordinates, Chunk> chunks;
+    private final Map<String, Entity> entities;
     private final Map<Vector3i, Byte> cavesBlocks;
     private final ConcurrentHashMap<Coordinates, Chunk> pendingChunks;
     private final Set<Coordinates> loadingChunks;
@@ -38,6 +43,8 @@ public class World {
     private Set<Coordinates> loadedRegions;
     private TerrainGenerator terrainGenerator;
     private final int SPAWN_SIZE = 2;
+    private final Graph graph;
+    private float seed;
 
     public World() {
         this.chunks = new HashMap<>();
@@ -53,12 +60,16 @@ public class World {
         this.brokenBlocks = new HashMap<>();
         this.placedBlocks = new HashMap<>();
         this.loadedRegions = new HashSet<>();
+        this.entities = new HashMap<>();
+        this.graph = new Graph();
+        this.seed = 0;
 
         for (Material material : Material.values()) {
             if (material.isSolid()) {
                 solidBlocks.add(material.getId());
             }
         }
+
     }
 
     public void calculateSpawnPosition() {
@@ -210,6 +221,7 @@ public class World {
         transparent.add(Material.ROSE.getId());
         transparent.add(Material.CACTUS.getId());
         transparent.add(Material.DEAD_BUSH.getId());
+        transparent.add(Material.GLASS.getId());
         return transparent;
     }
 
@@ -259,6 +271,11 @@ public class World {
 
     public Region getRegion(int x, int y, int z) {
         Coordinates coordinates = new Coordinates(x, y, z);
+        return regions.get(coordinates);
+    }
+
+    public Region getRegion(Vector3i pos) {
+        Coordinates coordinates = new Coordinates(pos);
         return regions.get(coordinates);
     }
 
@@ -326,4 +343,31 @@ public class World {
         return worldNode;
     }
 
+    public Map<String, Entity> getEntities() {
+        return entities;
+    }
+
+    public void addEntity(Entity entity) {
+        synchronized (this.getEntities()) {
+            entities.put(entity.getUuid(), entity);
+        }
+    }
+
+    public void removeEntity(Entity entity) {
+        synchronized (this.getEntities()) {
+            entities.remove(entity.getUuid());
+        }
+    }
+
+    public Graph getGraph() {
+        return graph;
+    }
+
+    public float getSeed() {
+        return seed;
+    }
+
+    public void setSeed(float seed) {
+        this.seed = seed;
+    }
 }

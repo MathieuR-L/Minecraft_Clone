@@ -28,9 +28,10 @@ public class StatePayload {
     private Vector3f velocity;
     private float yaw;
     private float pitch;
+    private float health, maxHealth, maxSpeed, hunger, maxHunger;
     private List<PlacedBlock> placedBlocks;
     private List<BreakedBlock> brokenBlocks;
-    private Inventory hotbar, craftInventory, completedCraftInventory, inventory;
+    private Inventory hotbar, craftInventory, completedCraftInventory, inventory, craftingTableInventory;
 
     public StatePayload(InputPayload payload) {
         this.payload = payload;
@@ -41,6 +42,8 @@ public class StatePayload {
         this.data = null;
         this.yaw = 0.0f;
         this.pitch = 0.0f;
+        this.health = 0.0f;
+        this.maxHealth = 0.0f;
     }
 
     public void predictMovement(World world, Client client) {
@@ -57,7 +60,7 @@ public class StatePayload {
         synchronized (world.getDroppedItems()) {
             List<String> collectedItems = new ArrayList<>();
             for (DroppedItem droppedItem : world.getDroppedItems().values()) {
-                if (newPosition.distance(droppedItem.getPosition()) < 1.5f) {
+                if (droppedItem.isOnFloor() && newPosition.distance(droppedItem.getPosition()) < 1.5f) {
                     ItemStack item = new ItemStack(droppedItem.getMaterial(), 1);
                     Hotbar hotbar = client.getHotbar();
                     Inventory inventory = client.getInventory();
@@ -123,8 +126,14 @@ public class StatePayload {
         this.pitch = client.getPitch();
         this.completedCraftInventory = client.getCompletedCraftPlayerInventory();
         this.craftInventory = client.getPlayerCraftInventory();
+        this.craftingTableInventory = client.getCraftingTableInventory();
         this.position = newPosition;
         this.velocity = newVelocity;
+        this.health = client.getHealth();
+        this.maxHealth = client.getMaxHealth();
+        this.maxSpeed = client.getMaxSpeed();
+        this.hunger = client.getHunger();
+        this.maxHunger = client.getMaxHunger();
     }
 
     public void send() {
@@ -157,6 +166,7 @@ public class StatePayload {
         ArrayNode hotbarArray = mapper.createArrayNode();
         ArrayNode craftInventoryArray = mapper.createArrayNode();
         ArrayNode completedCraftInventoryArray = mapper.createArrayNode();
+        ArrayNode craftingTableInventoryArray = mapper.createArrayNode();
 
         payloadNode.put("tick", payload.getTick());
         payloadNode.put("type", "STATE_PAYLOAD");
@@ -169,6 +179,11 @@ public class StatePayload {
         payloadNode.put("yaw", yaw);
         payloadNode.put("pitch", pitch);
         payloadNode.put("uuid", payload.getClientUuid());
+        payloadNode.put("health", health);
+        payloadNode.put("maxHealth", maxHealth);
+        payloadNode.put("maxSpeed", maxSpeed);
+        payloadNode.put("hunger", hunger);
+        payloadNode.put("maxHunger", maxHunger);
 
         for (PlacedBlock placedBlock : placedBlocks) {
             Vector3i blockPosition = placedBlock.getWorldPosition();
@@ -238,12 +253,22 @@ public class StatePayload {
             completedCraftInventoryArray.add(item.toJSONObject());
         }
 
+        for (ItemStack item : craftingTableInventory.getItems()) {
+            if (item == null) {
+                craftingTableInventoryArray.add(airNode);
+                continue;
+            }
+            craftingTableInventoryArray.add(item.toJSONObject());
+        }
+
         payloadNode.set("aimedPlacedBlocks", placedBlocksArray);
         payloadNode.set("brokenBlocks", brokenBlocksArray);
         payloadNode.set("inventory", inventoryArray);
         payloadNode.set("hotbar", hotbarArray);
         payloadNode.set("craftInventory", craftInventoryArray);
         payloadNode.set("completedCraftInventory", completedCraftInventoryArray);
+        payloadNode.set("craftingTableInventory", craftingTableInventoryArray);
+        payloadNode.put("craftingTableOpen", craftingTableInventory.isOpen());
 
         return payloadNode;
     }
