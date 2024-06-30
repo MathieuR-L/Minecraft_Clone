@@ -48,7 +48,7 @@ public class Player extends Entity {
     private boolean droppingItem;
     private boolean placingBlock, breakingBlock;
     private boolean canHoldItem, canPlaceHoldedItem;
-    private boolean debugKeyPressed, occlusionKeyPressed, interpolationKeyPressed, inventoryKeyPressed, chatKeyPressed;
+    private boolean debugKeyPressed, occlusionKeyPressed, pathKeyPressed, interpolationKeyPressed, inventoryKeyPressed, chatKeyPressed;
     private float lastMouseX, lastMouseY;
     private final MiningAnimation miningAnimation;
     private BufferedImage skin;
@@ -104,6 +104,7 @@ public class Player extends Entity {
         this.droppingItem = false;
         this.chatKeyPressed = false;
         this.debugKeyPressed = false;
+        this.pathKeyPressed = false;
         this.occlusionKeyPressed = false;
         this.interpolationKeyPressed = false;
         this.inventoryKeyPressed = false;
@@ -198,6 +199,10 @@ public class Player extends Entity {
             inventoryKeyPressed = false;
         }
 
+        if (glfwGetKey(window, GLFW_KEY_P) == GLFW_RELEASE) {
+            pathKeyPressed = false;
+        }
+
         if (glfwGetKey(window, GLFW_KEY_T) == GLFW_RELEASE) {
             chatKeyPressed = false;
         }
@@ -285,6 +290,13 @@ public class Player extends Entity {
             if (!occlusionKeyPressed) {
                 gameConfiguration.setOcclusionEnabled(!gameConfiguration.isOcclusionEnabled());
                 occlusionKeyPressed = true;
+            }
+        }
+
+        if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS) {
+            if (!pathKeyPressed) {
+                gameConfiguration.setEntitesPathEnabled(!gameConfiguration.isEntitesPathEnabled());
+                pathKeyPressed = true;
             }
         }
 
@@ -512,15 +524,17 @@ public class Player extends Entity {
             if (canPlaceBlock && hotbarItem != null && hotbarItem.getMaterial() != Material.AIR) {
                 ChunkManager chunkManager = new ChunkManager();
                 if (buildRay.isAimingBlock() && !hotbarItem.getMaterial().isFood()) {
-                    Vector3i rayPosition = buildRay.getBlockWorldPosition();
-                    Vector3i placedBlockWorldPosition = buildRay.getBlockPlacedPosition(rayPosition);
-                    Vector3i blockPositionLocal = Utils.worldToLocal(placedBlockWorldPosition);
-                    PlacedBlock placedBlock = new PlacedBlock(uuid, placedBlockWorldPosition, blockPositionLocal, hotbarItem.getMaterial().getId());
+                    if (!hotbarItem.getMaterial().isItem()) {
+                        Vector3i rayPosition = buildRay.getBlockWorldPosition();
+                        Vector3i placedBlockWorldPosition = buildRay.getBlockPlacedPosition(rayPosition);
+                        Vector3i blockPositionLocal = Utils.worldToLocal(placedBlockWorldPosition);
+                        PlacedBlock placedBlock = new PlacedBlock(uuid, placedBlockWorldPosition, blockPositionLocal, hotbarItem.getMaterial().getId());
 
-                    placedBlocks.add(placedBlock);
-                    Chunk aimedChunk = world.getChunkAt(placedBlockWorldPosition);
+                        placedBlocks.add(placedBlock);
+                        Chunk aimedChunk = world.getChunkAt(placedBlockWorldPosition);
 
-                    chunkManager.placeBlock(aimedChunk, blockPositionLocal, Game.getInstance().getWorld(), hotbarItem.getMaterial());
+                        chunkManager.placeBlock(aimedChunk, blockPositionLocal, Game.getInstance().getWorld(), hotbarItem.getMaterial());
+                    }
                 }
                 canPlaceBlock = false;
                 placeBlockCooldown = (int) GameConfiguration.UPS / 3;
