@@ -87,6 +87,7 @@ public enum Material {
     LITTLE_GRAY_CONCRETE("stained_hardened_clay:8", 78, 8, 5, 0, 7, true, false),
     BLACK_CONCRETE("stained_hardened_clay:15", 79, 9, 5, 0, 7, true, false),
     STAINED_GLASS("stained_glass", 81, 1, 12, 9, 4),
+    BLUE_CONCRETE("stained_hardened_clay:3", 82, 2, 4, 0, 7, true, false),
     BREAKING_ANIMATION("", -3, 0, 0, 0, 0);
 
     private final int blockIconX, x;
