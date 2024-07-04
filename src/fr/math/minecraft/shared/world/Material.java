@@ -84,7 +84,7 @@ public enum Material {
     CLAY("clay", 75, 8, 11, 0, 7, true, false),
     GRAY_CONCRETE("stained_hardened_clay:7", 76, 6, 5, 0, 7, true, false),
     WHITE_CONCRETE("stained_hardened_clay:0", 77, 7, 5, 0, 7, true, false),
-    LITTLE_GRAY_CONCRETE("stained_hardened_clay:8", 78, 8, 5, 0, 7, true, false),
+    LIGHT_GRAY_CONCRETE("stained_hardened_clay:8", 78, 8, 5, 0, 7, true, false),
     BLACK_CONCRETE("stained_hardened_clay:15", 79, 9, 5, 0, 7, true, false),
     STAINED_GLASS("stained_glass", 81, 1, 12, 9, 4),
     BLUE_CONCRETE("stained_hardened_clay:3", 82, 2, 4, 0, 7, true, false),
