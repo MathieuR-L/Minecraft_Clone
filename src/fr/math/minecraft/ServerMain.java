@@ -37,7 +37,7 @@ public class ServerMain {
         World world = server.getWorld();
         world.setSeed(seed);
         world.buildSpawn();
-        world.buildMap(GameConfiguration.MAP_FILE_PATH);
+        //world.buildMap(GameConfiguration.MAP_FILE_PATH);
         world.calculateSpawnPosition();
         //AStar.initGraph(world, world.getSpawnPosition());
 

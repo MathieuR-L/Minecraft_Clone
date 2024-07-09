@@ -41,45 +41,42 @@ public class TestNBTFile {
         }
 
 
-
-
-        //int i = 0;
-        ArrayList<Integer> arrayList = new ArrayList<>();
-
         ArrayList<ArrayList<Integer>> segmentationList = nbtHandler.getCleanNbtBlocksArray(compoundTag);
         int segmentationNumber = segmentationList.size();
-        ShortTag lenght = nbtHandler.getNbtLength(compoundTag);
-        ShortTag width = nbtHandler.getNbtWidth(compoundTag);
         ByteArrayTag dataArray = nbtHandler.getNbtDataArray(compoundTag);
 
 
         int cpt = 0;
-        ArrayList<int[]> secondTab = new ArrayList<>();
+        int nbError = 0;
         for (int i = 0; i < segmentationNumber; i++) {
             ArrayList<Integer> blockList = segmentationList.get(i);
             for (int j = 0; j < blockList.size(); j++) {
-                cpt++;
-                Material currentMaterial;
+
+                int indiceSus = (i * 1000) + j;
                 int element = blockList.get(j);
+
                 if (element < 0) continue;
+
                 String elementVariant;
                 if (nbtHandler.getMappingStruc().get("" + element) != null) {
-                    currentMaterial = nbtHandler.getMappingStruc().get("" + element);
                     elementVariant ="0";
                 } else {
-                    elementVariant = "" + element + ":" + dataArray.getValue()[(i * blockList.size()) + j];
-                    currentMaterial = nbtHandler.getMappingStruc().get(elementVariant);
+                    elementVariant = "" + element + ":" + dataArray.getValue()[indiceSus];
                 }
 
                 int originBlock = tabArray.get(cpt)[0];
                 int originMat = tabArray.get(cpt)[1];
-                int datak = Byte.toUnsignedInt(dataArray.getValue()[(i * blockList.size()) + j]);
-                if((originBlock != element ) || (originMat !=  datak)) {
-                    System.out.println("ATATATATATATA" + "\noB:" + originBlock + " oD: " + originMat + "| element : " + element + " variant :" + elementVariant);
+                int dataSus = Byte.toUnsignedInt(dataArray.getValue()[indiceSus]);
+                if((originBlock != element ) || (originMat !=  dataSus)) {
+                    System.out.println("Erreur à l'indice origine:" + cpt +" sus:" + indiceSus + "\noB:" + originBlock + " oD: " + originMat + "| element : " + element + " variant :" + elementVariant);
+                    nbError++;
                 }
+                cpt++;
                 //System.out.println("[" + segmentationNumber + "|" + blockList.size() + "|" + j + "]" + " Current Material : " + currentMaterial);
             }
         }
+
+        System.out.println("Nombre d'erreur :" + nbError + "/" + cpt);
 
         //System.out.println("Compteur : " + cpt);
             //System.out.println("Longueur byteArrayTag : " + byteArrayTag.getValue().length);
@@ -98,9 +95,5 @@ public class TestNBTFile {
         System.out.println(arrayList);
 
         */
-
-        for (int[] ints : tabArray) {
-            System.out.println(Arrays.toString(ints));
-        }
     }
 }

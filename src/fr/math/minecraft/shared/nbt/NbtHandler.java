@@ -102,7 +102,7 @@ public class NbtHandler {
             }
             if(reste != 0 && segmentationNumber != 0) {
                 ArrayList<Integer> lastBlocks = new ArrayList<>();
-                for (int i = segmentationNumber*maxBlocPerList - 1; i < reste + (segmentationNumber*maxBlocPerList - 1); i++) {
+                for (int i = segmentationNumber*maxBlocPerList; i <= reste + (segmentationNumber*maxBlocPerList) -1; i++) {
                     lastBlocks.add(Byte.toUnsignedInt(blocksArray.getValue()[i]));
                 }
                 segmentationList.add(lastBlocks);
@@ -113,7 +113,6 @@ public class NbtHandler {
                 }
                 segmentationList.add(littleSchem);
             }
-
 
             return segmentationList;
         } else {
