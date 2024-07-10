@@ -95,7 +95,7 @@ public class Renderer {
     private final Texture villagerTexture;
     private final Texture zombieTexture;
     private final Texture craftingTableInventoryTexture;
-    private final Texture routerTexture;
+    private final Texture trameTexture;
     private final CrosshairMesh crosshairMesh;
     private final ImageMesh imageMesh;
     private final ImageMesh screenMesh;
@@ -180,7 +180,7 @@ public class Renderer {
         this.guiBlocksTexture = new Texture("res/textures/gui/gui_blocks2.png", 11);
         this.villagerTexture = new Texture("res/textures/entity/villager2.png", 13);
         this.zombieTexture = new Texture("res/textures/zombie.png", 12);
-        this.routerTexture = new Texture("res/textures/entity/villager.png", 14);
+        this.trameTexture = new Texture("res/textures/gui/trame_ig.png", 9);
 
         this.dirtTexture = TextureBuilder.buildDirtBackgroundTexture();
 
@@ -201,7 +201,7 @@ public class Renderer {
         this.villagerTexture.load();
         this.zombieTexture.load();
         this.craftingTableInventoryTexture.load();
-        this.routerTexture.load();
+        this.trameTexture.load();
     }
 
     public void render(Camera camera, Player player) {
@@ -260,16 +260,16 @@ public class Renderer {
     public void render(Camera camera, Router router) {
 
         villagerShader.enable();
-        villagerShader.sendInt("uTexture", routerTexture.getSlot());
+        villagerShader.sendInt("uTexture", villagerTexture.getSlot());
 
-        glActiveTexture(GL_TEXTURE0 + routerTexture.getSlot());
-        routerTexture.bind();
+        glActiveTexture(GL_TEXTURE0 + villagerTexture.getSlot());
+        villagerTexture.bind();
 
         camera.matrix(villagerShader, router);
 
         villagerMesh.draw();
 
-        routerTexture.unbind();
+        villagerTexture.unbind();
     }
 
     public void render(Camera camera, MainPC mainPC) {
@@ -533,6 +533,23 @@ public class Renderer {
 
         glEnable(GL_DEPTH_TEST);
 
+    }
+
+    public void renderTrame(Camera camera, Trame trame) {
+        glDisable(GL_DEPTH_TEST);
+
+        crosshairShader.enable();
+        crosshairShader.sendInt("uTexture", trameTexture.getSlot());
+
+        glActiveTexture(GL_TEXTURE0 + trameTexture.getSlot());
+        trameTexture.bind();
+
+        camera.matrixCrosshair(crosshairShader);
+        crosshairMesh.draw();
+
+        trameTexture.unbind();
+
+        glEnable(GL_DEPTH_TEST);
     }
 
     public void renderAimedBlock(Camera camera, Ray ray) {
@@ -1139,6 +1156,8 @@ public class Renderer {
             if (messageDisplayed == 5) break;
         }
     }
+
+
 
     private static class ChatTimestampComparator implements Comparator<ChatMessage> {
 

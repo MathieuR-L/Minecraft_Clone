@@ -24,6 +24,7 @@ import fr.math.minecraft.shared.entity.mob.MobBehavior;
 import fr.math.minecraft.shared.entity.mob.MobType;
 import fr.math.minecraft.shared.entity.mob.Zombie;
 import fr.math.minecraft.shared.inventory.Inventory;
+import fr.math.minecraft.shared.inventory.Trame;
 import fr.math.minecraft.shared.network.Hitbox;
 import fr.math.minecraft.shared.world.*;
 import org.apache.log4j.Logger;
@@ -64,7 +65,9 @@ public abstract class Entity {
     protected int hitMarkDelay;
     private ArrayList<Vector3f> checkpoints;
     private int checkpointStep;
+    private String IP;
     protected boolean finished;
+    private Trame trame;
     private final static Logger logger = LoggerUtility.getClientLogger(Entity.class, LogType.TXT);
     public Entity(String uuid, EntityType type) {
         this.type = type;
@@ -99,6 +102,8 @@ public abstract class Entity {
         this.checkpoints = new ArrayList<>();
         this.checkpointStep = 0;
         this.finished = false;
+        this.IP = null;
+        this.trame = null;
     }
 
     public void notifyEvent(PlayerMoveEvent event) {
@@ -146,7 +151,6 @@ public abstract class Entity {
             Node targetNode = null;
 
             if(this instanceof Zombie) {
-                System.out.println("Zombie :" + this.getPosition());
                 synchronized (server.getClients()) {
                     float minDistance = Float.MAX_VALUE;
                     Client target = null;
@@ -174,7 +178,6 @@ public abstract class Entity {
                 }
             }
             if(this instanceof Villager){
-                System.out.println("Villageois :" + this.getPosition() + " | Objectif :" + this.checkpoints.get(checkpointStep));
                 if (this.checkpoints != null && !this.checkpoints.isEmpty() && !this.isFinished()) {
                     Node endCheckpoint = new Node(this.checkpoints.get(checkpointStep));
                     targetNode = endCheckpoint;
@@ -186,7 +189,6 @@ public abstract class Entity {
 
                     Vector3f villagerPos = this.getPosition();
                     if ((xMinIncertitude <= villagerPos.x) && (villagerPos.x <= xMaxIncertitude) && ((zMinIncertitude <= villagerPos.z) && (villagerPos.z <= zMaxIncertitude))) {
-                        System.out.println("Je passe à l'autre");
                         this.nextCheckpoint();
                     }
 
@@ -256,12 +258,9 @@ public abstract class Entity {
     private void nextCheckpoint() {
         if(checkpointStep < checkpoints.size() - 1) {
             checkpointStep++;
-            System.out.println("J'augmente");
         } else {
-            System.out.println("Finit ! on repart");
             Collections.reverse(checkpoints);
             checkpointStep = 0;
-            System.out.println(checkpoints);
         }
     }
 
@@ -636,5 +635,21 @@ public abstract class Entity {
 
     public boolean isFinished() {
         return finished;
+    }
+
+    public void setIP(String IP) {
+        this.IP = IP;
+    }
+
+    public String getIP() {
+        return IP;
+    }
+
+    public Trame getTrame() {
+        return trame;
+    }
+
+    public void setTrame(Trame trame) {
+        this.trame = trame;
     }
 }

@@ -18,6 +18,7 @@ import fr.math.minecraft.shared.entity.Villager;
 import fr.math.minecraft.shared.entity.mob.Zombie;
 import fr.math.minecraft.shared.entity.network.MainPC;
 import fr.math.minecraft.shared.entity.network.Router;
+import fr.math.minecraft.shared.inventory.Trame;
 import fr.math.minecraft.shared.world.World;
 import org.apache.log4j.Logger;
 import org.joml.Vector3f;
@@ -81,23 +82,30 @@ public class MinecraftServer {
         Router router = new Router("Pablo");
         MainPC mainPC = new MainPC("Carlos");
 
+        Trame villagerTrame = new Trame();
+        villagerTrame.setTrame(router, mainPC, "test");
+        logger.debug(villagerTrame.toString());
+
+        villager.setTrame(villagerTrame);
+        logger.debug(villager.getTrame().toString());
+
         villager.setPosition(new Vector3f(10, 7, 0));
         router.setPosition(new Vector3f(30, 7, 0));
         mainPC.setPosition(new Vector3f(30, 7, 20));
 
+        /*
         villager.getCheckpoints().add(villager.getPosition());
 
         router.getRoutingTable().put(mainPC.getPosition(), router.setRoute(mainPC.getPosition()));
 
         villager.setServiceRequested(mainPC);
-
-        router.giveCheckpoints(villager);
+        */
 
         world.addEntity(villager);
         world.addEntity(router);
         world.addEntity(mainPC);
 
-        logger.debug(villager.getCheckpoints());
+
         initCommands();
     }
 

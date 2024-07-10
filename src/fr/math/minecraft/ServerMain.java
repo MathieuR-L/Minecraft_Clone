@@ -35,7 +35,6 @@ public class ServerMain {
         server.setPort(port);
         World world = server.getWorld();
         world.setSeed(seed);
-        world.buildSpawn();
         world.calculateSpawnPosition();
         //AStar.initGraph(world, world.getSpawnPosition());
 

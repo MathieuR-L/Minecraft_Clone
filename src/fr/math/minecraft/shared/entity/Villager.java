@@ -6,6 +6,8 @@ import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
 import fr.math.minecraft.server.Client;
 import fr.math.minecraft.shared.GameConfiguration;
+import fr.math.minecraft.shared.entity.network.NetworkEntityBehavior;
+import fr.math.minecraft.shared.inventory.Trame;
 import fr.math.minecraft.shared.network.Hitbox;
 import org.apache.log4j.Logger;
 import org.joml.*;
@@ -18,6 +20,7 @@ public class Villager extends Entity {
     private final static Logger logger = LoggerUtility.getServerLogger(Villager.class, LogType.TXT);
     private Entity serviceRequested;
     private Client sender;
+    private Trame trame;
 
 
     private Vector3f firstPosition;
@@ -36,6 +39,36 @@ public class Villager extends Entity {
     @Override
     public void render(Camera camera, Renderer renderer) {
         renderer.render(camera, this);
+    }
+
+    public void updateTrame(Entity serverOrigin ,Entity serviceRequested, String data) {
+         trame.setType("IP");
+         trame.setProtocole("TCP");
+         trame.setIpSource(serverOrigin.getIP());
+         trame.setIpDestination(serviceRequested.getIP());
+         trame.setData(data);
+    }
+
+    public Trame createTrame(Entity serverOrigin ,Entity serviceRequested, String data) {
+        Trame newTrame = new Trame();
+        newTrame.setType("IP");
+        newTrame.setProtocole("TCP");
+        newTrame.setIpSource(serverOrigin.getIP());
+        newTrame.setIpDestination(serviceRequested.getIP());
+        newTrame.setData(data);
+
+        return newTrame;
+    }
+
+    public void createInternTrame(Entity serverOrigin ,Entity serviceRequested, String data) {
+        Trame newTrame = new Trame();
+        newTrame.setType("IP");
+        newTrame.setProtocole("TCP");
+        newTrame.setIpSource(serverOrigin.getIP());
+        newTrame.setIpDestination(serviceRequested.getIP());
+        newTrame.setData(data);
+
+        this.trame = newTrame;
     }
 
     public void addCheckpoint(Vector3f checkpoint) {
@@ -74,5 +107,13 @@ public class Villager extends Entity {
 
     public void setSender(Client sender) {
         this.sender = sender;
+    }
+
+    public Trame getTrame() {
+        return trame;
+    }
+
+    public void setTrame(Trame trame) {
+        this.trame = trame;
     }
 }

@@ -37,3 +37,4 @@ src/log/
 *.log
 skins/
 /plugins
+res/schematics/schematics.rar

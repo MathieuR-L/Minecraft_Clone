@@ -436,7 +436,12 @@ public class Player extends Entity {
             placingBlock = true;
             Entity target = this.getAttackRay().getTarget();
             if (target != null && this.getAttackRay().getTarget().getType() == EntityType.VILLAGER) {
-                this.inventory.setOpen(true);
+                if(target.getTrame() != null) {
+                    Trame trame = target.getTrame();
+                    logger.info(trame.toString());
+                } else {
+                    logger.warn("Bizarre");
+                }
             }
         }
 
