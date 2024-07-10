@@ -1,5 +1,7 @@
 package fr.math.minecraft.shared.inventory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import fr.math.minecraft.client.Camera;
 import fr.math.minecraft.client.Renderer;
 import fr.math.minecraft.shared.entity.Entity;
@@ -41,7 +43,18 @@ public class Trame {
         return "\n|Type : " + type + " | Protocole : " + protocole + "|\n-----------" + "\n|IP Source : " + ipSource + " | IP Destination : " + ipDestination + "|\n-----------" + "\n| Port Source :" + portSource + " | Port Destination : " + portDestination + "|\n-----------" +"\n| Data : " + data + "|";
     }
 
-    public String getType() {
+    public static void trameJson(ObjectNode entityNode, Trame trame) {
+        entityNode.put("typeTrame", trame.getType());
+        entityNode.put("protocole",  trame.getProtocole());
+        entityNode.put("ipSource",  trame.getIpSource());
+        entityNode.put("ipDestination",  trame.getIpDestination());
+        entityNode.put("portSource",  trame.getPortSource());
+        entityNode.put("portDestionation",  trame.getPortDestination());
+        entityNode.put("dataTrame",  trame.getData());
+    }
+
+
+        public String getType() {
         return type;
     }
 

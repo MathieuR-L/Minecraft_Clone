@@ -437,10 +437,9 @@ public class Player extends Entity {
             Entity target = this.getAttackRay().getTarget();
             if (target != null && this.getAttackRay().getTarget().getType() == EntityType.VILLAGER) {
                 if(target.getTrame() != null) {
-                    Trame trame = target.getTrame();
-                    logger.info(trame.toString());
+                    System.out.println(target.getTrame().toString());
                 } else {
-                    logger.warn("Bizarre");
+                    System.out.println("non");
                 }
             }
         }

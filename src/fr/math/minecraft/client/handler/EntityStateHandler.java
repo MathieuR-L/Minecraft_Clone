@@ -12,6 +12,7 @@ import fr.math.minecraft.server.pathfinding.Pattern;
 import fr.math.minecraft.shared.entity.Entity;
 import fr.math.minecraft.shared.entity.EntityFactory;
 import fr.math.minecraft.shared.entity.EntityType;
+import fr.math.minecraft.shared.inventory.Trame;
 import fr.math.minecraft.shared.world.World;
 import org.apache.log4j.Logger;
 import org.joml.Vector2i;
@@ -39,6 +40,22 @@ public class EntityStateHandler implements Runnable {
         String entityName = entityData.get("name").asText();
         String lastAttackerID = entityData.get("lastAttacker").asText();
         String lastAttackerTypeValue = entityData.get("lastAttackerType").asText();
+        Boolean hasTrame = entityData.get("hasTrame").asBoolean();
+        System.out.println("hastrame ?:" + hasTrame);
+        if(hasTrame) {
+            String typeTrame = entityData.get("typeTrame").asText();
+            String protocole = entityData.get("protocole").asText();
+            String ipSource = entityData.get("ipSource").asText();
+            String ipDestination = entityData.get("ipDestination").asText();
+            int portSource = entityData.get("portSource").asInt();
+            int portDestination = entityData.get("portDestination").asInt();
+            String dataTrame = entityData.get("dataTrame").asText();
+
+            Trame trame = new Trame(typeTrame, protocole, ipSource, ipDestination, dataTrame, portSource, portDestination);
+            entity.setTrame(trame);
+            System.out.println("J'ai set la trame");
+        }
+
         float worldX = entityData.get("x").floatValue();
         float worldY = entityData.get("y").floatValue();
         float worldZ = entityData.get("z").floatValue();

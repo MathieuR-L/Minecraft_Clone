@@ -63,11 +63,12 @@ public abstract class Entity {
     private EntityType lastAttackerType;
     private int patternUpdateCooldown;
     protected int hitMarkDelay;
-    private ArrayList<Vector3f> checkpoints;
-    private int checkpointStep;
-    private String IP;
+    protected ArrayList<Vector3f> checkpoints;
+    protected int checkpointStep;
+    protected String IP;
     protected boolean finished;
-    private Trame trame;
+    protected Trame trame;
+    protected boolean hasTrame;
     private final static Logger logger = LoggerUtility.getClientLogger(Entity.class, LogType.TXT);
     public Entity(String uuid, EntityType type) {
         this.type = type;
@@ -102,8 +103,8 @@ public abstract class Entity {
         this.checkpoints = new ArrayList<>();
         this.checkpointStep = 0;
         this.finished = false;
-        this.IP = null;
-        this.trame = null;
+        this.hasTrame = false;
+        this.trame = new Trame();
     }
 
     public void notifyEvent(PlayerMoveEvent event) {
@@ -377,6 +378,10 @@ public abstract class Entity {
         entityNode.put("maxHunger", maxHunger);
         entityNode.put("lastAttacker", lastAttackerID == null ? "NONE" : lastAttackerID);
         entityNode.put("lastAttackerType", lastAttackerType == null ? "NONE" : lastAttackerType.toString());
+        entityNode.put("hasTrame", hasTrame);
+        if(hasTrame == true) {
+            Trame.trameJson(entityNode, trame);
+        }
 
         if (pattern != null && !pattern.getPath().isEmpty()) {
             for (Node node : pattern.getPath()) {

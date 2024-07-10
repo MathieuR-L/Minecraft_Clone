@@ -22,7 +22,6 @@ public class Villager extends Entity {
     private Client sender;
     private Trame trame;
 
-
     private Vector3f firstPosition;
     public Villager(String name) {
         super(UUID.randomUUID().toString(), EntityType.VILLAGER);
@@ -34,6 +33,21 @@ public class Villager extends Entity {
         this.firstPosition = new Vector3f(0,0,0);
         this.serviceRequested = null;
         this.sender = null;
+        this.hasTrame = false;
+    }
+
+    public Villager(String name, Trame trame) {
+        super(UUID.randomUUID().toString(), EntityType.VILLAGER);
+        this.name = name;
+        this.hitbox = new Hitbox(new Vector3f(0, 0, 0), new Vector3f(0.25f, 1.0f, 0.25f));
+        this.speed = 0.11f;
+        this.maxSpeed = 0.11f;
+        this.gravity = new Vector3f(0, 0,0);
+        this.firstPosition = new Vector3f(0,0,0);
+        this.serviceRequested = null;
+        this.sender = null;
+        this.hasTrame = true;
+        this.trame = trame;
     }
 
     @Override
@@ -114,6 +128,7 @@ public class Villager extends Entity {
     }
 
     public void setTrame(Trame trame) {
+        this.hasTrame = true;
         this.trame = trame;
     }
 }

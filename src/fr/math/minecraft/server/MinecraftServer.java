@@ -78,16 +78,15 @@ public class MinecraftServer {
         logger.info("Point de spawn calculé en " + world.getSpawnPosition());
 
 
-        Villager villager = new Villager("Gustavo");
+
         Router router = new Router("Pablo");
         MainPC mainPC = new MainPC("Carlos");
-
         Trame villagerTrame = new Trame();
         villagerTrame.setTrame(router, mainPC, "test");
-        logger.debug(villagerTrame.toString());
 
-        villager.setTrame(villagerTrame);
-        logger.debug(villager.getTrame().toString());
+        Villager villager = new Villager("Gustavo", villagerTrame);
+
+        logger.debug("Init trame :\n" + villager.getTrame().toString());
 
         villager.setPosition(new Vector3f(10, 7, 0));
         router.setPosition(new Vector3f(30, 7, 0));
@@ -104,7 +103,6 @@ public class MinecraftServer {
         world.addEntity(villager);
         world.addEntity(router);
         world.addEntity(mainPC);
-
 
         initCommands();
     }
