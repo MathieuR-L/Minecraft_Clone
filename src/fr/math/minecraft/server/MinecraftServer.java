@@ -221,6 +221,7 @@ public class MinecraftServer {
         commands.put("/start", new StartCommand("start", "Lance la partie", Team.PLAYER));
         commands.put("/load", new LoadSchematicCommand("load", "Charge un schematic", Team.ADMIN));
         commands.put("/place", new PlaceBlockCommand("place", "Pose un block", Team.ADMIN));
+        commands.put("/gamemode", new GamemodeCommand("/gamemode", "Change le gamemode du joueur", Team.ADMIN));
     }
 
     public void broadcastMessage(String message) {

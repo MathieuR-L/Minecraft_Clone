@@ -863,4 +863,8 @@ public class Player extends Entity {
     public void setLastCommand(String lastCommand) {
         this.lastCommand = lastCommand;
     }
+
+    public GameMode getGameMode() {
+        return gameMode;
+    }
 }
