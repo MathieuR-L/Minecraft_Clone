@@ -127,8 +127,4 @@ public class Villager extends Entity {
         return trame;
     }
 
-    public void setTrame(Trame trame) {
-        this.hasTrame = true;
-        this.trame = trame;
-    }
 }

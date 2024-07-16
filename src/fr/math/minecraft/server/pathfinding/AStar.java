@@ -31,7 +31,7 @@ public class AStar {
 
         Graph graph = world.getGraph();
 
-        logger.info("[Pathfinding] Lancement de la tâche de mis à jour du graphe.");
+        //logger.info("[Pathfinding] Lancement de la tâche de mis à jour du graphe.");
 
         for (int chunkX = startX; chunkX < endX; chunkX++) {
             for (int chunkY = startY; chunkY < endY; chunkY++) {
@@ -98,7 +98,7 @@ public class AStar {
             }
         }
 
-        logger.info("[Pathfinding] Graphe mis à jour avec succès.");
+        //logger.info("[Pathfinding] Graphe mis à jour avec succès.");
         //logger.info("[Pathfinding] Nodes size : " + graph.getNodes().size());
     }
 

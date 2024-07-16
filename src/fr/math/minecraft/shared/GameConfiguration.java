@@ -30,6 +30,9 @@ public class GameConfiguration {
     public final static int REGION_SIZE = 8;
     public final static float INVENTORY_TEXTURE_WIDTH = 256.0f;
     public final static float INVENTORY_TEXTURE_HEIGHT = 256.0f;
+
+    public final static float TRAME_TEXTURE_WIDTH = 252.0f;
+    public final static float TRAME_TEXTURE_HEIGHT = 183.0f;
     public final static int PLAYER_INVENTORY_SIZE = 27;
     public final static float KNOCK_BACK_X = 0.03f;
     public final static float KNOCK_BACK_Y = 0.14f;

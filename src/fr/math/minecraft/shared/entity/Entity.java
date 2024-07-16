@@ -362,6 +362,12 @@ public abstract class Entity {
         ObjectNode entityNode = mapper.createObjectNode();
         ArrayNode pathArrayNode = mapper.createArrayNode();
 
+        //System.out.println("Ais-je une trame ? :" + hasTrame);
+        if(hasTrame) {
+            //System.out.println("Je fais ma trame");
+            entityNode = this.getTrame().trameJson(entityNode, this.getTrame());
+        }
+
         entityNode.put("type", "ENTITY_STATE");
         entityNode.put("entityType", type.toString());
         entityNode.put("uuid", uuid);
@@ -379,9 +385,7 @@ public abstract class Entity {
         entityNode.put("lastAttacker", lastAttackerID == null ? "NONE" : lastAttackerID);
         entityNode.put("lastAttackerType", lastAttackerType == null ? "NONE" : lastAttackerType.toString());
         entityNode.put("hasTrame", hasTrame);
-        if(hasTrame == true) {
-            Trame.trameJson(entityNode, trame);
-        }
+
 
         if (pattern != null && !pattern.getPath().isEmpty()) {
             for (Node node : pattern.getPath()) {

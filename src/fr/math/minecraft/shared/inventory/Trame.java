@@ -6,12 +6,16 @@ import fr.math.minecraft.client.Camera;
 import fr.math.minecraft.client.Renderer;
 import fr.math.minecraft.shared.entity.Entity;
 
+import java.util.UUID;
+
 public class Trame {
 
     private String type, protocole, ipSource, ipDestination, data;
     private int portSource, portDestination;
+    private boolean open;
+    private UUID uuid;
 
-    public Trame(String type, String protocole, String ipSource, String ipDestination, String data, int portSource, int portDestination) {
+    public Trame(String type, String protocole, String ipSource, String ipDestination, String data, int portSource, int portDestination, boolean open) {
         this.type = type;
         this.protocole = protocole;
         this.ipSource = ipSource;
@@ -19,6 +23,8 @@ public class Trame {
         this.data = data;
         this.portSource = portSource;
         this.portDestination = portDestination;
+        this.open = open;
+        this.uuid = UUID.randomUUID();
     }
     public Trame() {
         this.type = "";
@@ -28,6 +34,8 @@ public class Trame {
         this.data = "";
         this.portSource = -1;
         this.portDestination = -1;
+        this.open = false;
+        this.uuid = UUID.randomUUID();
     }
 
     public void setTrame(Entity serverOrigin, Entity serviceRequested, String data) {
@@ -36,6 +44,7 @@ public class Trame {
         this.setIpSource(serverOrigin.getIP());
         this.setIpDestination(serviceRequested.getIP());
         this.setData(data);
+        this.open = false;
     }
 
     @Override
@@ -43,18 +52,23 @@ public class Trame {
         return "\n|Type : " + type + " | Protocole : " + protocole + "|\n-----------" + "\n|IP Source : " + ipSource + " | IP Destination : " + ipDestination + "|\n-----------" + "\n| Port Source :" + portSource + " | Port Destination : " + portDestination + "|\n-----------" +"\n| Data : " + data + "|";
     }
 
-    public static void trameJson(ObjectNode entityNode, Trame trame) {
+    public ObjectNode trameJson(ObjectNode entityNode, Trame trame) {
         entityNode.put("typeTrame", trame.getType());
         entityNode.put("protocole",  trame.getProtocole());
         entityNode.put("ipSource",  trame.getIpSource());
         entityNode.put("ipDestination",  trame.getIpDestination());
         entityNode.put("portSource",  trame.getPortSource());
-        entityNode.put("portDestionation",  trame.getPortDestination());
+        entityNode.put("portDestination",  trame.getPortDestination());
         entityNode.put("dataTrame",  trame.getData());
+        entityNode.put("open", trame.isOpen());
+
+        return entityNode;
+    }
+    public boolean isEqual(Trame trame) {
+        return trame.getUuid() == this.uuid;
     }
 
-
-        public String getType() {
+    public String getType() {
         return type;
     }
 
@@ -108,5 +122,17 @@ public class Trame {
 
     public void setPortDestination(int portDestination) {
         this.portDestination = portDestination;
+    }
+
+    public boolean isOpen() {
+        return open;
+    }
+
+    public void setOpen(boolean open) {
+        this.open = open;
+    }
+
+    public UUID getUuid() {
+        return uuid;
     }
 }

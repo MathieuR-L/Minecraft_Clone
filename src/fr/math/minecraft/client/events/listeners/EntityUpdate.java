@@ -1,5 +1,6 @@
 package fr.math.minecraft.client.events.listeners;
 
+import fr.math.minecraft.shared.inventory.Trame;
 import org.joml.Vector3f;
 
 public class EntityUpdate {
@@ -15,6 +16,7 @@ public class EntityUpdate {
         this.pitch = pitch;
         this.bodyYaw = bodyYaw;
     }
+
 
     public Vector3f getPosition() {
         return position;

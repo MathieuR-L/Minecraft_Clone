@@ -535,22 +535,7 @@ public class Renderer {
 
     }
 
-    public void renderTrame(Camera camera, Trame trame) {
-        glDisable(GL_DEPTH_TEST);
 
-        crosshairShader.enable();
-        crosshairShader.sendInt("uTexture", trameTexture.getSlot());
-
-        glActiveTexture(GL_TEXTURE0 + trameTexture.getSlot());
-        trameTexture.bind();
-
-        camera.matrixCrosshair(crosshairShader);
-        crosshairMesh.draw();
-
-        trameTexture.unbind();
-
-        glEnable(GL_DEPTH_TEST);
-    }
 
     public void renderAimedBlock(Camera camera, Ray ray) {
 
@@ -727,6 +712,31 @@ public class Renderer {
 
         imageMesh.draw();
 
+    }
+
+    public void renderTrame(Camera camera, Trame trame) {
+        float trameWidth = GameConfiguration.TRAME_TEXTURE_WIDTH * 1.4f * gameConfiguration.getGuiScale();
+        float trameHeight = GameConfiguration.TRAME_TEXTURE_HEIGHT * 1.4f * gameConfiguration.getGuiScale();
+
+        float trameX = (GameConfiguration.WINDOW_WIDTH - trameWidth) / 2;
+        float trameY = (GameConfiguration.WINDOW_HEIGHT - trameHeight) / 2;
+
+
+        imageShader.enable();
+        imageShader.sendInt("uTexture", trameTexture.getSlot());
+        imageShader.sendFloat("depth", -12);
+
+        glActiveTexture(GL_TEXTURE0 + trameTexture.getSlot());
+        trameTexture.bind();
+
+        imageMesh.texSubImage(0, 0, GameConfiguration.TRAME_TEXTURE_WIDTH, GameConfiguration.TRAME_TEXTURE_HEIGHT, GameConfiguration.TRAME_TEXTURE_WIDTH, GameConfiguration.TRAME_TEXTURE_HEIGHT);
+        imageMesh.translate(imageShader, trameX, trameY, trameWidth, trameHeight);
+
+        camera.matrixOrtho(imageShader, trameX, trameY);
+
+        imageMesh.draw();
+
+        trameTexture.unbind();
     }
 
     public void renderInventory(Camera camera, Inventory inventory, InventoryType layer) {

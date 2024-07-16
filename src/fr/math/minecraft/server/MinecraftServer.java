@@ -26,10 +26,7 @@ import org.joml.Vector3f;
 import java.io.IOException;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -53,6 +50,7 @@ public class MinecraftServer {
     private final List<ChatMessage> chatMessages;
     private final PluginManager pluginManager;
     private final HashMap<String, Command> commands;
+    private HashMap<String, Trame> tramesMap;
 
     private MinecraftServer(int port) {
         this.running = false;
@@ -69,6 +67,7 @@ public class MinecraftServer {
         this.chunkManager = new ChunkManager();
         this.chatMessages = new ArrayList<>();
         this.commands = new HashMap<>();
+        this.tramesMap = new HashMap<>();
 
         try {
             this.pluginManager.loadPlugins("plugins");
@@ -83,10 +82,9 @@ public class MinecraftServer {
         MainPC mainPC = new MainPC("Carlos");
         Trame villagerTrame = new Trame();
         villagerTrame.setTrame(router, mainPC, "test");
-
         Villager villager = new Villager("Gustavo", villagerTrame);
 
-        logger.debug("Init trame :\n" + villager.getTrame().toString());
+        tramesMap.put(villager.getName(), villagerTrame);
 
         villager.setPosition(new Vector3f(10, 7, 0));
         router.setPosition(new Vector3f(30, 7, 0));
@@ -308,5 +306,9 @@ public class MinecraftServer {
             }
         }
         return null;
+    }
+
+    public HashMap<String, Trame> getTramesMap() {
+        return tramesMap;
     }
 }

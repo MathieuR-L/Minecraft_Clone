@@ -527,6 +527,13 @@ public class Game {
             renderer.renderInventory(camera, player.getInventory(), player.getCraftingTableInventory().getType());
             renderer.renderInventory(camera, player.getCompletedCraftPlayerInventory(), player.getInventory().getType());
         }
+
+        if(player.getTrameSaved() != null) {
+            if(player.getTrameSaved().isOpen()) {
+                renderer.renderTrame(camera, player.getTrameSaved());
+                //logger.debug(player.getTrameSaved().toString());
+            }
+        }
     }
 
     public static Game getInstance() {

@@ -2,6 +2,7 @@ package fr.math.minecraft.client.entity.player;
 
 import fr.math.minecraft.client.Camera;
 import fr.math.minecraft.client.Renderer;
+import fr.math.minecraft.client.audio.Sounds;
 import fr.math.minecraft.client.entity.AttackRay;
 import fr.math.minecraft.client.manager.ChatManager;
 import fr.math.minecraft.client.manager.SoundManager;
@@ -86,6 +87,8 @@ public class Player extends Entity {
     private int commandOption = 0;
     private String lastCommand ="";
     private int cptTab = 0;
+    private boolean checkTrame;
+    private Trame trameSaved;
 
     private final static Logger logger = LoggerUtility.getClientLogger(Player.class, LogType.TXT);
 
@@ -138,6 +141,7 @@ public class Player extends Entity {
         this.breakingBlock = false;
         this.deleteText = false;
         this.pressTab = false;
+        this.checkTrame = false;
         this.skin = null;
         this.skinPath = null;
         this.skinTexture = null;
@@ -151,6 +155,7 @@ public class Player extends Entity {
         this.craftingTableInventory = new CraftingTableInventory();
         this.lastInventory = inventory;
         this.askingForPlayer = false;
+        this.trameSaved = new Trame();
         this.initAnimations();
     }
 
@@ -253,6 +258,29 @@ public class Player extends Entity {
 
         if (glfwGetKey(window, GLFW_KEY_E) == GLFW_RELEASE) {
             inventoryKeyPressed = false;
+        }
+
+        if(checkTrame && (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)) {
+            checkTrame = false;
+        }
+
+        if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
+            if(!checkTrame) {
+                if (!trameSaved.isOpen() && !inventory.isOpen() && !chatPayload.isOpen()) {
+                    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                } else {
+                    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+                }
+                if(!inventory.isOpen() && !chatPayload.isOpen()) {
+                    trameSaved.setOpen(!trameSaved.isOpen());
+                    checkTrame = true;
+                    this.resetMoving();
+                }
+            }
+        }
+
+        if (glfwGetKey(window, GLFW_KEY_F) == GLFW_RELEASE) {
+            checkTrame = false;
         }
 
         if (glfwGetKey(window, GLFW_KEY_P) == GLFW_RELEASE) {
@@ -435,11 +463,14 @@ public class Player extends Entity {
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
             placingBlock = true;
             Entity target = this.getAttackRay().getTarget();
-            if (target != null && this.getAttackRay().getTarget().getType() == EntityType.VILLAGER) {
-                if(target.getTrame() != null) {
-                    System.out.println(target.getTrame().toString());
-                } else {
-                    System.out.println("non");
+            if (target != null && target.getType() == EntityType.VILLAGER) {
+                Trame trameTarget = MinecraftServer.getInstance().getTramesMap().get(target.getName());
+                if(trameTarget != null) {
+                    if(this.trameSaved == null || !(this.trameSaved.isEqual(trameTarget))) {
+                        this.trameSaved = trameTarget;
+                        SoundManager soundManager = Game.getInstance().getSoundManager();
+                        soundManager.play(Sounds.POP);
+                    }
                 }
             }
         }
@@ -663,7 +694,7 @@ public class Player extends Entity {
 
         velocity.mul(0.95f);
 
-        if (inventory.isOpen() || craftingTableInventory.isOpen()) {
+        if (inventory.isOpen() || craftingTableInventory.isOpen() || trameSaved.isOpen() || chatPayload.isOpen()) {
             this.resetMoving();
             placingBlock = false;
             breakingBlock = false;
@@ -872,5 +903,9 @@ public class Player extends Entity {
 
     public void setLastCommand(String lastCommand) {
         this.lastCommand = lastCommand;
+    }
+
+    public Trame getTrameSaved() {
+        return trameSaved;
     }
 }
