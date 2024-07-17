@@ -723,13 +723,13 @@ public class Renderer {
         float trameY = (GameConfiguration.WINDOW_HEIGHT - trameHeight) / 2;
 
         //Render content of Trame
-        this.renderText(camera, trame.stringElement(trame.getType()), trameX + 12, trameY + 88,0xFFFFFF, GameConfiguration.DEFAULT_SCALE);
-        this.renderText(camera, trame.stringElement(trame.getProtocole()), trameX + 127, trameY + 88,0xFFFFFF, GameConfiguration.DEFAULT_SCALE);
-        this.renderText(camera, trame.stringElement(trame.getIpSource()), trameX + 12, trameY + 105,0xFFFFFF, GameConfiguration.DEFAULT_SCALE);
-        this.renderText(camera, trame.stringElement(trame.getIpDestination()), trameX + 12, trameY + 126, 0xFFFFFF, GameConfiguration.DEFAULT_SCALE);
-        this.renderText(camera, trame.stringElement(trame.getPortSource()), trameX + 12, trameY + 144,0xFFFFFF, GameConfiguration.DEFAULT_SCALE);
-        this.renderText(camera, trame.stringElement(trame.getPortDestination()), trameX + 128, trameY + 14, 0xFFFFFF, GameConfiguration.DEFAULT_SCALE);
-        this.renderText(camera, trame.stringElement(trame.getData()), trameX + 14, trameY + 165,0xFFFFFF, GameConfiguration.DEFAULT_SCALE);
+        this.renderText(camera, trame.stringElement(trame.getType()), trameX + 15, trameY + 112, -7,0xFFFFFF, GameConfiguration.DEFAULT_SCALE * 0.9f);
+        this.renderText(camera, trame.stringElement(trame.getProtocole()), trameX + 174, trameY + 112, -7, 0xFFFFFF, GameConfiguration.DEFAULT_SCALE * 0.9f);
+        this.renderText(camera, trame.stringElement(trame.getIpSource()), trameX + 15, trameY + 90, -7, 0xFFFFFF, GameConfiguration.DEFAULT_SCALE * 0.9f);
+        this.renderText(camera, trame.stringElement(trame.getIpDestination()), trameX + 15, trameY + 61, -7,  0xFFFFFF, GameConfiguration.DEFAULT_SCALE * 0.9f);
+        this.renderText(camera, trame.stringElement(trame.getPortSource()), trameX + 15, trameY + 34, -7, 0xFFFFFF, GameConfiguration.DEFAULT_SCALE * 0.9f);
+        this.renderText(camera, trame.stringElement(trame.getPortDestination()), trameX + 180, trameY + 34, -7,  0xFFFFFF, GameConfiguration.DEFAULT_SCALE * 0.9f);
+        this.renderText(camera, trame.stringElement(trame.getData()), trameX + 15, trameY + 6,-7,0xFFFFFF, GameConfiguration.DEFAULT_SCALE * 0.9f);
 
     }
 
@@ -744,7 +744,7 @@ public class Renderer {
 
         imageShader.enable();
         imageShader.sendInt("uTexture", trameTexture.getSlot());
-        imageShader.sendFloat("depth", -12);
+        imageShader.sendFloat("depth", -8);
 
         glActiveTexture(GL_TEXTURE0 + trameTexture.getSlot());
         trameTexture.bind();
