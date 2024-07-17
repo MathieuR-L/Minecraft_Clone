@@ -498,7 +498,7 @@ public class Game {
                 if (!player.getSkinTexture().isLoaded()) {
                     player.getSkinTexture().load();
                 }
-                renderer.renderHand(camera, player.getSkinTexture(), player.getHand());
+               //renderer.renderHand(camera, player.getSkinTexture(), player.getHand());
             }
         } else {
             if (selectedItem.getMaterial().isItem()) {
@@ -509,11 +509,11 @@ public class Game {
         }
 
         if (gameConfiguration.isDebugging()) {
-            renderer.renderDebugTools(camera, player, fps);
+            //renderer.renderDebugTools(camera, player, fps);
         }
 
-        renderer.renderHotbar(camera, player, player.getHotbar());
-        renderer.renderCrosshair(camera);
+        //renderer.renderHotbar(camera, player, player.getHotbar());
+        //renderer.renderCrosshair(camera);
 
         if (player.getInventory().isOpen()) {
             renderer.renderInventory(camera, player.getInventory(), player.getInventory().getType());

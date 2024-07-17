@@ -1,6 +1,14 @@
 package fr.math.minecraft.shared.nbt;
 
+import fr.math.minecraft.logger.LogType;
+import fr.math.minecraft.logger.LoggerUtility;
+import fr.math.minecraft.server.Utils;
+import fr.math.minecraft.shared.Utils.*;
+import fr.math.minecraft.shared.world.Chunk;
 import fr.math.minecraft.shared.world.Material;
+import fr.math.minecraft.shared.world.PlacedBlock;
+import fr.math.minecraft.shared.world.World;
+import org.apache.log4j.Logger;
 import org.jnbt.*;
 import org.joml.Vector3i;
 
@@ -12,9 +20,11 @@ import java.util.Map;
 
 public class NbtHandler {
 
+    private final static Logger logger = LoggerUtility.getServerLogger(NbtHandler.class, LogType.TXT);
+
     private String filePath;
     private Tag mainTag;
-    private final static int maxBlocPerList = 1000;
+    public final static int maxBlocPerList = 1000;
 
     private HashMap<String, Material> mappingStruc;
 
@@ -92,7 +102,7 @@ public class NbtHandler {
             }
             if(reste != 0 && segmentationNumber != 0) {
                 ArrayList<Integer> lastBlocks = new ArrayList<>();
-                for (int i = segmentationNumber*maxBlocPerList - 1; i < reste + (segmentationNumber*maxBlocPerList - 1); i++) {
+                for (int i = segmentationNumber*maxBlocPerList; i <= reste + (segmentationNumber*maxBlocPerList) -1; i++) {
                     lastBlocks.add(Byte.toUnsignedInt(blocksArray.getValue()[i]));
                 }
                 segmentationList.add(lastBlocks);
@@ -103,7 +113,6 @@ public class NbtHandler {
                 }
                 segmentationList.add(littleSchem);
             }
-
 
             return segmentationList;
         } else {
@@ -170,6 +179,75 @@ public class NbtHandler {
 
 
             }
+        }
+    }
+
+    public void loadSchematic(World world) {
+        CompoundTag compoundTag = this.getCompoundTag();
+        this.setMappingStruc(compoundTag);
+        logger.info(this.getMappingStruc());
+
+        ArrayList<ArrayList<Integer>> segmentationList = this.getCleanNbtBlocksArray(compoundTag);
+        int segmentationNumber = segmentationList.size();
+        ShortTag lenght = this.getNbtLength(compoundTag);
+        ShortTag width = this.getNbtWidth(compoundTag);
+        ByteArrayTag dataArray = this.getNbtDataArray(compoundTag);
+
+        for (int i = 0; i < segmentationNumber; i++) {
+            ArrayList<Integer> blockList = segmentationList.get(i);
+            for (int j = 0; j < blockList.size(); j++) {
+                Material currentMaterial;
+                int element = blockList.get(j);
+                if(element < 0) continue;
+                if(this.getMappingStruc().get(""+element) != null) {
+                    currentMaterial = this.getMappingStruc().get(""+element);
+                } else {
+                    String elementVariant = "" + element + ":" + dataArray.getValue()[(i * blockList.size()) + j];
+                    currentMaterial = this.getMappingStruc().get(elementVariant);
+                }
+
+                if(currentMaterial == null) currentMaterial = Material.DEBUG;
+                if(currentMaterial == Material.AIR) continue;
+
+                Vector3i blockPosition = this.getBlockPosition(j + (i*maxBlocPerList), lenght.getValue(), width.getValue());
+                Vector3i blockWorldPosition = new Vector3i(blockPosition.x, blockPosition.y, blockPosition.z);
+                Vector3i blockLocalPosition = Utils.worldToLocal(blockWorldPosition);
+
+                PlacedBlock placedBlock = new PlacedBlock("Server", blockWorldPosition, blockLocalPosition, currentMaterial.getId());
+
+
+                Chunk aimedChunk = world.getChunkAt(blockWorldPosition);
+
+                if(aimedChunk == null) {
+                    Vector3i chunkPos = Utils.getChunkPosition(blockWorldPosition.x, blockWorldPosition.y, blockWorldPosition.y);
+                    aimedChunk = new Chunk(chunkPos.x, chunkPos.y, chunkPos.z);
+                    logger.debug("Génération d'un chunk");
+                    aimedChunk.generate(world, world.getTerrainGenerator());
+                    world.addChunk(aimedChunk);
+                }
+                world.getPlacedBlocks().put(placedBlock.getWorldPosition(), placedBlock);
+                world.getLoadMapData().add(placedBlock);
+            }
+        }
+    }
+
+    public void placeBlockSchematic(ArrayList<PlacedBlock> mapData, World world) {
+        for (PlacedBlock block : mapData) {
+            Vector3i blockWorldPos = block.getWorldPosition();
+            Vector3i blockLocalPos = block.getLocalPosition();
+
+            Chunk aimedChunk = world.getChunkAt(blockWorldPos);
+
+            if(aimedChunk == null) {
+                Vector3i chunkPos = Utils.getChunkPosition(blockWorldPos.x, blockWorldPos.y, blockWorldPos.y);
+                aimedChunk = new Chunk(chunkPos.x, chunkPos.y, chunkPos.z);
+                logger.debug("Génération d'un chunk");
+                aimedChunk.generate(world, world.getTerrainGenerator());
+                world.addChunk(aimedChunk);
+            }
+
+            world.getPlacedBlocks().put(blockWorldPos, block);
+            aimedChunk.setBlock(blockLocalPos.x, blockLocalPos.y, blockLocalPos.z, block.getBlock());
         }
     }
 

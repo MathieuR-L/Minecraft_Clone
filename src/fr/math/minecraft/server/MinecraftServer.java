@@ -162,7 +162,6 @@ public class MinecraftServer {
                     playersListHandler.run();
                     break;
                 case "CHAT_MSG":
-                    //Disjonction de cas commande / message
                     String content = packetData.get("content").asText();
                     if(content.charAt(0) != '/') {
                         ChatMessageHandler chatMessageHandler = new ChatMessageHandler(packetData, address, clientPort);
@@ -171,6 +170,10 @@ public class MinecraftServer {
                         CommandHandler commandHandler = new CommandHandler(packetData, address, clientPort);
                         commandHandler.run();
                     }
+                    break;
+                case "LOADING_MAP_ACK":
+                    LoadingMapACKHandler loadingMapACKHandler = new LoadingMapACKHandler(packetData, address, clientPort);
+                    loadingMapACKHandler.run();
                     break;
                 default:
                     String message = "UNAUTHORIZED_PACKET";
@@ -245,6 +248,7 @@ public class MinecraftServer {
         commands.put("/start", new StartCommand("start", "Lance la partie", Team.PLAYER));
         commands.put("/load", new LoadSchematicCommand("load", "Charge un schematic", Team.ADMIN));
         commands.put("/place", new PlaceBlockCommand("place", "Pose un block", Team.ADMIN));
+        commands.put("/gamemode", new GamemodeCommand("/gamemode", "Change le gamemode du joueur", Team.ADMIN));
     }
 
     public void broadcastMessage(String message) {

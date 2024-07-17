@@ -908,4 +908,8 @@ public class Player extends Entity {
     public Trame getTrameSaved() {
         return trameSaved;
     }
+    
+    public GameMode getGameMode() {
+        return gameMode;
+    }
 }

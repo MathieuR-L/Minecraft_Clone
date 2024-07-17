@@ -81,6 +81,7 @@ public class Client {
     private final CraftingTableInventory craftingTableInventory;
     private final static float JUMP_VELOCITY = .125f;
     private boolean decreaseHunger;
+    private int loadMapState;
 
     public Client(String uuid, String name, InetAddress address, int port) {
         this.address = address;
@@ -129,6 +130,7 @@ public class Client {
         this.completedCraftPlayerInventory = new CompletedCraftPlayerInventory();
         this.craftingTableInventory = new CraftingTableInventory();
         this.decreaseHunger = false;
+        this.loadMapState = 0;
     }
 
     public String getName() {
@@ -1023,5 +1025,13 @@ public class Client {
 
     public void setDecreaseHunger(boolean decreaseHunger) {
         this.decreaseHunger = decreaseHunger;
+    }
+
+    public int getLoadMapState() {
+        return loadMapState;
+    }
+
+    public void setLoadMapState(int loadMapState) {
+        this.loadMapState = loadMapState;
     }
 }

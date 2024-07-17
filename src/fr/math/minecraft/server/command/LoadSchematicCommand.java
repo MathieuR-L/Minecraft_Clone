@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class LoadSchematicCommand extends Command{
 
-    private final static Logger logger = LoggerUtility.getServerLogger(TeleportCommand.class, LogType.TXT);
+    private final static Logger logger = LoggerUtility.getServerLogger(LoadSchematicCommand.class, LogType.TXT);
     private NbtHandler nbtHandler;
     private String filePath;
     private CompoundTag compoundTag;
@@ -27,6 +27,8 @@ public class LoadSchematicCommand extends Command{
     private ShortTag length, width;
     private ArrayList<PlacedBlock> placedBlocs;
     private int x, y, z;
+    public final static int maxBlocPerList = 1000;
+
 
     public LoadSchematicCommand(String name, String descpription, Team team) {
         super(name, descpription, team);
@@ -67,20 +69,25 @@ public class LoadSchematicCommand extends Command{
             ArrayList<Integer> blockList = segmenttationList.get(j);
             for (int i = 0; i < blockList.size(); i++) {
                 Material currentMaterial;
+                int indice = j*maxBlocPerList + i;
                 int element = blockList.get(i);
                 if(element < 0) continue;
                 if(nbtHandler.getMappingStruc().get(""+element) != null) {
                     currentMaterial = nbtHandler.getMappingStruc().get(""+element);
                 } else {
-                    String elementVariante = "" + element + ":" + dataArray.getValue()[j*(blockList.size()) + i];
+                    String elementVariante = "" + element + ":" + dataArray.getValue()[indice];
                     currentMaterial = nbtHandler.getMappingStruc().get(elementVariante);
-
                 }
+
+                if(currentMaterial == Material.BLACK_CONCRETE) {
+                    System.out.println("COUCOUCUUU" + "Texture:" + currentMaterial.getX() + "|" + currentMaterial.getY());
+                }
+
                 if(currentMaterial == null) {
                     currentMaterial = Material.DEBUG;
                 }
                 if(currentMaterial == Material.AIR) continue;
-                Vector3i blockPosition = nbtHandler.getBlockPosition(i + (j*1000), length.getValue(), width.getValue());
+                Vector3i blockPosition = nbtHandler.getBlockPosition(i + (j*maxBlocPerList), length.getValue(), width.getValue());
                 Vector3i blockWorldPosition = new Vector3i(blockPosition.x + x, blockPosition.y + y, blockPosition.z + z);
 
                 Vector3i blockLocalPosition = Utils.worldToLocal(blockWorldPosition);

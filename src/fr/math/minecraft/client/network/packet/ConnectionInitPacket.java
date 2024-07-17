@@ -18,6 +18,7 @@ import fr.math.minecraft.client.network.PacketReceiver;
 import fr.math.minecraft.client.world.loader.ChunkMeshLoader;
 import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
+import fr.math.minecraft.shared.GameConfiguration;
 import fr.math.minecraft.shared.world.World;
 import fr.math.minecraft.shared.world.WorldLoader;
 import org.apache.log4j.Logger;

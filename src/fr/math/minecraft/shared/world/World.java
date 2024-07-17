@@ -18,6 +18,7 @@ import fr.math.minecraft.server.pathfinding.Graph;
 import fr.math.minecraft.shared.entity.Entity;
 import fr.math.minecraft.shared.entity.EntityType;
 import fr.math.minecraft.shared.entity.Villager;
+import fr.math.minecraft.shared.nbt.NbtHandler;
 import fr.math.minecraft.shared.world.generator.OverworldGenerator;
 import fr.math.minecraft.shared.world.generator.TerrainGenerator;
 import org.apache.log4j.Logger;
@@ -50,6 +51,7 @@ public class World {
     private float seed;
     private final ArrayList<Material> usableBlockList;
     private HashMap<Vector3i, UsableBlock> usableBlockHashMap;
+    private ArrayList<PlacedBlock> loadMapData;
 
     public World() {
         this.chunks = new HashMap<>();
@@ -70,6 +72,7 @@ public class World {
         this.seed = 0;
         this.usableBlockList = initUsableBlocksList();
         this.usableBlockHashMap = new HashMap<>();
+        this.loadMapData = new ArrayList<>();
 
         for (Material material : Material.values()) {
             if (material.isSolid()) {
@@ -110,6 +113,12 @@ public class World {
         logger.info("Spawn construit avec succès !");
     }
 
+    public void buildMap(String filePathMap) {
+        logger.info("Construction de la carte...");
+        NbtHandler nbtHandler = new NbtHandler(filePathMap);
+        nbtHandler.loadSchematic(this);
+        logger.info("Carte construite avec succès !");
+    }
     public void buildSpawnMesh() {
         for (int x = -SPAWN_SIZE; x < SPAWN_SIZE; x++) {
             for (int y = 0; y < 10; y++) {
@@ -405,5 +414,9 @@ public class World {
 
     public HashMap<Vector3i, UsableBlock> getUsableBlockHashMap() {
         return usableBlockHashMap;
+    }
+
+    public ArrayList<PlacedBlock> getLoadMapData() {
+        return loadMapData;
     }
 }

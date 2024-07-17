@@ -3,6 +3,7 @@ package fr.math.minecraft;
 import fr.math.minecraft.server.MinecraftServer;
 import fr.math.minecraft.server.Plugin;
 import fr.math.minecraft.server.pathfinding.AStar;
+import fr.math.minecraft.shared.GameConfiguration;
 import fr.math.minecraft.shared.world.World;
 import org.joml.Vector3f;
 import sun.misc.Signal;
@@ -36,7 +37,6 @@ public class ServerMain {
         World world = server.getWorld();
         world.setSeed(seed);
         world.calculateSpawnPosition();
-        //AStar.initGraph(world, world.getSpawnPosition());
 
         Signal.handle(new Signal("INT"), new ExitHandler(server));
         Signal.handle(new Signal("TERM"), new ExitHandler(server));
