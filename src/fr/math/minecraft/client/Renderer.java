@@ -714,12 +714,32 @@ public class Renderer {
 
     }
 
-    public void renderTrame(Camera camera, Trame trame) {
+    public void renderTextTrame(Camera camera, Trame trame) {
+
         float trameWidth = GameConfiguration.TRAME_TEXTURE_WIDTH * 1.4f * gameConfiguration.getGuiScale();
         float trameHeight = GameConfiguration.TRAME_TEXTURE_HEIGHT * 1.4f * gameConfiguration.getGuiScale();
 
         float trameX = (GameConfiguration.WINDOW_WIDTH - trameWidth) / 2;
         float trameY = (GameConfiguration.WINDOW_HEIGHT - trameHeight) / 2;
+
+        //Render content of Trame
+        this.renderText(camera, trame.stringElement(trame.getType()), trameX + 12, trameY + 88,0xFFFFFF, GameConfiguration.DEFAULT_SCALE);
+        this.renderText(camera, trame.stringElement(trame.getProtocole()), trameX + 127, trameY + 88,0xFFFFFF, GameConfiguration.DEFAULT_SCALE);
+        this.renderText(camera, trame.stringElement(trame.getIpSource()), trameX + 12, trameY + 105,0xFFFFFF, GameConfiguration.DEFAULT_SCALE);
+        this.renderText(camera, trame.stringElement(trame.getIpDestination()), trameX + 12, trameY + 126, 0xFFFFFF, GameConfiguration.DEFAULT_SCALE);
+        this.renderText(camera, trame.stringElement(trame.getPortSource()), trameX + 12, trameY + 144,0xFFFFFF, GameConfiguration.DEFAULT_SCALE);
+        this.renderText(camera, trame.stringElement(trame.getPortDestination()), trameX + 128, trameY + 14, 0xFFFFFF, GameConfiguration.DEFAULT_SCALE);
+        this.renderText(camera, trame.stringElement(trame.getData()), trameX + 14, trameY + 165,0xFFFFFF, GameConfiguration.DEFAULT_SCALE);
+
+    }
+
+    public void renderTrame(Camera camera) {
+        float trameWidth = GameConfiguration.TRAME_TEXTURE_WIDTH * 1.4f * gameConfiguration.getGuiScale();
+        float trameHeight = GameConfiguration.TRAME_TEXTURE_HEIGHT * 1.4f * gameConfiguration.getGuiScale();
+
+        float trameX = (GameConfiguration.WINDOW_WIDTH - trameWidth) / 2;
+        float trameY = (GameConfiguration.WINDOW_HEIGHT - trameHeight) / 2;
+        trameY = trameY - 20;
 
 
         imageShader.enable();
@@ -738,6 +758,8 @@ public class Renderer {
 
         trameTexture.unbind();
     }
+
+
 
     public void renderInventory(Camera camera, Inventory inventory, InventoryType layer) {
 

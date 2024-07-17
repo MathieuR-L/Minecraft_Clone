@@ -64,6 +64,16 @@ public class Trame {
 
         return entityNode;
     }
+
+    public String stringElement(String element) {
+        if(element == null) return "null";
+        return element;
+    }
+
+    public String stringElement(int element) {
+        if(element == -1) return "null";
+        return ""+element;
+    }
     public boolean isEqual(Trame trame) {
         return trame.getUuid() == this.uuid;
     }

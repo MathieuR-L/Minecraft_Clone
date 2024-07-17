@@ -17,6 +17,7 @@ import fr.math.minecraft.client.handler.PlayerMovementHandler;
 import fr.math.minecraft.client.manager.*;
 import fr.math.minecraft.client.entity.player.Player;
 import fr.math.minecraft.shared.inventory.ItemStack;
+import fr.math.minecraft.shared.inventory.Trame;
 import fr.math.minecraft.shared.world.Chunk;
 import fr.math.minecraft.shared.world.Coordinates;
 import fr.math.minecraft.shared.world.Material;
@@ -530,7 +531,9 @@ public class Game {
 
         if(player.getTrameSaved() != null) {
             if(player.getTrameSaved().isOpen()) {
-                renderer.renderTrame(camera, player.getTrameSaved());
+                Trame playerTrame = player.getTrameSaved();
+                renderer.renderTrame(camera);
+                renderer.renderTextTrame(camera, playerTrame);
                 //logger.debug(player.getTrameSaved().toString());
             }
         }
