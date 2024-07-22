@@ -30,7 +30,7 @@ jobs:
           command: |
             echo "Host $HOST" >> ~/.ssh/config
             echo "  User $USERNAME" >> ~/.ssh/config
-            echo "  User $USERNAME" >> ~/.ssh/config
+            echo "  Port $PORT" >> ~/.ssh/config
             echo "  PasswordAuthentication yes" >> ~/.ssh/config
             echo "  PubkeyAuthentication no" >> ~/.ssh/config
             
