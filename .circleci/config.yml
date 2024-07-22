@@ -33,14 +33,8 @@ jobs:
       - run:
           name: Deploy application
           command: |
-            echo "Host $HOST" >> ~/.ssh/config
-            echo "  User $USERNAME" >> ~/.ssh/config
-            echo "  Port $PORT" >> ~/.ssh/config
-            echo "  PasswordAuthentication yes" >> ~/.ssh/config
-            echo "  PubkeyAuthentication no" >> ~/.ssh/config
-            
-            sshpass -p $PASSWORD scp build/libs/MinecraftServer.jar $USERNAME@$HOST:/opt/Minecraft_Clone/
-            sshpass -p $PASSWORD ssh $USERNAME@$HOST 'docker stop minecraft-clone-server || true && docker rm minecraft-clone-server || true && docker run -d -p 50000:50000 -v /opt/Minecraft_Clone:/app --name minecraft-clone-server openjdk:17-jdk-slim java -jar /app/MinecraftServer.jar'
+            sshpass -p $PASSWORD -P $PORT ssh $USERNAME@$HOST scp build/libs/MinecraftServer.jar $USERNAME@$HOST:/opt/Minecraft_Clone/
+            sshpass -p $PASSWORD -P $PORT ssh $USERNAME@$HOST 'docker stop minecraft-clone-server || true && docker rm minecraft-clone-server || true && docker run -d -p 50000:50000 -v /opt/Minecraft_Clone:/app --name minecraft-clone-server openjdk:17-jdk-slim java -jar /app/MinecraftServer.jar'
 
 workflows:
   version: 2
