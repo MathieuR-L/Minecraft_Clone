@@ -1,0 +1,8 @@
+version: "3.8"
+services:
+  auto_deploy:
+    image: minecraft-clone-server
+    container_name: minecraft-clone-server
+    ports:
+      - 50000:50000
+    restart: unless-stopped
