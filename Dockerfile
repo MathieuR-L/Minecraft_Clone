@@ -1,7 +1,20 @@
+FROM openjdk:17-jdk-slim AS builder
+WORKDIR /build
+
+COPY src ./src
+COPY libs ./libs
+
+RUN javac -cp 'libs/linux/*' -d out $(find src -name '*.java')
+
+RUN jar --create --file MinecraftServer.jar --manifest /dev/null -C out .
+RUN echo "Main-Class: fr.math.minecraft.ServerMain" > MANIFEST.MF && jar --update --file MinecraftServer.jar --manifest MANIFEST.MF
+RUN jar --update --file MinecraftServer.jar -C libs .
+
+
 FROM openjdk:17-jdk-slim
 WORKDIR /app
 
-COPY out/artifacts/MinecraftServer_jar/MinecraftServer.jar .
+COPY --from=builder /build/MinecraftServer.jar .
 
 EXPOSE 50000
 
