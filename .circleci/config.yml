@@ -3,7 +3,7 @@ version: 2.1
 executors:
   docker-executor:
     docker:
-      - image: circleci/openjdk:17-jdk
+      - image: openjdk:17-jdk
 
 jobs:
   build:
