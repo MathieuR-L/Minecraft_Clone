@@ -31,10 +31,17 @@ jobs:
           command: |
             sudo apt-get update && sudo apt-get install -y openssh-client
       - run:
+        name: Set Up SSH Key
+        command: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -p $PORT -H $HOST >> ~/.ssh/known_hosts
+      - run:
           name: Deploy application
           command: |
-            sshpass -p $PASSWORD -P $PORT ssh $USERNAME@$HOST scp build/libs/MinecraftServer.jar $USERNAME@$HOST:/opt/Minecraft_Clone/
-            sshpass -p $PASSWORD -P $PORT ssh $USERNAME@$HOST 'docker stop minecraft-clone-server || true && docker rm minecraft-clone-server || true && docker run -d -p 50000:50000 -v /opt/Minecraft_Clone:/app --name minecraft-clone-server openjdk:17-jdk-slim java -jar /app/MinecraftServer.jar'
+            scp -p $PORT build/libs/MinecraftServer.jar $USERNAME@$HOST:/opt/Minecraft_Clone/
+            ssh -p $PORT ssh $USERNAME@$HOST 'docker stop minecraft-clone-server || true && docker rm minecraft-clone-server || true && docker run -d -p 50000:50000 -v /opt/Minecraft_Clone:/app --name minecraft-clone-server openjdk:17-jdk-slim java -jar /app/MinecraftServer.jar'
 
 workflows:
   version: 2
