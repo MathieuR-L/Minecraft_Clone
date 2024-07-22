@@ -19,9 +19,9 @@ jobs:
           name: Build server application
           command: |
             mkdir -p build/libs
-            javac -cp 'libs/*' -d build/classes $(find src -name '*.java')
+            javac -cp 'libs/linux/*' -d build/classes $(find src -name '*.java')
             jar --create --file build/libs/MinecraftServer.jar --manifest < (echo "Main-Class: fr.math.minecraft.ServerMain") -C build/classes .
-            jar --update --file build/libs/MinecraftServer.jar -C libs .
+            jar --update --file build/libs/MinecraftServer.jar -C libs/linux .
 
   deploy:
     executor: docker-executor
