@@ -9,7 +9,7 @@ jobs:
   build:
     executor: docker-executor
     steps:
-      - build
+      - checkout
       - run:
           name: Build server application
           command: |
