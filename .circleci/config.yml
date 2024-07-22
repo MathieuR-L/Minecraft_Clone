@@ -13,7 +13,6 @@ jobs:
       - run:
             name: Install APT dependencies
             command: |
-              apt-get install -y sudo
               sudo apt update
               sudo apt install -y findutils
       - run:
