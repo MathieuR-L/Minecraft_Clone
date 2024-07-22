@@ -11,6 +11,10 @@ jobs:
     steps:
       - checkout
       - run:
+            name: Install Required Utilities
+            command: |
+              apt-get update && apt-get install -y findutils
+      - run:
           name: Build server application
           command: |
             mkdir -p build/libs
