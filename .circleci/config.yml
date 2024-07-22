@@ -3,7 +3,7 @@ version: 2.1
 executors:
   docker-executor:
     docker:
-      - image: openjdk:17-jdk
+      - image: cimg/openjdk:17
 
 jobs:
   build:
