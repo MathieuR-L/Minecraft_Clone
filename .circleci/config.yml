@@ -1,0 +1,47 @@
+version: 2.1
+
+executors:
+  docker-executor:
+    docker:
+      - image: circleci/openjdk:17-jdk
+
+jobs:
+  build:
+    executor: docker-executor
+    steps:
+      - build
+      - run:
+          name: Build server application
+          command: |
+            mkdir -p build/libs
+            javac -cp 'libs/*' -d build/classes $(find src -name '*.java')
+            jar --create --file build/libs/MinecraftServer.jar --manifest < (echo "Main-Class: fr.math.minecraft.ServerMain") -C build/classes .
+            jar --update --file build/libs/MinecraftServer.jar -C libs .
+
+  deploy:
+    executor: docker-executor
+    steps:
+      - run:
+          name: Install SSH Client
+          command: |
+            apt-get update && apt-get install -y openssh-client
+      - run:
+          name: Deploy application
+          command: |
+            echo "Host $HOST" >> ~/.ssh/config
+            echo "  User $USERNAME" >> ~/.ssh/config
+            echo "  User $USERNAME" >> ~/.ssh/config
+            echo "  PasswordAuthentication yes" >> ~/.ssh/config
+            echo "  PubkeyAuthentication no" >> ~/.ssh/config
+            
+            sshpass -p $PASSWORD scp build/libs/MinecraftServer.jar $USERNAME@$HOST:/opt/Minecraft_Clone/
+            sshpass -p $PASSWORD ssh $USERNAME@$HOST 'docker stop minecraft-clone-server || true && docker rm minecraft-clone-server || true && docker run -d -p 50000:50000 -v /opt/Minecraft_Clone:/app --name minecraft-clone-server openjdk:17-jdk-slim java -jar /app/MinecraftServer.jar'
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
