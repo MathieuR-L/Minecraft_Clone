@@ -27,10 +27,6 @@ jobs:
     executor: docker-executor
     steps:
       - run:
-          name: Install SSH Client
-          command: |
-            apt-get update && apt-get install -y openssh-client
-      - run:
           name: Deploy application
           command: |
             echo "Host $HOST" >> ~/.ssh/config
