@@ -31,12 +31,12 @@ jobs:
           command: |
             sudo apt-get update && sudo apt-get install -y openssh-client
       - run:
-        name: Set Up SSH Key
-        command: |
-          mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -p $PORT -H $HOST >> ~/.ssh/known_hosts
+          name: Set Up SSH Key
+          command: |
+            mkdir -p ~/.ssh
+            echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+            chmod 600 ~/.ssh/id_rsa
+            ssh-keyscan -p $PORT -H $HOST >> ~/.ssh/known_hosts
       - run:
           name: Deploy application
           command: |
