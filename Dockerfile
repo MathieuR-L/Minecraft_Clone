@@ -2,6 +2,7 @@ FROM openjdk:17-jdk-slim AS builder
 WORKDIR /build
 
 COPY src ./src
+COPY log ./log
 COPY libs ./libs
 
 RUN javac -cp 'libs/linux/*' -d out $(find src -name '*.java')

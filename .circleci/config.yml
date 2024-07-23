@@ -38,7 +38,6 @@ jobs:
       - run:
           name: Deploy application
           command: |
-            scp -P $PORT build/libs/MinecraftServer.jar $USERNAME@$HOST:/opt/Minecraft_Clone/
             ssh $USERNAME@$HOST -p $PORT 'sh /opt/Minecraft_Clone/deploy.sh'
 
 workflows:
