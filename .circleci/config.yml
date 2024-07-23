@@ -34,7 +34,7 @@ jobs:
           name: Set Up SSH Key
           command: |
             mkdir -p ~/.ssh
-            echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+            echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/id_rsa
             ssh-keyscan -p $PORT -H $HOST >> ~/.ssh/known_hosts
       - run:
           name: Deploy application
