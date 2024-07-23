@@ -38,7 +38,7 @@ jobs:
       - run:
           name: Deploy application
           command: |
-            ssh $USERNAME@$HOST -p $PORT 'cd /opt/Minecraft_Clone sh /opt/Minecraft_Clone/deploy.sh'
+            ssh $USERNAME@$HOST -p $PORT 'cd /opt/Minecraft_Clone && sh /opt/Minecraft_Clone/deploy.sh'
 
 workflows:
   version: 2
