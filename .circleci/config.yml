@@ -31,6 +31,10 @@ jobs:
           command: |
             sudo apt-get update && sudo apt-get install -y openssh-client
       - run:
+          name: Add VPS host to known hosts
+          command: |
+            ssh-keyscan -p $PORT -H $HOST >> ~/.ssh/known_hosts
+      - run:
           name: Deploy application
           command: |
             ssh $USERNAME@$HOST -p $PORT 'docker stop minecraft-clone-server && docker rm minecraft-clone-server && docker run -d -p 50000:50000 -v /opt/Minecraft_Clone:/app --name minecraft-clone-server openjdk:17-jdk-slim java -jar /app/MinecraftServer.jar'
