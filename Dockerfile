@@ -4,7 +4,7 @@ WORKDIR /build
 COPY src ./src
 COPY libs/linux ./libs
 
-RUN javac -cp 'libs/linux/*' -d out $(find src -name '*.java')
+RUN javac -cp 'libs/*' -d out $(find src -name '*.java')
 
 RUN jar --create --file MinecraftServer.jar --manifest /dev/null -C out .
 RUN echo "Main-Class: fr.math.minecraft.ServerMain" > MANIFEST.MF && jar --update --file MinecraftServer.jar --manifest MANIFEST.MF
