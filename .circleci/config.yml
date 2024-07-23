@@ -33,6 +33,7 @@ jobs:
       - run:
           name: Add VPS host to known hosts
           command: |
+            mkdir -p ~/.ssh
             ssh-keyscan -p $PORT -H $HOST >> ~/.ssh/known_hosts
       - run:
           name: Deploy application
