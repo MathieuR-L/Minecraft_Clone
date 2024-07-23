@@ -2,7 +2,6 @@ FROM openjdk:17-jdk-slim AS builder
 WORKDIR /build
 
 COPY src ./src
-COPY log ./log
 COPY libs ./libs
 
 RUN javac -cp 'libs/linux/*' -d out $(find src -name '*.java')
@@ -15,6 +14,7 @@ RUN jar --update --file MinecraftServer.jar -C libs .
 FROM openjdk:17-jdk-slim
 WORKDIR /app
 
+COPY log ./log
 COPY --from=builder /build/MinecraftServer.jar .
 
 EXPOSE 50000
