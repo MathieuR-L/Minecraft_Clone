@@ -13,6 +13,6 @@ WORKDIR /app
 COPY log ./log
 COPY --from=builder /build/target/minecraft-clone-1.0-SNAPSHOT-jar-with-dependencies.jar .
 
-EXPOSE 50000
+EXPOSE 50000/udp
 
 CMD ["java", "-jar", "minecraft-clone-1.0-SNAPSHOT-jar-with-dependencies.jar"]
