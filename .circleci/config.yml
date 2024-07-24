@@ -15,7 +15,7 @@ jobs:
             command: |
               sudo apt update
               sudo apt install -y findutils
-              sudo apt install -y maven
+              sudo apt install maven
       - run:
           name: Build server application
           command: |
