@@ -16,22 +16,14 @@ public class LoggerUtility {
 
     public static Logger getClientLogger(Class<?> logClass, LogType logType) {
         Configurator.initialize(logClass.getName(), CLIENT_TEXT_LOG_CONFIG);
-        Logger logger = LogManager.getLogger(logClass);
 
-        String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-        logger.atInfo().log("Renaming log file with timestamp: " + timestamp);
-
-        return logger;
+        return LogManager.getLogger(logClass);
     }
 
     public static Logger getServerLogger(Class<?> logClass, LogType logType) {
         Configurator.initialize(logClass.getName(), SERVER_TEXT_LOG_CONFIG);
-        Logger logger = LogManager.getLogger(logClass);
 
-        String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-        logger.atInfo().log("Renaming log file with timestamp: " + timestamp);
-
-        return logger;
+        return LogManager.getLogger(logClass);
     }
 
 }
