@@ -1,17 +1,14 @@
 package fr.math.minecraft.server;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import fr.math.minecraft.client.network.packet.PlayerActionsPacket;
 import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
 import fr.math.minecraft.server.handler.*;
 import fr.math.minecraft.server.manager.ChunkManager;
-import fr.math.minecraft.server.pathfinding.AStar;
 import fr.math.minecraft.shared.ChatMessage;
-import fr.math.minecraft.shared.entity.Villager;
 import fr.math.minecraft.shared.entity.mob.Zombie;
 import fr.math.minecraft.shared.world.World;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.*;

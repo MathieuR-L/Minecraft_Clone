@@ -8,7 +8,7 @@ import fr.math.minecraft.client.Game;
 import fr.math.minecraft.client.entity.player.Player;
 import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

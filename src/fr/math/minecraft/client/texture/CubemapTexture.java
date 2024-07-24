@@ -2,7 +2,7 @@ package fr.math.minecraft.client.texture;
 
 import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryUtil;
 

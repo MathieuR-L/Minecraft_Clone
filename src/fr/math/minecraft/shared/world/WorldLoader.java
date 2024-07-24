@@ -2,8 +2,6 @@ package fr.math.minecraft.shared.world;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import fr.math.minecraft.logger.LoggerUtility;
-import org.apache.log4j.Logger;
 import org.joml.Vector3i;
 
 public class WorldLoader {

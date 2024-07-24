@@ -23,7 +23,7 @@ import fr.math.minecraft.shared.PlayerAction;
 import fr.math.minecraft.shared.world.*;
 import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 

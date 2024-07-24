@@ -2,9 +2,7 @@ package fr.math.minecraft.server;
 
 import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
-import org.apache.log4j.Logger;
-
-import java.util.Map;
+import org.apache.logging.log4j.Logger;
 
 public class TimeoutHandler extends Thread {
 

@@ -19,7 +19,7 @@ import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
 import fr.math.minecraft.shared.world.World;
 import fr.math.minecraft.shared.world.WorldLoader;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.joml.Vector3f;
 
 import javax.imageio.ImageIO;

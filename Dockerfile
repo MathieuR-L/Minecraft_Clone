@@ -2,20 +2,17 @@ FROM openjdk:17-jdk-slim AS builder
 WORKDIR /build
 
 COPY src ./src
-COPY libs ./libs
+COPY pom.xml ./pom.xml
 
-RUN javac -cp 'libs/linux/*' -d out $(find src -name '*.java')
-
-RUN jar --create --file MinecraftServer.jar --manifest /dev/null -C out .
-RUN echo "Main-Class: fr.math.minecraft.ServerMain" > MANIFEST.MF && jar --update --file MinecraftServer.jar --manifest MANIFEST.MF
-RUN jar --update --file MinecraftServer.jar -C libs .
-
+RUN apt-get update && apt-get install -y maven
+RUN mvn clean package
 
 FROM openjdk:17-jdk-slim
 WORKDIR /app
 
-COPY --from=builder /build/MinecraftServer.jar .
+COPY log ./log
+COPY --from=builder /build/target/minecraft-clone-1.0-SNAPSHOT-jar-with-dependencies.jar .
 
-EXPOSE 50000
+EXPOSE 50000/udp
 
-CMD ["java", "-jar", "MinecraftServer.jar"]
+CMD ["java", "-jar", "minecraft-clone-1.0-SNAPSHOT-jar-with-dependencies.jar"]

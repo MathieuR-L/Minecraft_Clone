@@ -13,7 +13,7 @@ import fr.math.minecraft.shared.inventory.Inventory;
 import fr.math.minecraft.shared.inventory.ItemStack;
 import fr.math.minecraft.shared.network.PlayerInputData;
 import fr.math.minecraft.shared.world.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.joml.Math;
 import org.joml.Vector3f;
 import org.joml.Vector3i;

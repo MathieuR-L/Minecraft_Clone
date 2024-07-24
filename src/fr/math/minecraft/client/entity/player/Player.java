@@ -1,33 +1,33 @@
 package fr.math.minecraft.client.entity.player;
 
 import fr.math.minecraft.client.Camera;
-import fr.math.minecraft.client.Renderer;
-import fr.math.minecraft.client.entity.AttackRay;
-import fr.math.minecraft.client.manager.SoundManager;
-import fr.math.minecraft.client.network.payload.ChatPayload;
 import fr.math.minecraft.client.Game;
-import fr.math.minecraft.client.animations.*;
+import fr.math.minecraft.client.Renderer;
+import fr.math.minecraft.client.animations.MiningAnimation;
+import fr.math.minecraft.client.animations.PlayerHandAnimation;
+import fr.math.minecraft.client.animations.PlayerWalkAnimation;
+import fr.math.minecraft.client.entity.AttackRay;
 import fr.math.minecraft.client.entity.Ray;
+import fr.math.minecraft.client.events.PlayerMoveEvent;
 import fr.math.minecraft.client.events.listeners.EntityUpdate;
 import fr.math.minecraft.client.events.listeners.EventListener;
-import fr.math.minecraft.client.events.PlayerMoveEvent;
 import fr.math.minecraft.client.handler.ChatInputsHandler;
 import fr.math.minecraft.client.handler.InventoryInputsHandler;
 import fr.math.minecraft.client.manager.ChunkManager;
+import fr.math.minecraft.client.manager.SoundManager;
 import fr.math.minecraft.client.meshs.NametagMesh;
-import fr.math.minecraft.shared.inventory.*;
+import fr.math.minecraft.client.network.payload.ChatPayload;
 import fr.math.minecraft.server.Utils;
 import fr.math.minecraft.shared.GameConfiguration;
+import fr.math.minecraft.shared.PlayerAction;
+import fr.math.minecraft.shared.Sprite;
 import fr.math.minecraft.shared.entity.Entity;
 import fr.math.minecraft.shared.entity.EntityType;
-import fr.math.minecraft.shared.world.*;
-import fr.math.minecraft.shared.Sprite;
-import fr.math.minecraft.shared.PlayerAction;
-import fr.math.minecraft.shared.inventory.Hotbar;
-import fr.math.minecraft.shared.inventory.PlayerInventory;
+import fr.math.minecraft.shared.inventory.*;
 import fr.math.minecraft.shared.network.GameMode;
 import fr.math.minecraft.shared.network.Hitbox;
 import fr.math.minecraft.shared.network.PlayerInputData;
+import fr.math.minecraft.shared.world.*;
 import org.joml.Math;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
@@ -35,7 +35,10 @@ import org.lwjgl.BufferUtils;
 
 import java.awt.image.BufferedImage;
 import java.nio.DoubleBuffer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static org.lwjgl.glfw.GLFW.*;
 

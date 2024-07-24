@@ -2,10 +2,9 @@ package fr.math.minecraft.client.audio;
 
 import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.stb.STBVorbis;
 import org.lwjgl.system.MemoryStack;
-import org.lwjgl.system.MemoryUtil;
 
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;

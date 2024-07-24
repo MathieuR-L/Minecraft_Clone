@@ -5,7 +5,7 @@ import fr.math.minecraft.client.fonts.CharInfo;
 import fr.math.minecraft.client.texture.Texture;
 import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BitmapBuilder {
-
 
     private final static Logger logger = LoggerUtility.getClientLogger(BitmapBuilder.class, LogType.TXT);
 

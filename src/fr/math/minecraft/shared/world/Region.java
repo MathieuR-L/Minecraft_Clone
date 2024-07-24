@@ -5,11 +5,8 @@ import fr.math.minecraft.logger.LoggerUtility;
 import fr.math.minecraft.server.manager.BiomeManager;
 import fr.math.minecraft.server.world.Structure;
 import fr.math.minecraft.server.world.biome.AbstractBiome;
-import fr.math.minecraft.server.world.biome.DesertBiome;
-import fr.math.minecraft.server.world.biome.ForestBiome;
-import fr.math.minecraft.server.world.biome.PlainBiome;
 import fr.math.minecraft.shared.world.generator.OverworldGenerator;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
