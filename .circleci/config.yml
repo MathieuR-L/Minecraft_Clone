@@ -15,13 +15,11 @@ jobs:
             command: |
               sudo apt update
               sudo apt install -y findutils
+              sudo apt install -y maven
       - run:
           name: Build server application
           command: |
-            mkdir -p build/libs
-            javac -cp 'libs/linux/*' -d build/classes $(find src -name '*.java')
-            jar --create --file build/libs/MinecraftServer.jar --manifest <(echo "Main-Class: fr.math.minecraft.ServerMain") -C build/classes .
-            jar --update --file build/libs/MinecraftServer.jar -C libs/linux .
+            mvn clean package
 
   deploy:
     executor: docker-executor
