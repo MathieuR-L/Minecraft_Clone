@@ -20,7 +20,7 @@ import fr.math.minecraft.shared.world.DroppedItem;
 import fr.math.minecraft.shared.inventory.ItemStack;
 import fr.math.minecraft.shared.world.Material;
 import fr.math.minecraft.shared.world.PlacedBlock;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.joml.Vector3i;
 
 import java.io.IOException;

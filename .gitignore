@@ -29,6 +29,9 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+## Game
+target/
 src/log/client-log.txt
 src/log/client-log.txt
 src/log/

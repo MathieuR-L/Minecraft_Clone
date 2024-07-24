@@ -5,7 +5,7 @@ import fr.math.minecraft.client.fonts.CharInfo;
 import fr.math.minecraft.client.meshs.FontMesh;
 import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 public class FontManager {
 

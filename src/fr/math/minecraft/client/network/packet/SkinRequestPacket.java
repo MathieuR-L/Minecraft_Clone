@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 import java.awt.image.BufferedImage;
 

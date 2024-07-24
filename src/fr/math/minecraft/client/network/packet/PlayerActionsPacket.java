@@ -10,7 +10,7 @@ import fr.math.minecraft.client.network.payload.InputPayload;
 import fr.math.minecraft.client.network.payload.StatePayload;
 import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 public class PlayerActionsPacket extends ClientPacket {
 

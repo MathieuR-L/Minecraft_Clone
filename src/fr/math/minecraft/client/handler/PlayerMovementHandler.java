@@ -13,11 +13,9 @@ import fr.math.minecraft.client.network.payload.StatePayload;
 import fr.math.minecraft.shared.world.BreakedBlock;
 import fr.math.minecraft.shared.world.PlacedBlock;
 import fr.math.minecraft.shared.world.World;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.joml.Vector3f;
-import org.joml.Vector3i;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class PlayerMovementHandler {

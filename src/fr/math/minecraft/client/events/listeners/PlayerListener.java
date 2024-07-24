@@ -15,9 +15,8 @@ import fr.math.minecraft.client.manager.WorldManager;
 import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
 import fr.math.minecraft.server.Utils;
-import fr.math.minecraft.shared.world.Chunk;
 import fr.math.minecraft.shared.world.World;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.joml.Vector3i;
 
 import javax.imageio.ImageIO;

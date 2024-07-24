@@ -11,7 +11,7 @@ import fr.math.minecraft.server.Client;
 import fr.math.minecraft.server.MinecraftServer;
 import fr.math.minecraft.server.TimeoutHandler;
 import fr.math.minecraft.shared.world.World;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

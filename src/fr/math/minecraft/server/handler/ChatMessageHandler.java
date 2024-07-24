@@ -6,7 +6,7 @@ import fr.math.minecraft.logger.LoggerUtility;
 import fr.math.minecraft.shared.ChatMessage;
 import fr.math.minecraft.server.Client;
 import fr.math.minecraft.server.MinecraftServer;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 import java.net.InetAddress;
 

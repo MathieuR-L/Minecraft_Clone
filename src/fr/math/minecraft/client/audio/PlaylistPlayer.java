@@ -1,16 +1,11 @@
 package fr.math.minecraft.client.audio;
 
 import fr.math.minecraft.client.Game;
-import fr.math.minecraft.client.manager.SoundManager;
 import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
-import org.apache.log4j.Logger;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.logging.log4j.Logger;
 
 import static org.lwjgl.openal.AL10.*;
-import static org.lwjgl.glfw.GLFW.*;
 
 public class PlaylistPlayer extends Thread {
 

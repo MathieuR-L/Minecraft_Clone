@@ -13,7 +13,7 @@ import fr.math.minecraft.shared.entity.Entity;
 import fr.math.minecraft.shared.entity.EntityFactory;
 import fr.math.minecraft.shared.entity.EntityType;
 import fr.math.minecraft.shared.world.World;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.joml.Vector2i;
 import org.joml.Vector3f;
 

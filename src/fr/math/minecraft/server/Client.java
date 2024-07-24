@@ -21,7 +21,7 @@ import fr.math.minecraft.server.payload.StatePayload;
 import fr.math.minecraft.shared.GameConfiguration;
 import fr.math.minecraft.shared.network.Hitbox;
 import fr.math.minecraft.shared.network.PlayerInputData;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.joml.Math;
 import org.joml.Vector2f;
 import org.joml.Vector3f;

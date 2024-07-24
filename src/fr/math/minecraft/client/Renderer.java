@@ -37,7 +37,7 @@ import fr.math.minecraft.shared.GameConfiguration;
 import fr.math.minecraft.shared.world.DroppedItem;
 import fr.math.minecraft.shared.world.Material;
 import fr.math.minecraft.shared.world.World;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 import org.lwjgl.BufferUtils;

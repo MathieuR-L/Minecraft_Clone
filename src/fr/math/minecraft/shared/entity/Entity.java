@@ -25,7 +25,7 @@ import fr.math.minecraft.shared.entity.mob.Zombie;
 import fr.math.minecraft.shared.inventory.Inventory;
 import fr.math.minecraft.shared.network.Hitbox;
 import fr.math.minecraft.shared.world.*;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.joml.*;
 import org.joml.Math;
 
