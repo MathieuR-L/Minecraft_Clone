@@ -63,7 +63,7 @@ public class GameConfiguration {
         this.guiScale = 1.0f;
         ObjectMapper mapper = new ObjectMapper();
         try {
-            JsonNode configuration = mapper.readTree(new File("server-config.json"));
+            JsonNode configuration = mapper.readTree(new File("res/client_config.json"));
             this.apiEndpoint = configuration.get("API_ENDPOINT").asText();
             this.authEndpoint = configuration.get("AUTH_ENDPOINT").asText();
             logger.info("Configuration chargée avec succès");
