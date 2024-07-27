@@ -3,6 +3,7 @@ WORKDIR /build
 
 COPY src ./src
 COPY pom.xml ./pom.xml
+COPY server-config.json ./server-config.json
 
 RUN apt-get update && apt-get install -y maven
 RUN mvn clean package
