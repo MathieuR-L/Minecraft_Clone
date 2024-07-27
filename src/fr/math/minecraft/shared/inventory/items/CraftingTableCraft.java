@@ -1,11 +1,11 @@
 package fr.math.minecraft.shared.inventory.items;
 
 import fr.math.minecraft.shared.inventory.CraftData;
-import fr.math.minecraft.shared.inventory.CraftRecipes;
+import fr.math.minecraft.shared.inventory.CraftRecipe;
 import fr.math.minecraft.shared.inventory.ItemStack;
 import fr.math.minecraft.shared.world.Material;
 
-public class CraftingTableCraft extends CraftRecipes {
+public class CraftingTableCraft extends CraftRecipe {
 
     public CraftingTableCraft() {
         super(new ItemStack(Material.CRAFTING_TABLE, 1));

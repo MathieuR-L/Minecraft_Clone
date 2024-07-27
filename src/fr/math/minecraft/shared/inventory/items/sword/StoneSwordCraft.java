@@ -1,11 +1,11 @@
 package fr.math.minecraft.shared.inventory.items.sword;
 
 import fr.math.minecraft.shared.inventory.CraftData;
-import fr.math.minecraft.shared.inventory.CraftRecipes;
+import fr.math.minecraft.shared.inventory.CraftRecipe;
 import fr.math.minecraft.shared.inventory.ItemStack;
 import fr.math.minecraft.shared.world.Material;
 
-public class StoneSwordCraft extends CraftRecipes {
+public class StoneSwordCraft extends CraftRecipe {
 
     public StoneSwordCraft() {
         super(new ItemStack(Material.STONE_SWORD, 1));

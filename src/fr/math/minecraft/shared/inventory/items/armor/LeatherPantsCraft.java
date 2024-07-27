@@ -1,11 +1,11 @@
 package fr.math.minecraft.shared.inventory.items.armor;
 
 import fr.math.minecraft.shared.inventory.CraftData;
-import fr.math.minecraft.shared.inventory.CraftRecipes;
+import fr.math.minecraft.shared.inventory.CraftRecipe;
 import fr.math.minecraft.shared.inventory.ItemStack;
 import fr.math.minecraft.shared.world.Material;
 
-public class LeatherPantsCraft extends CraftRecipes {
+public class LeatherPantsCraft extends CraftRecipe {
 
     public LeatherPantsCraft() {
         super(new ItemStack(Material.LEATHER_PANTS, 1));

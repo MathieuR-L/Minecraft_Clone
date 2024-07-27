@@ -20,11 +20,10 @@ import fr.math.minecraft.shared.inventory.items.sword.StoneSwordCraft;
 import fr.math.minecraft.shared.inventory.items.sword.WoodenSwordCraft;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class CraftController {
 
-    private ArrayList<CraftRecipes> recipes;
+    private ArrayList<CraftRecipe> recipes;
     private static CraftController instance = null;
 
     private CraftController() {
@@ -66,7 +65,7 @@ public class CraftController {
         registerCraft(new StickCraft());
     }
 
-    public void clearInventory(CraftRecipes craft, Inventory inventory) {
+    public void clearInventory(CraftRecipe craft, Inventory inventory) {
         for (int slot = 0; slot < inventory.getSize(); slot++) {
             for (CraftData craftData : craft.getPlayerInventory()) {
                 for (byte block : craftData.getTabCraft()) {
@@ -82,20 +81,20 @@ public class CraftController {
         }
     }
 
-    public ArrayList<CraftRecipes> getRecipes() {
+    public ArrayList<CraftRecipe> getRecipes() {
         return recipes;
     }
 
-    public void setRecipes(ArrayList<CraftRecipes> recipes) {
+    public void setRecipes(ArrayList<CraftRecipe> recipes) {
         this.recipes = recipes;
     }
 
-    public void registerCraft(CraftRecipes craftRecipes) {
+    public void registerCraft(CraftRecipe craftRecipes) {
         recipes.add(craftRecipes);
     }
 
-    public CraftRecipes getCraft(PlayerCraftInventory playerCraftInventory) {
-        for (CraftRecipes craftRecipes : recipes) {
+    public CraftRecipe getMatchingRecipe(PlayerCraftInventory playerCraftInventory) {
+        for (CraftRecipe craftRecipes : recipes) {
             for (int i = 0; i < craftRecipes.getPlayerInventory().size(); i++) {
                 CraftData craftData = craftRecipes.getPlayerInventory().get(i);
                 if (craftData.equals(playerCraftInventory)) {
@@ -106,12 +105,12 @@ public class CraftController {
         return null;
     }
 
-    public ItemStack getCraft(PlayerCraftingTableInventory playerCraftingTableInventory) {
+    public ItemStack getMatchingRecipe(PlayerCraftingTableInventory playerCraftingTableInventory) {
         return null;
     }
 
-    public CraftRecipes getCraft(CraftingTableInventory craftingTableInventory) {
-        for (CraftRecipes craftRecipes : recipes) {
+    public CraftRecipe getMatchingRecipe(CraftingTableInventory craftingTableInventory) {
+        for (CraftRecipe craftRecipes : recipes) {
             for (int i = 0; i < craftRecipes.getCraftingTable().size(); i++) {
                 CraftData craftData = craftRecipes.getCraftingTable().get(i);
                 if (craftData.equals(craftingTableInventory)) {

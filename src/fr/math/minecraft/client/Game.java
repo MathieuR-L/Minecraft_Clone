@@ -75,7 +75,7 @@ public class Game {
     private float splasheScale = GameConfiguration.DEFAULT_SCALE;
     private int scaleFactor = 1;
     private String splash;
-    private Renderer renderer;
+    private GameWindow gameWindow;
     private ItemRenderer itemRenderer;
     private MenuManager menuManager;
     private DoubleBuffer mouseXBuffer, mouseYBuffer;
@@ -94,8 +94,6 @@ public class Game {
     private AuthUser user;
 
     private Game() {
-        this.initWindow();
-        //this.init();
     }
 
     public void initWindow() {
@@ -135,6 +133,8 @@ public class Game {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        this.gameWindow = new GameWindow();
     }
 
     public void init(String serverIp, int serverPort) {
@@ -149,7 +149,6 @@ public class Game {
         this.soundManager = SoundManager.getInstance();
         this.menuManager = new MenuManager(this);
         this.worldManager = new WorldManager();
-        this.renderer = new Renderer();
         this.itemRenderer = new ItemRenderer();
         this.mouseXBuffer = BufferUtils.createDoubleBuffer(1);
         this.mouseYBuffer = BufferUtils.createDoubleBuffer(1);
@@ -191,8 +190,10 @@ public class Game {
 
             Collections.shuffle(soundManager.getMusicsPlaylist().getSounds());
         }
+        this.initMenus();
+    }
 
-
+    public void initMenus() {
         Menu mainMenu = new MainMenu(this);
         Menu connectionMenu = new ConnectionMenu(this);
         Menu authMenu = new AuthMenu(this);
@@ -256,7 +257,7 @@ public class Game {
             updateTimer += deltaTime;
 
             lastDeltaTime = currentTime;
-            this.render(renderer);
+            gameWindow.render();
 
             while (updateTimer > GameConfiguration.UPDATE_TICK) {
                 this.update();
@@ -382,7 +383,7 @@ public class Game {
         }
     }
 
-    private void render(Renderer renderer) {
+    public void render(Renderer renderer) {
         for (Menu menu : menus.values()) {
             if (menu.isOpen()) {
                 renderer.renderMenu(camera, menu);
@@ -579,7 +580,7 @@ public class Game {
     }
 
     public Renderer getRenderer() {
-        return renderer;
+        return gameWindow.getRenderer();
     }
 
     public String getSplashText() {

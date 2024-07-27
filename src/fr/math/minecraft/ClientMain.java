@@ -61,6 +61,7 @@ public class ClientMain {
 
         logger.info("IP SERVEUR : " + serverIp + ":" + serverPort);
         Game game = Game.getInstance();
+        game.initWindow();
         game.setPlayer(new Player(args[1]));
         game.getPlayer().setSkinPath(skinPath);
         game.init(serverIp, serverPort);

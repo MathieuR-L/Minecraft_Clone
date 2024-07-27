@@ -80,10 +80,10 @@ public class AuthentificationPacket extends ClientPacket implements Runnable {
             menuManager.open(MainMenu.class);
 
         } catch (Exception e) {
+            logger.error(e.getMessage());
             menuManager.open(RetryAuthMenu.class);
             RetryAuthMenu menu = (RetryAuthMenu) menuManager.getOpenedMenu();
             menu.getSubTitle().setText("Email ou mot de passe incorrect.");
-            logger.error(e.getMessage());
         }
     }
 

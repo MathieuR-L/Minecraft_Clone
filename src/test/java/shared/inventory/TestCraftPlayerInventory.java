@@ -1,4 +1,4 @@
-package test;
+package test.java.shared.inventory;
 
 import fr.math.minecraft.shared.inventory.*;
 import fr.math.minecraft.shared.inventory.items.CraftingTableCraft;
@@ -17,7 +17,7 @@ public class TestCraftPlayerInventory {
 
         CraftController craftController = CraftController.getInstance();
         craftController.registerCraft(new StickCraft());
-        CraftRecipes craftRecipes = craftController.getCraft(inventory);
+        CraftRecipe craftRecipes = craftController.getMatchingRecipe(inventory);
 
         Assert.assertEquals(craftRecipes.getCraft().getMaterial(), Material.STICK);
     }
@@ -32,7 +32,7 @@ public class TestCraftPlayerInventory {
 
         CraftController craftController = CraftController.getInstance();
         craftController.registerCraft(new CraftingTableCraft());
-        CraftRecipes craftRecipes = craftController.getCraft(inventory);
+        CraftRecipe craftRecipes = craftController.getMatchingRecipe(inventory);
 
         Assert.assertEquals(craftRecipes.getCraft().getMaterial(), Material.CRAFTING_TABLE);
     }

@@ -1,19 +1,16 @@
-package test;
+package test.java.server;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fr.math.minecraft.client.Camera;
-import fr.math.minecraft.client.network.payload.StatePayload;
 import fr.math.minecraft.client.entity.player.Player;
 import fr.math.minecraft.server.Client;
 import fr.math.minecraft.server.payload.InputPayload;
 import fr.math.minecraft.shared.GameConfiguration;
 import fr.math.minecraft.shared.network.PlayerInputData;
 import fr.math.minecraft.shared.world.Chunk;
-import fr.math.minecraft.shared.world.Material;
 import fr.math.minecraft.shared.world.World;
-import org.joml.Math;
 import org.joml.Vector3f;
 import org.junit.Assert;
 import org.junit.Before;
@@ -22,7 +19,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestPosition {
+public class TestMovementPrediction {
 
     private Player player;
     private Client client;
@@ -53,7 +50,6 @@ public class TestPosition {
         ArrayNode inputsArray = mapper.createArrayNode();
 
         for (PlayerInputData input : inputs) {
-            System.out.println(input.toJSON());
             inputsArray.add(input.toJSON());
         }
 
@@ -63,24 +59,11 @@ public class TestPosition {
 
         InputPayload inputPayload = new InputPayload(node);
 
-        System.out.println("Client (Speed) " + client.getSpeed());
-        System.out.println("Player (Speed) " + player.getSpeed());
-
         player.setMovingForward(true);
         for (int i = 0; i < 10; i++) {
             client.update(world, inputPayload);
             player.updatePosition(world);
         }
-
-        StatePayload payload = new StatePayload(new fr.math.minecraft.client.network.payload.InputPayload(0, inputs));
-        for (int i = 0; i < 10; i++) {
-            //payload.reconcileMovement(world, player, new Vector3f(), new Vector3f());
-        }
-
-        System.out.println(payload.getPosition());
-
-        System.out.println(player.getPosition());
-        System.out.println(client.getPosition());
 
         Assert.assertEquals(player.getPosition(), client.getPosition());
     }
@@ -105,7 +88,6 @@ public class TestPosition {
             i++;
         }
 
-
         Vector3f startPosition = new Vector3f(1 * Chunk.SIZE, 3 * Chunk.SIZE, 0);
 
         Camera camera = new Camera(GameConfiguration.WINDOW_WIDTH, GameConfiguration.WINDOW_HEIGHT);
@@ -125,20 +107,7 @@ public class TestPosition {
 
         camera.update(player);
 
-        System.out.println(serverWorld.getChunks().size());
-
-        player.getBuildRay().update(startPosition, camera.getFront(), world, false);
-        client.getBuildRay().update(startPosition, client.getFront(), serverWorld, true);
-
-        byte block = player.getBuildRay().getAimedBlock();
-        byte serverBlock = client.getBuildRay().getAimedBlock();
-
-        System.out.println(Material.getMaterialById(block));
-        System.out.println(Material.getMaterialById(serverBlock));
-
         Assert.assertEquals(i, Chunk.VOLUME);
-
-
     }
 
 
