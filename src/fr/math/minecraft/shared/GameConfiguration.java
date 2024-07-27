@@ -1,5 +1,14 @@
 package fr.math.minecraft.shared;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.math.minecraft.logger.LogType;
+import fr.math.minecraft.logger.LoggerUtility;
+import org.apache.logging.log4j.Logger;
+
+import java.io.File;
+import java.io.IOException;
+
 public class GameConfiguration {
 
     public final static float UPS = 200.0f;
@@ -41,7 +50,9 @@ public class GameConfiguration {
     private boolean musicEnabled;
     private float guiScale;
     private boolean entitesPathEnabled;
+    private String apiEndpoint, authEndpoint;
     private static GameConfiguration instance = null;
+    private final static Logger logger = LoggerUtility.getClientLogger(GameConfiguration.class, LogType.TXT);
 
     private GameConfiguration() {
         this.entityInterpolation = true;
@@ -50,6 +61,16 @@ public class GameConfiguration {
         this.musicEnabled = true;
         this.entitesPathEnabled = true;
         this.guiScale = 1.0f;
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            JsonNode configuration = mapper.readTree(new File("server-config.json"));
+            this.apiEndpoint = configuration.get("API_ENDPOINT").asText();
+            this.authEndpoint = configuration.get("AUTH_ENDPOINT").asText();
+            logger.info("Configuration chargée avec succès");
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Impossible de lire le fichier de configuration du serveur");
+        }
     }
 
     public boolean isOcclusionEnabled() {
@@ -102,6 +123,14 @@ public class GameConfiguration {
 
     public void setEntitesPathEnabled(boolean entitesPathEnabled) {
         this.entitesPathEnabled = entitesPathEnabled;
+    }
+
+    public String getApiEndpoint() {
+        return apiEndpoint;
+    }
+
+    public String getAuthEndpoint() {
+        return authEndpoint;
     }
 
     public static GameConfiguration getInstance() {

@@ -8,6 +8,7 @@ import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
 import fr.math.minecraft.server.Client;
 import fr.math.minecraft.server.MinecraftServer;
+import fr.math.minecraft.server.ServerConfiguration;
 import fr.math.minecraft.server.TimeoutHandler;
 import fr.math.minecraft.shared.ChatColor;
 import fr.math.minecraft.shared.Utils;
@@ -44,13 +45,14 @@ public class ConnectionInitHandler extends PacketHandler implements Runnable {
 
         String uuid = null;
         String skinUrl = null;
+        ServerConfiguration configuration = ServerConfiguration.getInstance();
 
         try {
             String token = packetData.get("token").asText();
             ObjectMapper mapper = new ObjectMapper();
             ObjectNode tokenNode = mapper.createObjectNode();
             tokenNode.put("token", token);
-            HttpResponse response = HttpUtils.POST("http://localhost:3001/auth/validtoken", tokenNode);
+            HttpResponse response = HttpUtils.POST(configuration.getAuthEndpoint() + "/auth/validtoken", tokenNode);
             JsonNode responseData = mapper.readTree(response.getResponse().toString());
             JsonNode playerData = responseData.get("user");
             uuid = playerData.get("id").asText();

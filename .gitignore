@@ -32,9 +32,10 @@ bin/
 
 ## Game
 target/
-src/log/client-log.txt
-src/log/client-log.txt
+src/log/client-log.log
+src/log/server-log.log
 src/log/
 *.log
 skins/
 /plugins
+server-config.json

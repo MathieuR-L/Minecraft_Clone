@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fr.math.minecraft.client.Game;
 import fr.math.minecraft.client.texture.Texture;
+import fr.math.minecraft.server.ServerConfiguration;
+import fr.math.minecraft.shared.GameConfiguration;
 import fr.math.minecraft.shared.Utils;
 import fr.math.minecraft.client.gui.buttons.LoginButton;
 import fr.math.minecraft.client.gui.menus.MainMenu;
@@ -48,13 +50,13 @@ public class AuthentificationPacket extends ClientPacket implements Runnable {
         try {
             ObjectMapper mapper = new ObjectMapper();
             ObjectNode credentialsNode = mapper.createObjectNode();
+            GameConfiguration configuration = GameConfiguration.getInstance();
 
             credentialsNode.put("email", email);
             credentialsNode.put("password", password);
 
-            logger.info("Interrogation du serveur d'authentification...");
-
-            HttpResponse httpResponse = HttpUtils.POST("http://localhost:3001/auth/login", credentialsNode);
+            logger.info("Interrogation du serveur d'authentification... (" + configuration.getAuthEndpoint() + ")");
+            HttpResponse httpResponse = HttpUtils.POST(configuration.getAuthEndpoint() + "/auth/login", credentialsNode);
 
             logger.info("Code de réponse du serveur d'authentification : " + httpResponse.getCode());
 
