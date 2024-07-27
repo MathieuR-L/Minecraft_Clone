@@ -68,8 +68,9 @@ public class GameConfiguration {
             this.authEndpoint = configuration.get("AUTH_ENDPOINT").asText();
             logger.info("Configuration chargée avec succès");
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Impossible de lire le fichier de configuration du serveur");
+            logger.warn("Impossible de charger la configuration, les paramètres par défaut s'appliquent.");
+            this.apiEndpoint = "localhost:3000";
+            this.authEndpoint = "localhost:3001";
         }
     }
 
