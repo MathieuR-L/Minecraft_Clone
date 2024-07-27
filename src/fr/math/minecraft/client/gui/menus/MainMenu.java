@@ -33,7 +33,7 @@ public class MainMenu extends Menu {
         BlockButton playButton = new PlayButton();
         GuiText versionText = new GuiText("Minecraft 1.0.0", 5, 5, 0xFFFFFF);
         GuiText copyrightText = new GuiText("Copyright Me and the hoes.", GameConfiguration.WINDOW_WIDTH - fontManager.getTextWidth(fontMesh, "Copyright Me and the hoes.") - 5, 5, 0xFFFFFF);
-        this.splashText = new GuiText(game.getSplashText(), (float)((GameConfiguration.WINDOW_WIDTH * 0.7) - (splashWidth / 2.0f) - splashOffset), (float) (GameConfiguration.WINDOW_HEIGHT - (GameConfiguration.WINDOW_HEIGHT* 0.25)), -9, 0xFFFF00);
+        this.splashText = new GuiText(game.getSplashText(), (float)((GameConfiguration.WINDOW_WIDTH * 0.75) - (splashWidth / 2.0f) - splashOffset), (float) (GameConfiguration.WINDOW_HEIGHT - (GameConfiguration.WINDOW_HEIGHT* 0.35)), -9, 0xFFFF00);
 
         splashText.rotate(10);
 
