@@ -1,16 +1,14 @@
 package fr.math.minecraft;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import fr.math.minecraft.client.Game;
+import fr.math.minecraft.shared.Utils;
 import fr.math.minecraft.client.entity.player.Player;
 import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
 import org.apache.logging.log4j.Logger;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -63,20 +61,11 @@ public class ClientMain {
 
         logger.info("IP SERVEUR : " + serverIp + ":" + serverPort);
         Game game = Game.getInstance();
+        game.initWindow();
         game.setPlayer(new Player(args[1]));
         game.getPlayer().setSkinPath(skinPath);
         game.init(serverIp, serverPort);
-        BufferedImage skin = loadSkin(skinPath);
-        game.getPlayer().setSkin(skin);
         game.run();
-    }
-
-    public static BufferedImage loadSkin(String skinPath) {
-        try {
-            return ImageIO.read(new File(skinPath));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 }

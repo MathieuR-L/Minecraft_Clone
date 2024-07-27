@@ -1,11 +1,11 @@
 package fr.math.minecraft.shared.inventory.items;
 
 import fr.math.minecraft.shared.inventory.CraftData;
-import fr.math.minecraft.shared.inventory.CraftRecipes;
+import fr.math.minecraft.shared.inventory.CraftRecipe;
 import fr.math.minecraft.shared.inventory.ItemStack;
 import fr.math.minecraft.shared.world.Material;
 
-public class OakPlanksCraft extends CraftRecipes {
+public class OakPlanksCraft extends CraftRecipe {
 
 
     public OakPlanksCraft() {

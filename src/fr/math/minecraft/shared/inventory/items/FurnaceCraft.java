@@ -1,11 +1,11 @@
 package fr.math.minecraft.shared.inventory.items;
 
 import fr.math.minecraft.shared.inventory.CraftData;
-import fr.math.minecraft.shared.inventory.CraftRecipes;
+import fr.math.minecraft.shared.inventory.CraftRecipe;
 import fr.math.minecraft.shared.inventory.ItemStack;
 import fr.math.minecraft.shared.world.Material;
 
-public class FurnaceCraft extends CraftRecipes {
+public class FurnaceCraft extends CraftRecipe {
 
     public FurnaceCraft() {
         super(new ItemStack(Material.FURNACE, 1));

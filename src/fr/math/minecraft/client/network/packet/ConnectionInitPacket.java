@@ -10,6 +10,7 @@ import fr.math.minecraft.client.MinecraftClient;
 import fr.math.minecraft.client.entity.player.Player;
 import fr.math.minecraft.client.gui.menus.ConnectionMenu;
 import fr.math.minecraft.client.gui.menus.Menu;
+import fr.math.minecraft.client.network.AuthUser;
 import fr.math.minecraft.client.network.FixedPacketSender;
 import fr.math.minecraft.client.handler.TickHandler;
 import fr.math.minecraft.client.manager.MenuManager;
@@ -35,11 +36,12 @@ public class ConnectionInitPacket extends ClientPacket implements Runnable {
     private final ObjectMapper mapper;
     private final Player player;
     private final static Logger logger = LoggerUtility.getClientLogger(ConnectionInitPacket.class, LogType.TXT);;
-    private String giftedId;
+    private final AuthUser user;
 
-    public ConnectionInitPacket(Player player) {
+    public ConnectionInitPacket(Player player, AuthUser user) {
         this.mapper = new ObjectMapper();
         this.player = player;
+        this.user = user;
     }
 
     @Override
@@ -77,7 +79,7 @@ public class ConnectionInitPacket extends ClientPacket implements Runnable {
 
             if (menu instanceof ConnectionMenu) {
                 ConnectionMenu connectionMenu = (ConnectionMenu) menu;
-                connectionMenu.getTitle().setText("Impossible de se connecter au serveur (timeout)");
+                connectionMenu.getTitle().setText(e.getMessage());
             }
         }
     }
@@ -94,8 +96,13 @@ public class ConnectionInitPacket extends ClientPacket implements Runnable {
             logger.info("Tentative de connexion...");
             String data = client.sendString(message);
 
-            if (data.equalsIgnoreCase("TIMEOUT_REACHED")) {
-                throw new RuntimeException("Impossible d'envoyer le packet, le serveur a mis trop de temps à répondre ! (timeout)");
+            switch (data) {
+                case "TIMEOUT_REACHED":
+                    throw new RuntimeException("Impossible de se connecter au serveur (timeout)");
+                case "INVALID_TOKEN":
+                    throw new RuntimeException("Impossible de se connecter: session invalide (Essayez de vous reconnecter)");
+                case "SERVER_ERROR":
+                    throw new RuntimeException("Le serveur a rencontré un problème.");
             }
 
             JsonNode serverData = mapper.readTree(data);
@@ -171,14 +178,9 @@ public class ConnectionInitPacket extends ClientPacket implements Runnable {
         node.put("type", "CONNECTION_INIT");
         node.put("playerName", player.getName());
         node.put("clientVersion", "1.0.0");
-
-        BufferedImage skin = player.getSkin();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        node.put("token", user.getToken());
 
         try {
-            ImageIO.write(skin, "png", baos);
-            node.put("skin", Base64.getEncoder().encodeToString(baos.toByteArray()));
-            baos.close();
             return mapper.writeValueAsString(node);
         } catch (IOException e) {
             e.printStackTrace();
@@ -191,7 +193,4 @@ public class ConnectionInitPacket extends ClientPacket implements Runnable {
         return null;
     }
 
-    public String getGiftedId() {
-        return giftedId;
-    }
 }

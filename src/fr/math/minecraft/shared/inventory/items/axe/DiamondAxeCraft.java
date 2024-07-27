@@ -1,11 +1,11 @@
 package fr.math.minecraft.shared.inventory.items.axe;
 
 import fr.math.minecraft.shared.inventory.CraftData;
-import fr.math.minecraft.shared.inventory.CraftRecipes;
+import fr.math.minecraft.shared.inventory.CraftRecipe;
 import fr.math.minecraft.shared.inventory.ItemStack;
 import fr.math.minecraft.shared.world.Material;
 
-public class DiamondAxeCraft extends CraftRecipes {
+public class DiamondAxeCraft extends CraftRecipe {
 
     public DiamondAxeCraft() {
         super(new ItemStack(Material.DIAMOND_AXE, 1));

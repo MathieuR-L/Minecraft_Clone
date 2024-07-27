@@ -1,18 +1,15 @@
 package fr.math.minecraft.shared.inventory;
 
-import fr.math.minecraft.shared.inventory.CraftData;
-import fr.math.minecraft.shared.world.Material;
-
 import java.util.ArrayList;
 
-public abstract class CraftRecipes {
+public abstract class CraftRecipe {
 
     protected ArrayList<CraftData> playerInventory;
     protected ArrayList<CraftData> craftingTable;
     protected ItemStack craft;
     private int amount;
 
-    public CraftRecipes(ItemStack craft) {
+    public CraftRecipe(ItemStack craft) {
         this.playerInventory = new ArrayList<>();
         this.craftingTable = new ArrayList<>();
         this.craft = craft;

@@ -5,6 +5,7 @@ import fr.math.minecraft.client.entity.Ray;
 import fr.math.minecraft.client.entity.player.Player;
 import fr.math.minecraft.client.entity.player.PlayerHand;
 import fr.math.minecraft.client.fonts.CFont;
+import fr.math.minecraft.client.gui.GuiInputField;
 import fr.math.minecraft.client.gui.buttons.BlockButton;
 import fr.math.minecraft.client.gui.GuiText;
 import fr.math.minecraft.client.gui.menus.MainMenu;
@@ -13,6 +14,7 @@ import fr.math.minecraft.client.gui.menus.MenuBackgroundType;
 import fr.math.minecraft.client.manager.FontManager;
 import fr.math.minecraft.client.meshs.*;
 import fr.math.minecraft.client.meshs.model.ItemModelData;
+import fr.math.minecraft.client.network.AuthUser;
 import fr.math.minecraft.client.network.payload.ChatPayload;
 import fr.math.minecraft.client.texture.CubemapTexture;
 import fr.math.minecraft.logger.LogType;
@@ -78,7 +80,7 @@ public class Renderer {
     private final Shader zombieShader;
     private final Shader hitboxShader;
     private final Texture terrainTexture;
-    private final Texture skinTexture;
+    private Texture skinTexture;
     private final Texture defaultSkinTexture;
     private final Texture minecraftTitleTexture;
     private final Texture widgetsTexture;
@@ -166,7 +168,7 @@ public class Renderer {
         this.minecraftTitleTexture = new Texture("res/textures/gui/title/minecraft_title.png", 3);
         this.panoramaTexture = new CubemapTexture(panoramas, 4);
         this.widgetsTexture = new Texture("res/textures/gui/widgets.png", 5);
-        this.skinTexture = new Texture(Game.getInstance().getPlayer().getSkinPath(), 6);
+        this.skinTexture = null;
         this.crosshairTexuture = new Texture("res/textures/gui/crosshair.png", 7);
         this.placeholdTexture = new Texture("res/textures/gui/placehold.png", 8);
         this.playerInventoryTexture = new Texture("res/textures/gui/inventory.png", 9);
@@ -187,7 +189,6 @@ public class Renderer {
         this.panoramaTexture.load();
         this.widgetsTexture.load();
         this.dirtTexture.load();
-        this.skinTexture.load();
         this.crosshairTexuture.load();
         this.placeholdTexture.load();
         this.playerInventoryTexture.load();
@@ -314,7 +315,7 @@ public class Renderer {
         texture.bind();
         camera.matrixNametag(nametagTextShader, entity);
 
-        fontManager.addText(fontMesh, entity.getName(), 0, 0, 0, 1.0f, 0xFFFFFF, true);
+        fontManager.addText(fontMesh, entity.getName(), 0, 0, 0, 1.0f, 0xFFFFFF, 1.0f, true);
 
         fontMesh.flush();
 
@@ -335,7 +336,7 @@ public class Renderer {
         terrainTexture.unbind();
     }
 
-    public void renderHand(Camera camera, PlayerHand hand) {
+    public void renderHand(Camera camera, Texture skinTexture, PlayerHand hand) {
 
         glDisable(GL_DEPTH_TEST);
 
@@ -368,25 +369,33 @@ public class Renderer {
         terrainTexture.unbind();
     }
 
+    public void renderChatMsg(Camera camera, ChatMessage chatMessage, float x, float y, float alpha) {
+        if (chatMessage.getSenderName().equals("ANNOUNCE")) {
+            this.renderText(camera, chatMessage.getMessage(), x, y, -10, chatMessage.getColor().getHexCode(), alpha, GameConfiguration.DEFAULT_SCALE, 0.0f, new Vector3i(0 , 0, 0));
+        } else {
+            this.renderText(camera, chatMessage.getSenderName() + ": " + chatMessage.getMessage(), x, y, -10, chatMessage.getColor().getHexCode(), alpha, GameConfiguration.DEFAULT_SCALE, 0.0f, new Vector3i(0 , 0, 0));
+        }
+    }
+
     public void renderText(Camera camera, String text, float x, float y, int rgb, float scale) {
-        this.renderText(camera, text, x, y, -10, rgb, scale, 0.0f, new Vector3i(0 , 0, 0));
+        this.renderText(camera, text, x, y, -10, rgb, 1.0f, scale, 0.0f, new Vector3i(0 , 0, 0));
     }
 
     public void renderText(Camera camera, String text, float x, float y, int rgb, float scale, float rotateAngle, Vector3i normal) {
-        this.renderText(camera, text, x, y, -10, rgb, scale, rotateAngle, normal);
+        this.renderText(camera, text, x, y, -10, rgb, 1.0f, scale, rotateAngle, normal);
     }
     
     public void renderText(Camera camera, String text, float x, float y, float z, int rgb, float scale) {
-        this.renderText(camera, text, x, y, z, rgb, scale, 0.0f, new Vector3i(0 , 0, 0));
+        this.renderText(camera, text, x, y, z, rgb, 1.0f, scale, 0.0f, new Vector3i(0 , 0, 0));
     }
 
-    public void renderText(Camera camera, String text, float x, float y, float z, int rgb, float scale, float rotateAngle, Vector3i normal) {
-        this.renderString(camera, emptyText, -1000, -1000, 100, rgb, scale, rotateAngle, normal);
-        this.renderString(camera, text, x, y, z, rgb, scale, rotateAngle, normal);
-        this.renderString(camera, text, x + 2, y - 2, z - 1, 0x555555, scale, rotateAngle, normal);
+    public void renderText(Camera camera, String text, float x, float y, float z, int rgb, float alpha, float scale, float rotateAngle, Vector3i normal) {
+        this.renderString(camera, emptyText, -1000, -1000, 100, rgb, alpha, scale, rotateAngle, normal);
+        this.renderString(camera, text, x, y, z, rgb, alpha, scale, rotateAngle, normal);
+        this.renderString(camera, text, x + 2, y - 2, z - 1, 0x555555, alpha, scale, rotateAngle, normal);
     }
 
-    private void renderString(Camera camera, String text, float x, float y, float z, int rgb, float scale, float rotateAngle, Vector3i normal) {
+    private void renderString(Camera camera, String text, float x, float y, float z, int rgb, float alpha, float scale, float rotateAngle, Vector3i normal) {
         Texture texture = font.getTexture();
 
         fontShader.enable();
@@ -396,7 +405,7 @@ public class Renderer {
         texture.bind();
 
         camera.matrixOrtho(fontShader, rotateAngle, x, y, z, text, fontMesh, new Vector3f(normal.x, normal.y, normal.z));
-        fontManager.addText(fontMesh, text, x, y, z, scale, rgb);
+        fontManager.addText(fontMesh, text, x, y, z, scale, rgb, alpha);
 
         fontMesh.flush();
 
@@ -545,10 +554,20 @@ public class Renderer {
         }
 
         if (menu instanceof MainMenu) {
+
+            AuthUser user = Game.getInstance().getUser();
+            float textHeight = fontManager.getTextHeight(fontMesh, "A");
+            if (user != null) {
+                this.renderText(camera, "Authentifié (" + user.getName() + ")", 0, GameConfiguration.WINDOW_HEIGHT - textHeight - 5, 0xFFFFFF, GameConfiguration.DEFAULT_SCALE);
+            } else {
+                this.renderText(camera, "Non authentifié", 0, GameConfiguration.WINDOW_HEIGHT - textHeight - 5, 0xFFFFFF, GameConfiguration.DEFAULT_SCALE);
+            }
+
             this.renderImage(camera, imageMesh, minecraftTitleTexture);
         }
 
         GuiText menuTitle = menu.getTitle();
+        GuiText menuSubtitle = menu.getSubTitle();
 
         if (menuTitle != null) {
             String title = menuTitle.getText();
@@ -556,6 +575,14 @@ public class Renderer {
             // float titleHeight = fontManager.getTextHeight(fontMesh, GameConfiguration.MENU_TITLE_SCALE, title);
             float titleX = GameConfiguration.WINDOW_CENTER_X - titleWidth / 2.0f;
             this.renderText(camera, menu.getTitle().getText(), titleX, menu.getTitle().getY(), -8, 0xFFFFFF, menu.getTitle().getScale());
+        }
+
+        if (menuSubtitle != null) {
+            String subTitle = menuSubtitle.getText();
+            float subTitleWidth = fontManager.getTextWidth(fontMesh, GameConfiguration.MENU_SUBTITLE_SCALE, subTitle);
+            // float titleHeight = fontManager.getTextHeight(fontMesh, GameConfiguration.MENU_TITLE_SCALE, title);
+            float subTitleX = GameConfiguration.WINDOW_CENTER_X - subTitleWidth / 2.0f;
+            this.renderText(camera, menu.getSubTitle().getText(), subTitleX, menuSubtitle.getY(), -8, menuSubtitle.getRgb(), menu.getSubTitle().getScale());
         }
 
         for (GuiText text : menu.getTexts()) {
@@ -566,6 +593,7 @@ public class Renderer {
                 text.getY(),
                 text.getZ(),
                 text.getRgb(),
+                1.0f,
                 text.getScale(),
                 text.getRotateAngle(),
                 new Vector3i(0, 0, 1)
@@ -575,6 +603,31 @@ public class Renderer {
         for (BlockButton button : menu.getButtons()) {
             this.renderButton(camera, button);
         }
+
+        for (GuiInputField inputField : menu.getInputFields()) {
+            this.renderInputField(camera, inputField);
+        }
+    }
+
+    private void renderInputField(Camera camera, GuiInputField inputField) {
+
+        float labelMarginTop = 10;
+        float paddingX = 5;
+        float paddingY = 10;
+
+        this.renderText(camera, inputField.getLabel(), inputField.getX(), inputField.getY() + GuiInputField.HEIGHT + labelMarginTop , -8, 0xA7A7A7, GameConfiguration.DEFAULT_SCALE);
+        this.renderRect(camera, inputField.getX() - 2, inputField.getY() - 2, GuiInputField.WIDTH + 4, GuiInputField.HEIGHT + 4, 0xA7A7A7, 1.0f, -8);
+        this.renderRect(camera, inputField.getX(), inputField.getY(), GuiInputField.WIDTH, GuiInputField.HEIGHT, 0x000000, 1.0f, -7);
+
+        if (inputField.isFocused() && inputField.getValue().length() == 0) {
+            this.renderRect(camera, inputField.getX() + paddingX, inputField.getY() + paddingY, 10, 2, 0xFFFFFF, 1.0f, -6);
+        }
+
+        if (inputField.getValue().length() == 0) {
+            return;
+        }
+
+        this.renderText(camera, inputField.getValue().toString(), inputField.getX() + paddingX, inputField.getY() + paddingY , -5, 0xFFFFFF, GameConfiguration.DEFAULT_SCALE);
     }
 
     private void renderDirtBackground(Camera camera) {
@@ -1021,7 +1074,7 @@ public class Renderer {
     public void renderChatPayload(Camera camera, ChatPayload payload) {
 
         int width = 500;
-        int height = 25;
+        float height = fontManager.getTextHeight(fontMesh, "A");
         int margin = 10;
 
         this.renderRect(camera, margin, margin, width, height, 0x0, 0.45f, -12);
@@ -1031,12 +1084,13 @@ public class Renderer {
 
     }
 
-    public void renderChat(Camera camera, Map<String, ChatMessage> messages) {
+    public void renderChat(Camera camera, float opacity, Map<String, ChatMessage> messages) {
         int width = 500;
-        int height = Math.min(30 * 5, 30 * messages.size());
+        float charHeight = fontManager.getTextHeight(fontMesh, "A") + 6;
+        float height = Math.min(charHeight * 5, charHeight * messages.size());
         int margin = 10;
 
-        this.renderRect(camera, margin, margin + 50, width, height, 0x0, 0.45f, -11);
+        this.renderRect(camera, margin, margin + 50, width, height, 0x0, 0.45f * opacity, -12);
         float messageX = margin;
         float messageY = margin + 52;
         List<ChatMessage> sortedMessages = new ArrayList<>(messages.values());
@@ -1045,8 +1099,8 @@ public class Renderer {
         int messageDisplayed = 0;
 
         for (ChatMessage chatMessage : sortedMessages) {
-            this.renderText(camera, chatMessage.getSenderName() + ": " + chatMessage.getMessage(), messageX, messageY, 0xFFFFFF, GameConfiguration.DEFAULT_SCALE);
-            messageY += 30;
+            this.renderChatMsg(camera, chatMessage, messageX, messageY, opacity);
+            messageY += charHeight;
             messageDisplayed++;
             if (messageDisplayed == 5) break;
         }

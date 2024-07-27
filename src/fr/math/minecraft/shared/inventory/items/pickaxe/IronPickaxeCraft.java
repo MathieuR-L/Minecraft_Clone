@@ -1,11 +1,11 @@
 package fr.math.minecraft.shared.inventory.items.pickaxe;
 
 import fr.math.minecraft.shared.inventory.CraftData;
-import fr.math.minecraft.shared.inventory.CraftRecipes;
+import fr.math.minecraft.shared.inventory.CraftRecipe;
 import fr.math.minecraft.shared.inventory.ItemStack;
 import fr.math.minecraft.shared.world.Material;
 
-public class IronPickaxeCraft extends CraftRecipes {
+public class IronPickaxeCraft extends CraftRecipe {
 
     public IronPickaxeCraft() {
         super(new ItemStack(Material.IRON_PICKAXE, 1));

@@ -514,7 +514,7 @@ public class Client {
             if (inputData.isCollectingCraft() && craftResult != null) {
                 CraftController controller = CraftController.getInstance();
                 if (craftingTableInventory.isOpen()) {
-                    CraftRecipes craft = controller.getCraft(craftingTableInventory);
+                    CraftRecipe craft = controller.getMatchingRecipe(craftingTableInventory);
                     CraftData matchingCraft = null;
                     if (craft != null) {
                         for (CraftData craftData : craft.getCraftingTable()) {
@@ -538,7 +538,7 @@ public class Client {
                         completedCraftPlayerInventory.clear();
                     }
                 } else {
-                    CraftRecipes craft = controller.getCraft(craftInventory);
+                    CraftRecipe craft = controller.getMatchingRecipe(craftInventory);
                     CraftData matchingCraft = null;
                     if (craft != null) {
                         for (CraftData craftData : craft.getPlayerInventory()) {
@@ -600,12 +600,12 @@ public class Client {
 
                     CraftController controller = CraftController.getInstance();
                     if (craftingTableInventory.isOpen()) {
-                        CraftRecipes craft = controller.getCraft(craftingTableInventory);
+                        CraftRecipe craft = controller.getMatchingRecipe(craftingTableInventory);
                         if (craft != null) {
                             completedCraftPlayerInventory.setItem(craft.getCraft(), 0);
                         }
                     } else {
-                        CraftRecipes craft = controller.getCraft(craftInventory);
+                        CraftRecipe craft = controller.getMatchingRecipe(craftInventory);
                         if (craft != null) {
                             completedCraftPlayerInventory.setItem(craft.getCraft(), 0);
                         }

@@ -4,12 +4,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import fr.math.minecraft.ServerMain;
 import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
 import fr.math.minecraft.server.Client;
 import fr.math.minecraft.server.MinecraftServer;
+import fr.math.minecraft.server.ServerConfiguration;
 import fr.math.minecraft.server.TimeoutHandler;
+import fr.math.minecraft.shared.ChatColor;
+import fr.math.minecraft.shared.Utils;
+import fr.math.minecraft.shared.network.HttpResponse;
+import fr.math.minecraft.shared.network.HttpUtils;
 import fr.math.minecraft.shared.world.World;
 import org.apache.logging.log4j.Logger;
 
@@ -38,52 +42,59 @@ public class ConnectionInitHandler extends PacketHandler implements Runnable {
         MinecraftServer server = MinecraftServer.getInstance();
         Map<String, Client> clients = server.getClients();
         Map<String, Long> lastActivities = server.getLastActivities();
-        String playerName = packetData.get("playerName").asText();
 
-        /*
-        for (Client client : clients.values()) {
-            if (client.getName().equalsIgnoreCase(playerName)) {
-                byte[] buffer = "USERNAME_NOT_AVAILABLE".getBytes(StandardCharsets.UTF_8);
-                return new DatagramPacket(buffer, buffer.length, address, clientPort);
-            }
-        }
-         */
-
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectNode node = mapper.createObjectNode();
-        String uuid = UUID.randomUUID().toString();
-        Client client = new Client(uuid, playerName, address, clientPort);
-        World world = server.getWorld();
-
-        client.getPosition().x = world.getSpawnPosition().x;
-        client.getPosition().y = world.getSpawnPosition().y;
-        client.getPosition().z = world.getSpawnPosition().z;
-
-        node.put("uuid", uuid);
-        node.put("spawnX", world.getSpawnPosition().x);
-        node.put("spawnY", world.getSpawnPosition().y);
-        node.put("spawnZ", world.getSpawnPosition().z);
-        node.put("seed", world.getSeed());
-        node.set("worldData", world.toJSONObject());
+        String uuid = null;
+        String skinUrl = null;
+        ServerConfiguration configuration = ServerConfiguration.getInstance();
 
         try {
+            String token = packetData.get("token").asText();
+            ObjectMapper mapper = new ObjectMapper();
+            ObjectNode tokenNode = mapper.createObjectNode();
+            tokenNode.put("token", token);
+            HttpResponse response = HttpUtils.POST(configuration.getAuthEndpoint() + "/auth/validtoken", tokenNode);
+            JsonNode responseData = mapper.readTree(response.getResponse().toString());
+            JsonNode playerData = responseData.get("user");
+            uuid = playerData.get("id").asText();
+            skinUrl = playerData.get("skin").get("link").asText();
+            String playerName = playerData.get("name").asText();
+
+            ObjectNode node = mapper.createObjectNode();
+            Client client = new Client(uuid, playerName, address, clientPort);
+            World world = server.getWorld();
+
+            client.getPosition().x = world.getSpawnPosition().x;
+            client.getPosition().y = world.getSpawnPosition().y;
+            client.getPosition().z = world.getSpawnPosition().z;
+
+            node.put("uuid", uuid);
+            node.put("spawnX", world.getSpawnPosition().x);
+            node.put("spawnY", world.getSpawnPosition().y);
+            node.put("spawnZ", world.getSpawnPosition().z);
+            node.put("seed", world.getSeed());
+            node.set("worldData", world.toJSONObject());
+
             byte[] buffer = mapper.writeValueAsString(node).getBytes(StandardCharsets.UTF_8);
 
             synchronized (server.getClients()) {
                 server.getClients().put(uuid, client);
-                byte[] skinBytes = Base64.getDecoder().decode(packetData.get("skin").asText());
                 try {
-                    BufferedImage skin = ImageIO.read(new ByteArrayInputStream(skinBytes));
+                    BufferedImage skin = Utils.loadBase64Skin(skinUrl);
                     client.setSkin(skin);
                     ImageIO.write(skin, "png", new File("skins/" + uuid + ".png"));
                     logger.info("Le skin du joueur" + playerName + " (" + uuid + ") a été sauvegardé avec succès.");
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    buffer = "SERVER_ERROR".getBytes(StandardCharsets.UTF_8);
+                    server.sendPacket(new DatagramPacket(buffer, buffer.length, address, clientPort));
+                    logger.error(e.getMessage());
+                    return;
                 }
             }
 
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, clientPort);
-            logger.info(playerName + " a rejoint le serveur ! (" + clients.size() + "/???)");
+            logger.info(playerName + " (" + uuid + ") a rejoint le serveur ! (" + clients.size() + "/???)");
+            server.getPluginManager().invokePlayerJoin(server.getClients().size());
+            server.announceMessage(playerName + " a rejoint le serveur.", ChatColor.YELLOW);
 
             if (!lastActivities.containsKey(uuid)) {
                 lastActivities.put(uuid, System.currentTimeMillis());
@@ -93,8 +104,10 @@ public class ConnectionInitHandler extends PacketHandler implements Runnable {
 
             server.sendPacket(packet);
 
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            byte[] buffer = "INVALID_TOKEN".getBytes(StandardCharsets.UTF_8);
+            server.sendPacket(new DatagramPacket(buffer, buffer.length, address, clientPort));
+            logger.error(e.getMessage());
         }
     }
 }

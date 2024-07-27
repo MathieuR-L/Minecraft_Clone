@@ -1,11 +1,11 @@
 package fr.math.minecraft.shared.inventory.items.axe;
 
 import fr.math.minecraft.shared.inventory.CraftData;
-import fr.math.minecraft.shared.inventory.CraftRecipes;
+import fr.math.minecraft.shared.inventory.CraftRecipe;
 import fr.math.minecraft.shared.inventory.ItemStack;
 import fr.math.minecraft.shared.world.Material;
 
-public class StoneAxeCraft extends CraftRecipes {
+public class StoneAxeCraft extends CraftRecipe {
 
     public StoneAxeCraft() {
         super(new ItemStack(Material.STONE_AXE, 1));

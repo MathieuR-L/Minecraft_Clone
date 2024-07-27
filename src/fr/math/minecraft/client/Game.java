@@ -2,14 +2,15 @@ package fr.math.minecraft.client;
 
 import fr.math.minecraft.client.audio.*;
 import fr.math.minecraft.client.entity.Ray;
+import fr.math.minecraft.client.gui.GuiInputField;
+import fr.math.minecraft.client.gui.menus.*;
+import fr.math.minecraft.client.handler.ChatInputsHandler;
+import fr.math.minecraft.client.network.AuthUser;
 import fr.math.minecraft.shared.ChatMessage;
 import fr.math.minecraft.shared.entity.Entity;
 import fr.math.minecraft.shared.PlayerAction;
 import fr.math.minecraft.client.events.listeners.PlayerListener;
 import fr.math.minecraft.client.gui.buttons.BlockButton;
-import fr.math.minecraft.client.gui.menus.ConnectionMenu;
-import fr.math.minecraft.client.gui.menus.MainMenu;
-import fr.math.minecraft.client.gui.menus.Menu;
 import fr.math.minecraft.client.handler.PlayerMovementHandler;
 import fr.math.minecraft.client.manager.*;
 import fr.math.minecraft.client.entity.player.Player;
@@ -74,7 +75,7 @@ public class Game {
     private float splasheScale = GameConfiguration.DEFAULT_SCALE;
     private int scaleFactor = 1;
     private String splash;
-    private Renderer renderer;
+    private GameWindow gameWindow;
     private ItemRenderer itemRenderer;
     private MenuManager menuManager;
     private DoubleBuffer mouseXBuffer, mouseYBuffer;
@@ -89,11 +90,10 @@ public class Game {
     private int tick;
     private GameConfiguration gameConfiguration;
     private List<Chunk> chunkUpdateQueue;
-    private Map<String, ChatMessage> chatMessages;
+    private ChatManager chatManager;
+    private AuthUser user;
 
     private Game() {
-        this.initWindow();
-        //this.init();
     }
 
     public void initWindow() {
@@ -133,6 +133,8 @@ public class Game {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        this.gameWindow = new GameWindow();
     }
 
     public void init(String serverIp, int serverPort) {
@@ -147,7 +149,6 @@ public class Game {
         this.soundManager = SoundManager.getInstance();
         this.menuManager = new MenuManager(this);
         this.worldManager = new WorldManager();
-        this.renderer = new Renderer();
         this.itemRenderer = new ItemRenderer();
         this.mouseXBuffer = BufferUtils.createDoubleBuffer(1);
         this.mouseYBuffer = BufferUtils.createDoubleBuffer(1);
@@ -161,11 +162,12 @@ public class Game {
         this.loadingChunks = new HashMap<>();
         this.fontManager = new FontManager();
         this.pendingMeshs = new LinkedList<>();
-        this.chatMessages = new HashMap<>();
+        this.chatManager = new ChatManager();
         this.playerMovementHandler = new PlayerMovementHandler();
         this.lastPingTime = 0;
         this.chunkUpdateQueue = new ArrayList<>();
         this.gameConfiguration = GameConfiguration.getInstance();
+        this.user = user;
 
         player.addEventListener(new PlayerListener(this));
 
@@ -188,14 +190,21 @@ public class Game {
 
             Collections.shuffle(soundManager.getMusicsPlaylist().getSounds());
         }
+        this.initMenus();
+    }
 
-
+    public void initMenus() {
         Menu mainMenu = new MainMenu(this);
         Menu connectionMenu = new ConnectionMenu(this);
+        Menu authMenu = new AuthMenu(this);
+        Menu authWaitingMenu = new AuthWaitingMenu(this);
+        Menu retryAuthMenu = new RetryAuthMenu(this);
 
         menuManager.registerMenu(mainMenu);
         menuManager.registerMenu(connectionMenu);
-
+        menuManager.registerMenu(authMenu);
+        menuManager.registerMenu(authWaitingMenu);
+        menuManager.registerMenu(retryAuthMenu);
     }
 
     private void loadSplashText() {
@@ -248,7 +257,7 @@ public class Game {
             updateTimer += deltaTime;
 
             lastDeltaTime = currentTime;
-            this.render(renderer);
+            gameWindow.render();
 
             while (updateTimer > GameConfiguration.UPDATE_TICK) {
                 this.update();
@@ -285,6 +294,19 @@ public class Game {
                 mouseXBuffer.rewind();
                 mouseYBuffer.rewind();
             }
+
+            for (GuiInputField inputField : menu.getInputFields()) {
+                glfwGetCursorPos(window, mouseXBuffer, mouseYBuffer);
+                inputField.handleInputs(window, mouseXBuffer.get(), mouseYBuffer.get());
+
+                mouseXBuffer.rewind();
+                mouseYBuffer.rewind();
+
+                if (!inputField.isFocused()) continue;
+
+                ChatInputsHandler handler = new ChatInputsHandler();
+                handler.handleInputs(window, inputField.getValue());
+            }
         }
 
         if (state == GameState.MAIN_MENU) {
@@ -312,9 +334,15 @@ public class Game {
 
         }
 
-        player.handleInputs(window);
+        player.handleInputs(window, chatManager);
         this.update(player);
         time += 0.01f;
+
+        chatManager.setDelay(chatManager.getDelay() - 1);
+
+        if (chatManager.getDelay() <= 0) {
+            chatManager.setChatOpacity(chatManager.getChatOpacity() - 0.005f);
+        }
 
         synchronized (this.getPlayers()) {
             for (Player player : this.getPlayers().values()) {
@@ -355,7 +383,7 @@ public class Game {
         }
     }
 
-    private void render(Renderer renderer) {
+    public void render(Renderer renderer) {
         for (Menu menu : menus.values()) {
             if (menu.isOpen()) {
                 renderer.renderMenu(camera, menu);
@@ -455,7 +483,12 @@ public class Game {
         }
 
         if (selectedItem == null) {
-            renderer.renderHand(camera, player.getHand());
+            if (player.getSkinTexture() != null) {
+                if (!player.getSkinTexture().isLoaded()) {
+                    player.getSkinTexture().load();
+                }
+                renderer.renderHand(camera, player.getSkinTexture(), player.getHand());
+            }
         } else {
             if (selectedItem.getMaterial().isItem()) {
                 renderer.renderItemInHand(camera, player, selectedItem.getMaterial());
@@ -488,12 +521,12 @@ public class Game {
         if (player.getChatPayload().isOpen()) {
             renderer.renderChatPayload(camera, player.getChatPayload());
         }
-        renderer.renderChat(camera, chatMessages);
+        renderer.renderChat(camera, chatManager.getChatOpacity(), chatManager.getChatMessages());
     }
 
     public static Game getInstance() {
         if (instance == null) {
-            System.out.println("Game getInstance :"+instance);
+            System.out.println("Game getInstance :" + instance);
             instance = new Game();
         }
         return instance;
@@ -547,7 +580,7 @@ public class Game {
     }
 
     public Renderer getRenderer() {
-        return renderer;
+        return gameWindow.getRenderer();
     }
 
     public String getSplashText() {
@@ -598,8 +631,15 @@ public class Game {
         return chunkUpdateQueue;
     }
 
-    public Map<String, ChatMessage> getChatMessages() {
-        return chatMessages;
+    public AuthUser getUser() {
+        return user;
     }
 
+    public void setUser(AuthUser user) {
+        this.user = user;
+    }
+
+    public ChatManager getChatManager() {
+        return chatManager;
+    }
 }

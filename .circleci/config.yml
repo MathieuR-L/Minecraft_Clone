@@ -19,6 +19,16 @@ jobs:
           name: Build server application
           command: |
             mvn clean package
+  test:
+    executor: docker-executor
+    steps:
+      - checkout
+      - run:
+          name: Install Maven Dependencies
+          command: mvn dependency:go-offline
+      - run:
+          name: Run tests
+          command: mvn test
 
   deploy:
     executor: docker-executor
@@ -42,6 +52,7 @@ workflows:
   build-and-deploy:
     jobs:
       - build
+      - test
       - deploy:
           requires:
             - build

@@ -1,5 +1,14 @@
 package fr.math.minecraft.shared;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.math.minecraft.logger.LogType;
+import fr.math.minecraft.logger.LoggerUtility;
+import org.apache.logging.log4j.Logger;
+
+import java.io.File;
+import java.io.IOException;
+
 public class GameConfiguration {
 
     public final static float UPS = 200.0f;
@@ -17,6 +26,7 @@ public class GameConfiguration {
     public final static String SPLASHES_FILE_PATH = "res/splashes.txt";
     public final static float DEFAULT_SCALE = 0.28f;
     public final static float MENU_TITLE_SCALE = 0.3f;
+    public final static float MENU_SUBTITLE_SCALE = DEFAULT_SCALE;
     public final static int BUFFER_SIZE = 1024;
     public final static float CHUNK_TICK = 60.0f;
     public final static float CHUNK_TICK_RATE = 1000.0f / CHUNK_TICK;
@@ -40,7 +50,9 @@ public class GameConfiguration {
     private boolean musicEnabled;
     private float guiScale;
     private boolean entitesPathEnabled;
+    private String apiEndpoint, authEndpoint;
     private static GameConfiguration instance = null;
+    private final static Logger logger = LoggerUtility.getClientLogger(GameConfiguration.class, LogType.TXT);
 
     private GameConfiguration() {
         this.entityInterpolation = true;
@@ -49,6 +61,27 @@ public class GameConfiguration {
         this.musicEnabled = true;
         this.entitesPathEnabled = true;
         this.guiScale = 1.0f;
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            JsonNode configuration = mapper.readTree(new File("res/client_config.json"));
+            JsonNode apiNode = configuration.get("API_ENDPOINT");
+            JsonNode authNode = configuration.get("AUTH_ENDPOINT");
+            if (apiNode != null) {
+                this.apiEndpoint = apiNode.asText();
+            } else {
+                this.apiEndpoint = "localhost:3000";
+            }
+            if (authNode != null) {
+                this.authEndpoint = authNode.asText();
+            } else {
+                this.authEndpoint = "localhost:3001";
+            }
+            logger.info("Configuration chargée avec succès");
+        } catch (IOException e) {
+            logger.warn("Impossible de charger la configuration, les paramètres par défaut s'appliquent.");
+            this.apiEndpoint = "localhost:3000";
+            this.authEndpoint = "localhost:3001";
+        }
     }
 
     public boolean isOcclusionEnabled() {
@@ -101,6 +134,14 @@ public class GameConfiguration {
 
     public void setEntitesPathEnabled(boolean entitesPathEnabled) {
         this.entitesPathEnabled = entitesPathEnabled;
+    }
+
+    public String getApiEndpoint() {
+        return apiEndpoint;
+    }
+
+    public String getAuthEndpoint() {
+        return authEndpoint;
     }
 
     public static GameConfiguration getInstance() {

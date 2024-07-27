@@ -1,11 +1,11 @@
 package fr.math.minecraft.shared.inventory.items.shovel;
 
 import fr.math.minecraft.shared.inventory.CraftData;
-import fr.math.minecraft.shared.inventory.CraftRecipes;
+import fr.math.minecraft.shared.inventory.CraftRecipe;
 import fr.math.minecraft.shared.inventory.ItemStack;
 import fr.math.minecraft.shared.world.Material;
 
-public class StoneShovelCraft extends CraftRecipes {
+public class StoneShovelCraft extends CraftRecipe {
 
     public StoneShovelCraft() {
         super(new ItemStack(Material.STONE_SHOVEL, 1));

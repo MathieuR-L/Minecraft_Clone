@@ -1,6 +1,11 @@
 package fr.math.minecraft.client.entity.player;
 
 import fr.math.minecraft.client.Camera;
+import fr.math.minecraft.client.Renderer;
+import fr.math.minecraft.client.entity.AttackRay;
+import fr.math.minecraft.client.manager.ChatManager;
+import fr.math.minecraft.client.manager.SoundManager;
+import fr.math.minecraft.client.network.payload.ChatPayload;
 import fr.math.minecraft.client.Game;
 import fr.math.minecraft.client.Renderer;
 import fr.math.minecraft.client.animations.MiningAnimation;
@@ -16,7 +21,8 @@ import fr.math.minecraft.client.handler.InventoryInputsHandler;
 import fr.math.minecraft.client.manager.ChunkManager;
 import fr.math.minecraft.client.manager.SoundManager;
 import fr.math.minecraft.client.meshs.NametagMesh;
-import fr.math.minecraft.client.network.payload.ChatPayload;
+import fr.math.minecraft.client.texture.Texture;
+import fr.math.minecraft.shared.inventory.*;
 import fr.math.minecraft.server.Utils;
 import fr.math.minecraft.shared.GameConfiguration;
 import fr.math.minecraft.shared.PlayerAction;
@@ -75,7 +81,8 @@ public class Player extends Entity {
     private final ChatPayload chatPayload;
     private final CompletedCraftPlayerInventory completedCraftPlayerInventory;
     private final CraftingTableInventory craftingTableInventory;
-    
+    private Texture skinTexture;
+
     public Player(String name) {
         super(null, EntityType.PLAYER);
         this.name = name;
@@ -123,7 +130,8 @@ public class Player extends Entity {
         this.placingBlock = false;
         this.breakingBlock = false;
         this.skin = null;
-        this.skinPath = "res/textures/skin.png";
+        this.skinPath = null;
+        this.skinTexture = null;
         this.attackRay = new AttackRay(GameConfiguration.ATTACK_REACH);
         this.buildRay = new Ray(GameConfiguration.BUILDING_REACH);
         this.breakRay = new Ray(GameConfiguration.BUILDING_REACH);
@@ -140,7 +148,7 @@ public class Player extends Entity {
         animations.add(new PlayerWalkAnimation(this));
     }
 
-    public void handleInputs(long window) {
+    public void handleInputs(long window, ChatManager chatManager) {
 
         if (chatPayload.isOpen() && glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             chatPayload.setOpen(false);
@@ -150,6 +158,7 @@ public class Player extends Entity {
         }
 
         if (chatPayload.isOpen()) {
+            chatManager.setChatOpacity(1.0f);
             if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) {
                 chatPayload.send();
                 chatPayload.getMessage().delete(0, chatPayload.getMessage().length());
@@ -768,5 +777,13 @@ public class Player extends Entity {
 
     public CraftingTableInventory getCraftingTableInventory() {
         return craftingTableInventory;
+    }
+
+    public Texture getSkinTexture() {
+        return skinTexture;
+    }
+
+    public void setSkinTexture(Texture skinTexture) {
+        this.skinTexture = skinTexture;
     }
 }

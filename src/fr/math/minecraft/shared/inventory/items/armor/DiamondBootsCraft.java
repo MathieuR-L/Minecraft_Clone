@@ -1,11 +1,11 @@
 package fr.math.minecraft.shared.inventory.items.armor;
 
 import fr.math.minecraft.shared.inventory.CraftData;
-import fr.math.minecraft.shared.inventory.CraftRecipes;
+import fr.math.minecraft.shared.inventory.CraftRecipe;
 import fr.math.minecraft.shared.inventory.ItemStack;
 import fr.math.minecraft.shared.world.Material;
 
-public class DiamondBootsCraft extends CraftRecipes {
+public class DiamondBootsCraft extends CraftRecipe {
 
     public DiamondBootsCraft() {
         super(new ItemStack(Material.DIAMOND_BOOTS, 1));
