@@ -15,10 +15,9 @@ import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
 import fr.math.minecraft.shared.network.HttpResponse;
 import fr.math.minecraft.shared.network.HttpUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 public class AuthentificationPacket extends ClientPacket implements Runnable {
 

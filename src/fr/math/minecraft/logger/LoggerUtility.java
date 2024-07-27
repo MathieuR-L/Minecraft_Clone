@@ -3,7 +3,6 @@ package fr.math.minecraft.logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.*;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class LoggerUtility {
