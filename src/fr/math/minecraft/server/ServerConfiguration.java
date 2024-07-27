@@ -23,8 +23,18 @@ public class ServerConfiguration {
             this.environment = configuration.get("PROJECT_ENVIRONMENT").asText();
 
             if (this.environment.equalsIgnoreCase("PRODUCTION")) {
-                this.apiEndpoint = configuration.get("API_ENDPOINT").asText();
-                this.authEndpoint = configuration.get("AUTH_ENDPOINT").asText();
+                JsonNode apiNode = configuration.get("API_ENDPOINT");
+                JsonNode authNode = configuration.get("AUTH_ENDPOINT");
+                if (apiNode != null) {
+                    this.apiEndpoint = apiNode.asText();
+                } else {
+                    this.apiEndpoint = "localhost:3000";
+                }
+                if (authNode != null) {
+                    this.authEndpoint = authNode.asText();
+                } else {
+                    this.authEndpoint = "localhost:3001";
+                }
             } else {
                 this.apiEndpoint = "localhost:3000";
                 this.authEndpoint = "localhost:3001";

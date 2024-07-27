@@ -82,6 +82,7 @@ public class AuthentificationPacket extends ClientPacket implements Runnable {
             menuManager.open(MainMenu.class);
 
         } catch (Exception e) {
+            e.printStackTrace();
             logger.error(e.getMessage());
             menuManager.open(RetryAuthMenu.class);
             RetryAuthMenu menu = (RetryAuthMenu) menuManager.getOpenedMenu();

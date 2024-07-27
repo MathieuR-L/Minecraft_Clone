@@ -64,8 +64,18 @@ public class GameConfiguration {
         ObjectMapper mapper = new ObjectMapper();
         try {
             JsonNode configuration = mapper.readTree(new File("res/client_config.json"));
-            this.apiEndpoint = configuration.get("API_ENDPOINT").asText();
-            this.authEndpoint = configuration.get("AUTH_ENDPOINT").asText();
+            JsonNode apiNode = configuration.get("API_ENDPOINT");
+            JsonNode authNode = configuration.get("AUTH_ENDPOINT");
+            if (apiNode != null) {
+                this.apiEndpoint = apiNode.asText();
+            } else {
+                this.apiEndpoint = "localhost:3000";
+            }
+            if (authNode != null) {
+                this.authEndpoint = authNode.asText();
+            } else {
+                this.authEndpoint = "localhost:3001";
+            }
             logger.info("Configuration chargée avec succès");
         } catch (IOException e) {
             logger.warn("Impossible de charger la configuration, les paramètres par défaut s'appliquent.");
