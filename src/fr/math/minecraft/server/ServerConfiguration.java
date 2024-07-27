@@ -11,8 +11,8 @@ import java.io.IOException;
 
 public class ServerConfiguration {
 
-    private final String environment;
-    private final String apiEndpoint, authEndpoint;
+    private String environment;
+    private String apiEndpoint, authEndpoint;
     private static ServerConfiguration instance = null;
     private static Logger logger = LoggerUtility.getServerLogger(ServerConfiguration.class, LogType.TXT);
 
@@ -31,8 +31,10 @@ public class ServerConfiguration {
             }
             logger.info("Configuration chargée avec succès");
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Impossible de lire le fichier de configuration du serveur");
+            logger.warn("Impossible de charger la configuration, les paramètres par défaut s'appliquent.");
+            this.environment = "unknown";
+            this.apiEndpoint = "localhost:3000";
+            this.authEndpoint = "localhost:3001";
         }
     }
 
