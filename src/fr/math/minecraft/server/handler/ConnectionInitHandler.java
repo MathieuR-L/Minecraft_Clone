@@ -10,6 +10,8 @@ import fr.math.minecraft.server.Client;
 import fr.math.minecraft.server.MinecraftServer;
 import fr.math.minecraft.server.ServerConfiguration;
 import fr.math.minecraft.server.TimeoutHandler;
+import fr.math.minecraft.server.websockets.MinecraftWebSocketServer;
+import fr.math.minecraft.server.websockets.ServerStatus;
 import fr.math.minecraft.shared.ChatColor;
 import fr.math.minecraft.shared.Utils;
 import fr.math.minecraft.shared.network.HttpResponse;
@@ -103,6 +105,8 @@ public class ConnectionInitHandler extends PacketHandler implements Runnable {
             }
 
             server.sendPacket(packet);
+            MinecraftWebSocketServer webSocketServer = server.getWebSocketServer();
+            webSocketServer.broadcastStatus(new ServerStatus(server.getClients().size(), server.getChatMessages().size()));
 
         } catch (IOException e) {
             byte[] buffer = "INVALID_TOKEN".getBytes(StandardCharsets.UTF_8);

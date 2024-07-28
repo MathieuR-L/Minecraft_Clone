@@ -2,6 +2,7 @@ package fr.math.minecraft.server;
 
 import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
+import fr.math.minecraft.server.websockets.ServerStatus;
 import org.apache.logging.log4j.Logger;
 
 public class TimeoutHandler extends Thread {
@@ -32,6 +33,7 @@ public class TimeoutHandler extends Thread {
 
                         server.getClients().remove(uuid);
                         server.getLastActivities().remove(uuid);
+                        server.getWebSocketServer().broadcastStatus(new ServerStatus(server.getClients().size(), server.getChatMessages().size()));
                         logger.info("La connexion avec le client " + uuid + " (" + clientName + ") a été perdu... (déconnexion)");
                         logger.info(clientName + " a quitté la partie. (" + server.getClients().size() + "/???)");
                     }

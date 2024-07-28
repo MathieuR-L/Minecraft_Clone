@@ -7,6 +7,7 @@ import fr.math.minecraft.server.handler.*;
 import fr.math.minecraft.server.manager.ChunkManager;
 import fr.math.minecraft.server.manager.PluginManager;
 import fr.math.minecraft.server.pathfinding.AStar;
+import fr.math.minecraft.server.websockets.MinecraftWebSocketServer;
 import fr.math.minecraft.shared.ChatColor;
 import fr.math.minecraft.shared.ChatMessage;
 import fr.math.minecraft.shared.entity.mob.Zombie;
@@ -42,6 +43,7 @@ public class MinecraftServer {
     private final ChunkManager chunkManager;
     private final List<ChatMessage> chatMessages;
     private final PluginManager pluginManager;
+    private final MinecraftWebSocketServer webSocketServer;
 
     private MinecraftServer(int port) {
         this.running = false;
@@ -60,6 +62,7 @@ public class MinecraftServer {
         this.tickHandler = new TickHandler();
         this.chunkManager = new ChunkManager();
         this.chatMessages = new ArrayList<>();
+        this.webSocketServer = new MinecraftWebSocketServer(50001);
 
         try {
             this.pluginManager.loadPlugins("plugins");
@@ -71,6 +74,8 @@ public class MinecraftServer {
         world.addEntity(new Zombie("Dummy"));
         //logger.info("Un villageois a spawn !");
         logger.info("Un zombie a spawn !");
+
+        webSocketServer.start();
     }
 
     public void start() throws IOException {
@@ -247,5 +252,9 @@ public class MinecraftServer {
 
     public void setRunning(boolean running) {
         this.running = running;
+    }
+
+    public MinecraftWebSocketServer getWebSocketServer() {
+        return webSocketServer;
     }
 }
