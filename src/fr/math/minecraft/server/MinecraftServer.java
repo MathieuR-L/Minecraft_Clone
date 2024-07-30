@@ -3,6 +3,7 @@ package fr.math.minecraft.server;
 import com.fasterxml.jackson.databind.JsonNode;
 import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
+import fr.math.minecraft.server.api.MinecraftApiFacade;
 import fr.math.minecraft.server.handler.*;
 import fr.math.minecraft.server.manager.ChunkManager;
 import fr.math.minecraft.server.manager.PluginManager;
@@ -66,6 +67,8 @@ public class MinecraftServer {
 
         try {
             this.pluginManager.loadPlugins("plugins");
+            MinecraftApiFacade api = new MinecraftApiFacade();
+            api.registerServer();
         } catch (Exception e) {
             logger.error(e.getMessage());
         }

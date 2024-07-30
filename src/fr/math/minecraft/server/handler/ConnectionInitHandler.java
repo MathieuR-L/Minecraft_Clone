@@ -12,6 +12,7 @@ import fr.math.minecraft.server.ServerConfiguration;
 import fr.math.minecraft.server.TimeoutHandler;
 import fr.math.minecraft.server.websockets.MinecraftWebSocketServer;
 import fr.math.minecraft.server.websockets.ServerStatus;
+import fr.math.minecraft.server.api.MinecraftApiFacade;
 import fr.math.minecraft.shared.ChatColor;
 import fr.math.minecraft.shared.Utils;
 import fr.math.minecraft.shared.network.HttpResponse;
