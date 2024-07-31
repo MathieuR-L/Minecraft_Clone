@@ -5,7 +5,7 @@ import fr.math.minecraft.server.api.mapper.RegisterServerApiMapper;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 
-public class RegisterServerApi extends ApiTemplate<Void> {
+public class RegisterServerApi extends ApiTemplate<Server> {
 
     public RegisterServerApi() {
         super(new RegisterServerApiMapper());

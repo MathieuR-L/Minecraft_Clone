@@ -23,7 +23,9 @@ public abstract class ApiTemplate<T> {
 
     private HttpURLConnection createConnection(String apiUrl) throws IOException {
         URL url = new URL(apiUrl);
-        return (HttpURLConnection) url.openConnection();
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        this.handleRequest(connection);
+        return connection;
     }
 
     public T execute() {
