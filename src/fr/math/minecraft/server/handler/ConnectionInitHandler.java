@@ -107,18 +107,18 @@ public class ConnectionInitHandler extends PacketHandler implements Runnable {
             }
 
             server.sendPacket(packet);
+
             MinecraftWebSocketServer webSocketServer = server.getWebSocketServer();
             Server serverData = server.getServerData();
             ServerStatus serverStatus = new ServerStatus(serverData.getIp(), server.getClients().size(), server.getChatMessages().size());
             webSocketServer.broadcastStatus(serverStatus);
-
             MinecraftApiFacade api = new MinecraftApiFacade();
             api.updateServer(serverData, serverStatus);
 
         } catch (IOException e) {
+            logger.error(e.getMessage());
             byte[] buffer = "INVALID_TOKEN".getBytes(StandardCharsets.UTF_8);
             server.sendPacket(new DatagramPacket(buffer, buffer.length, address, clientPort));
-            logger.error(e.getMessage());
         }
     }
 }

@@ -9,6 +9,7 @@ import fr.math.minecraft.server.handler.*;
 import fr.math.minecraft.server.manager.ChunkManager;
 import fr.math.minecraft.server.manager.PluginManager;
 import fr.math.minecraft.server.websockets.MinecraftWebSocketServer;
+import fr.math.minecraft.server.websockets.ServerStatus;
 import fr.math.minecraft.shared.ChatColor;
 import fr.math.minecraft.shared.ChatMessage;
 import fr.math.minecraft.shared.entity.mob.Zombie;
