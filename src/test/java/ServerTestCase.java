@@ -21,6 +21,9 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +36,7 @@ public class ServerTestCase {
     protected MinecraftServer server;
     protected MockedStatic<MinecraftServer> minecraftServerMock;
     private MockedStatic<ServerConfiguration> serverConfigurationMock;
+    private MockedStatic<ImageIO> mockImageIO;
     protected ObjectMapper mapper = new ObjectMapper();
 
     @Before
@@ -40,6 +44,7 @@ public class ServerTestCase {
         server = mock(MinecraftServer.class);
         minecraftServerMock = Mockito.mockStatic(MinecraftServer.class);
         minecraftServerMock.when(MinecraftServer::getInstance).thenReturn(server);
+        this.mockImageIO = Mockito.mockStatic(ImageIO.class);
 
         World world = mock(World.class);
         PluginManager pluginManager = mock(PluginManager.class);
@@ -52,9 +57,9 @@ public class ServerTestCase {
         ServerConfiguration mockConfig = Mockito.mock(ServerConfiguration.class);
         serverConfigurationMock.when(ServerConfiguration::getInstance).thenReturn(mockConfig);
 
-        Mockito.when(mockConfig.getApiEndpoint()).thenReturn("https://test.api.minecraftclone.com");
-        Mockito.when(mockConfig.getAuthEndpoint()).thenReturn("https://test.auth.minecraftclone.com");
-        Mockito.when(mockConfig.getAuthToken()).thenReturn("auth_123456789");
+        when(mockConfig.getApiEndpoint()).thenReturn("https://test.api.minecraftclone.com");
+        when(mockConfig.getAuthEndpoint()).thenReturn("https://test.auth.minecraftclone.com");
+        when(mockConfig.getAuthToken()).thenReturn("auth_123456789");
 
         when(serverData.getIp()).thenReturn("127.0.0.1");
         when(serverData.getId()).thenReturn(1);
@@ -68,6 +73,8 @@ public class ServerTestCase {
         when(server.getClients()).thenReturn(clients);
         when(server.getChatMessages()).thenReturn(chatMessages);
 
+        mockImageIO.when(() -> ImageIO.write(any(BufferedImage.class), eq("png"), any(File.class))).thenReturn(true);
+
         doNothing().when(server).sendPacket(ArgumentMatchers.any());
     }
 
@@ -75,5 +82,6 @@ public class ServerTestCase {
     public void tearDown() {
         minecraftServerMock.close();
         serverConfigurationMock.close();
+        mockImageIO.close();
     }
 }

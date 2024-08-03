@@ -13,7 +13,6 @@ import fr.math.minecraft.shared.network.HttpResponse;
 import fr.math.minecraft.shared.network.HttpUtils;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.*;
 import test.java.ServerTestCase;
