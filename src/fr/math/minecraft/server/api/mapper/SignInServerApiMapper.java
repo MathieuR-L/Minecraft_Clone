@@ -14,9 +14,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RegisterServerApiMapper extends ApiMapper<Server> {
+public class SignInServerApiMapper extends ApiMapper<Server> {
 
-    private final static Logger logger = LoggerUtility.getServerLogger(RegisterServerApiMapper.class, LogType.TXT);
+    private final static Logger logger = LoggerUtility.getServerLogger(SignInServerApiMapper.class, LogType.TXT);
 
     @Override
     public Server parseData(String responseData) {
@@ -24,6 +24,7 @@ public class RegisterServerApiMapper extends ApiMapper<Server> {
         try {
             JsonNode node = mapper.readTree(responseData);
             String ip = node.get("ip").asText();
+            int id = node.get("id").asInt();
             int onlinePlayers = node.get("onlinePlayers").asInt();
             ArrayNode chatMessages = (ArrayNode) node.get("chatMessages");
             List<ChatMessage> messages = new ArrayList<>();
@@ -36,7 +37,7 @@ public class RegisterServerApiMapper extends ApiMapper<Server> {
                 messages.add(new ChatMessage(message, authorId, date));
             }
 
-            return new Server(ip, onlinePlayers, messages);
+            return new Server(id, ip, onlinePlayers, messages);
 
         } catch (IOException e) {
             logger.warn(e.getMessage());

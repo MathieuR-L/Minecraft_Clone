@@ -13,6 +13,7 @@ public class ServerConfiguration {
 
     private String environment;
     private String apiEndpoint, authEndpoint;
+    private String authToken;
     private static ServerConfiguration instance = null;
     private static Logger logger = LoggerUtility.getServerLogger(ServerConfiguration.class, LogType.TXT);
 
@@ -25,19 +26,23 @@ public class ServerConfiguration {
             if (this.environment.equalsIgnoreCase("PRODUCTION")) {
                 JsonNode apiNode = configuration.get("API_ENDPOINT");
                 JsonNode authNode = configuration.get("AUTH_ENDPOINT");
+                JsonNode authTokenNode = configuration.get("AUTH_TOKEN");
+                this.apiEndpoint = "localhost:3000";
+                this.authEndpoint = "localhost:3001";
+                this.authToken = "";
                 if (apiNode != null) {
                     this.apiEndpoint = apiNode.asText();
-                } else {
-                    this.apiEndpoint = "localhost:3000";
                 }
                 if (authNode != null) {
                     this.authEndpoint = authNode.asText();
-                } else {
-                    this.authEndpoint = "localhost:3001";
+                }
+                if (authTokenNode != null) {
+                    this.authToken = authTokenNode.asText();
                 }
             } else {
                 this.apiEndpoint = "localhost:3000";
                 this.authEndpoint = "localhost:3001";
+                this.authToken = "";
             }
             logger.info("Configuration chargée avec succès");
         } catch (IOException e) {
@@ -53,6 +58,10 @@ public class ServerConfiguration {
             instance = new ServerConfiguration();
         }
         return instance;
+    }
+
+    public String getAuthToken() {
+        return authToken;
     }
 
     public String getEnvironment() {

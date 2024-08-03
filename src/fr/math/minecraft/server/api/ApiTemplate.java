@@ -14,7 +14,7 @@ import java.net.URL;
 
 public abstract class ApiTemplate<T> {
 
-    private final static Logger logger = LoggerUtility.getServerLogger(RegisterServerApi.class, LogType.TXT);
+    private final static Logger logger = LoggerUtility.getServerLogger(SignInServerApi.class, LogType.TXT);
     private ApiMapper<T> apiMapper;
 
     public ApiTemplate(ApiMapper<T> apiMapper) {

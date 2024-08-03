@@ -4,13 +4,13 @@ import fr.math.minecraft.server.websockets.ServerStatus;
 
 public class MinecraftApiFacade {
 
-    public Server registerServer() {
-        RegisterServerApi registerServerApi = new RegisterServerApi();
+    public Server signInServer() {
+        SignInServerApi registerServerApi = new SignInServerApi();
         return registerServerApi.execute();
     }
 
-    public void updateServer(ServerStatus serverStatus) {
-        UpdateServerApi updateServerApi = new UpdateServerApi(11, serverStatus);
+    public void updateServer(Server server, ServerStatus serverStatus) {
+        UpdateServerApi updateServerApi = new UpdateServerApi(server.getId(), serverStatus);
         updateServerApi.execute();
     }
 

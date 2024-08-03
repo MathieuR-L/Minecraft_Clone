@@ -12,24 +12,26 @@ public class ServerStatus {
         ONLINE, OFFLINE;
     }
 
+    private final String ip;
     private final int onlinePlayers;
     private final int messagesCount;
     private final Date lastUpdate;
     private final Status status;
 
-    public ServerStatus(int onlinePlayers, int messagesCount) {
-        this(onlinePlayers, messagesCount, new Date());
+    public ServerStatus(String ip, int onlinePlayers, int messagesCount) {
+        this(ip, onlinePlayers, messagesCount, new Date());
     }
 
-    public ServerStatus(int onlinePlayers, int messagesCount, Date lastUpdate) {
-        this(Status.ONLINE, onlinePlayers, messagesCount, lastUpdate);
+    public ServerStatus(String ip, int onlinePlayers, int messagesCount, Date lastUpdate) {
+        this(ip, Status.ONLINE, onlinePlayers, messagesCount, lastUpdate);
     }
 
-    public ServerStatus(Status status, int onlinePlayers, int messagesCount, Date lastUpdate) {
+    public ServerStatus(String ip, Status status, int onlinePlayers, int messagesCount, Date lastUpdate) {
         this.status = status;
         this.onlinePlayers = onlinePlayers;
         this.messagesCount = messagesCount;
         this.lastUpdate = lastUpdate;
+        this.ip = ip;
     }
 
     public int getOnlinePlayers() {
@@ -48,9 +50,14 @@ public class ServerStatus {
         return status;
     }
 
+    public String getIp() {
+        return ip;
+    }
+
     public String toJson() {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode node = mapper.createObjectNode();
+        node.put("ip", ip);
         node.put("onlinePlayers", onlinePlayers);
         node.put("messagesCount", messagesCount);
         node.put("lastUpdate", lastUpdate.toString());

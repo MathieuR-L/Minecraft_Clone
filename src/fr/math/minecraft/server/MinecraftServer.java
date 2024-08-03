@@ -4,10 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
 import fr.math.minecraft.server.api.MinecraftApiFacade;
+import fr.math.minecraft.server.api.Server;
 import fr.math.minecraft.server.handler.*;
 import fr.math.minecraft.server.manager.ChunkManager;
 import fr.math.minecraft.server.manager.PluginManager;
-import fr.math.minecraft.server.pathfinding.AStar;
 import fr.math.minecraft.server.websockets.MinecraftWebSocketServer;
 import fr.math.minecraft.shared.ChatColor;
 import fr.math.minecraft.shared.ChatMessage;
@@ -45,6 +45,7 @@ public class MinecraftServer {
     private final List<ChatMessage> chatMessages;
     private final PluginManager pluginManager;
     private final MinecraftWebSocketServer webSocketServer;
+    private Server serverData;
 
     private MinecraftServer(int port) {
         this.running = false;
@@ -64,12 +65,14 @@ public class MinecraftServer {
         this.chunkManager = new ChunkManager();
         this.chatMessages = new ArrayList<>();
         this.webSocketServer = new MinecraftWebSocketServer(50001);
-
+        this.serverData = new Server(0, "0.0.0.0", 0, new ArrayList<>());
         try {
             this.pluginManager.loadPlugins("plugins");
             MinecraftApiFacade api = new MinecraftApiFacade();
-            api.registerServer();
+            this.serverData = api.signInServer();
+            logger.info("Serveur authentifié avec succès ! ID " + serverData.getId() + " IP : " + serverData.getIp());
         } catch (Exception e) {
+            logger.error("Une erreur est survenue lors de l'authentification, veillez à renseigner un jeton d'authentification valide.");
             logger.error(e.getMessage());
         }
         logger.info("Point de spawn calculé en " + world.getSpawnPosition());
@@ -259,5 +262,9 @@ public class MinecraftServer {
 
     public MinecraftWebSocketServer getWebSocketServer() {
         return webSocketServer;
+    }
+
+    public Server getServerData() {
+        return serverData;
     }
 }

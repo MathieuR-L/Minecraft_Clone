@@ -10,6 +10,7 @@ import fr.math.minecraft.server.Client;
 import fr.math.minecraft.server.MinecraftServer;
 import fr.math.minecraft.server.ServerConfiguration;
 import fr.math.minecraft.server.TimeoutHandler;
+import fr.math.minecraft.server.api.Server;
 import fr.math.minecraft.server.websockets.MinecraftWebSocketServer;
 import fr.math.minecraft.server.websockets.ServerStatus;
 import fr.math.minecraft.server.api.MinecraftApiFacade;
@@ -107,11 +108,12 @@ public class ConnectionInitHandler extends PacketHandler implements Runnable {
 
             server.sendPacket(packet);
             MinecraftWebSocketServer webSocketServer = server.getWebSocketServer();
-            ServerStatus serverStatus = new ServerStatus(server.getClients().size(), server.getChatMessages().size());
+            Server serverData = server.getServerData();
+            ServerStatus serverStatus = new ServerStatus(serverData.getIp(), server.getClients().size(), server.getChatMessages().size());
             webSocketServer.broadcastStatus(serverStatus);
 
             MinecraftApiFacade api = new MinecraftApiFacade();
-            api.updateServer(serverStatus);
+            api.updateServer(serverData, serverStatus);
 
         } catch (IOException e) {
             byte[] buffer = "INVALID_TOKEN".getBytes(StandardCharsets.UTF_8);

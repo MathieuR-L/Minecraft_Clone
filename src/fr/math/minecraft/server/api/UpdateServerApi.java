@@ -1,5 +1,6 @@
 package fr.math.minecraft.server.api;
 
+import fr.math.minecraft.server.ServerConfiguration;
 import fr.math.minecraft.server.api.mapper.ApiMapper;
 import fr.math.minecraft.server.api.mapper.VoidApiMapper;
 import fr.math.minecraft.server.websockets.ServerStatus;
@@ -23,6 +24,7 @@ public class UpdateServerApi extends ApiTemplate<Void> {
         connection.setRequestMethod(this.getMethod());
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setRequestProperty("Accept", "application/json");
+        connection.setRequestProperty("Authorization", "Bearer " + ServerConfiguration.getInstance().getAuthToken());
         connection.setDoOutput(true);
 
         String statusData = serverStatus.toJson();
@@ -31,7 +33,7 @@ public class UpdateServerApi extends ApiTemplate<Void> {
 
     @Override
     public String getUrl() {
-        return "/api/server/" + this.serverId;
+        return "/api/servers/" + this.serverId;
     }
 
     @Override
