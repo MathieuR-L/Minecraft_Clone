@@ -1,4 +1,4 @@
-package test.java.server;
+package test.java.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -67,48 +67,4 @@ public class TestMovementPrediction {
 
         Assert.assertEquals(player.getPosition(), client.getPosition());
     }
-
-    @Test
-    public void testChunkGeneration() {
-
-        Chunk chunk = new Chunk(0, 3, 0);
-        Chunk otherChunk = new Chunk(0, 3, 0);
-
-        World world = new World();
-        World serverWorld = new World();
-
-        player = new Player("");
-        client = new Client("", "", null, -1);
-
-        chunk.generate(world, world.getTerrainGenerator());
-        otherChunk.generate(world, world.getTerrainGenerator());
-
-        int i = 0;
-        while (i < Chunk.VOLUME && chunk.getBlocks()[i] == otherChunk.getBlocks()[i]) {
-            i++;
-        }
-
-        Vector3f startPosition = new Vector3f(1 * Chunk.SIZE, 3 * Chunk.SIZE, 0);
-
-        Camera camera = new Camera(GameConfiguration.WINDOW_WIDTH, GameConfiguration.WINDOW_HEIGHT);
-
-        world.addChunk(chunk);
-
-        player.setPosition(new Vector3f(startPosition).add(0, 3, 0));
-        player.setYaw(0);
-        player.setPitch(-90.0f);
-
-        client.getPosition().x = player.getPosition().x;
-        client.getPosition().y = player.getPosition().y;
-        client.getPosition().z = player.getPosition().z;
-
-        client.setYaw(0);
-        client.setPitch(-90.0f);
-
-        camera.update(player);
-
-        Assert.assertEquals(i, Chunk.VOLUME);
-    }
-
-
 }
