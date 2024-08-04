@@ -22,7 +22,6 @@ public class World {
 
     private final HashMap<Coordinates, Chunk> chunks;
     private final Map<String, Entity> entities;
-    private final Map<Vector3i, Byte> cavesBlocks;
     private final ConcurrentHashMap<Coordinates, Chunk> pendingChunks;
     private final Set<Coordinates> loadingChunks;
     private final ArrayList<Byte> transparents;
@@ -43,7 +42,6 @@ public class World {
     public World() {
         this.chunks = new HashMap<>();
         this.regions = new HashMap<>();
-        this.cavesBlocks = new HashMap<>();
         this.pendingChunks = new ConcurrentHashMap<>();
         this.loadingChunks = new HashSet<>();
         this.solidBlocks = new HashSet<>();
@@ -227,22 +225,8 @@ public class World {
         return pendingChunks;
     }
 
-    public Set<Byte> getSolidBlocks() {
-        return solidBlocks;
-    }
-
     public TerrainGenerator getTerrainGenerator() {
         return terrainGenerator;
-    }
-
-    public Vector3i regionPosition(Vector3f playerPos) {
-        Vector3i intPlayerPos = new Vector3i((int)playerPos.x, (int)playerPos.y, (int)playerPos.z);
-        Vector3i regionPosition = new Vector3i();
-        int offset = (Region.SIZE * Chunk.SIZE)/2;
-        Vector3i offsetVector = new Vector3i(-offset, 0, -offset);
-        regionPosition.add(intPlayerPos);
-        regionPosition.add(offsetVector);
-        return regionPosition;
     }
 
     public void generateRegion(Vector3i regionPosition) {
@@ -255,25 +239,12 @@ public class World {
         }
     }
 
-    public void addRegion(Region region) {
-        this.regions.put(new Coordinates(region.getPosition().x, region.getPosition().y, region.getPosition().z), region);
-    }
-
     public void addRegion(Region region, Coordinates coordinates) {
         this.regions.put(coordinates, region);
     }
 
     public Region getRegion(int x, int y, int z) {
         Coordinates coordinates = new Coordinates(x, y, z);
-        return regions.get(coordinates);
-    }
-
-    public Region getRegion(Vector3i pos) {
-        Coordinates coordinates = new Coordinates(pos);
-        return regions.get(coordinates);
-    }
-
-    public Region getRegion(Coordinates coordinates) {
         return regions.get(coordinates);
     }
 
@@ -289,24 +260,8 @@ public class World {
         return cachedChunks;
     }
 
-    public void setBlock(Vector3i position, byte block) {
-        this.setBlock(position.x, position.y, position.z, block);
-    }
-
-    public void setBlock(int worldX, int worldY, int worldZ, byte block) {
-
-    }
-
-    public Map<Vector3i, Byte> getCavesBlocks() {
-        return cavesBlocks;
-    }
-
     public Map<String, DroppedItem> getDroppedItems() {
         return droppedItems;
-    }
-
-    public void setSpawnPosition(Vector3f spawnPosition) {
-        this.spawnPosition = spawnPosition;
     }
 
     public Map<Vector3i, BreakedBlock> getBrokenBlocks() {

@@ -63,6 +63,11 @@ public class ServerMain {
                 plugin.onDisable();
             }
             server.setRunning(false);
+            try {
+                server.getWebSocketServer().stop();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }
