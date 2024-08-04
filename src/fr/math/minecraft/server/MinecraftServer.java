@@ -65,7 +65,7 @@ public class MinecraftServer {
         this.tickHandler = new TickHandler();
         this.chunkManager = new ChunkManager();
         this.chatMessages = new ArrayList<>();
-        this.webSocketServer = new MinecraftWebSocketServer(50001);
+        this.webSocketServer = new MinecraftWebSocketServer(443);
         this.serverData = new Server(0, "0.0.0.0", 0, new ArrayList<>());
         try {
             this.pluginManager.loadPlugins("plugins");

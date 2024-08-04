@@ -13,10 +13,11 @@ WORKDIR /app
 COPY log/server/log4j-text.properties ./log4j-text.properties
 COPY --from=builder /build/target/minecraft-clone-1.0-SNAPSHOT-jar-with-dependencies.jar .
 COPY server-config.json ./server-config.json
+COPY keystore.p12 ./keystore.p12
 
 RUN mkdir -p skins
 
 EXPOSE 50000/udp
-EXPOSE 50001/tcp
+EXPOSE 443/tcp
 
 CMD ["java", "-jar", "-Dlog4j.configurationFile=./log4j-text.properties", "minecraft-clone-1.0-SNAPSHOT-jar-with-dependencies.jar"]

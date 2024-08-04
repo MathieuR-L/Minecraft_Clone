@@ -5,5 +5,5 @@ services:
     container_name: minecraft-clone-server
     ports:
       - 50000:50000/udp
-      - 50001:50001/tcp
+      - 443:443/tcp
     restart: unless-stopped
