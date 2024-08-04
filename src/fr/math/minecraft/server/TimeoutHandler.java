@@ -35,13 +35,16 @@ public class TimeoutHandler extends Thread {
 
                         server.getClients().remove(uuid);
                         server.getLastActivities().remove(uuid);
-                        Server serverData = server.getServerData();
-                        ServerStatus serverStatus = new ServerStatus(serverData.getIp(), server.getClients().size(), server.getChatMessages().size());
-                        server.getWebSocketServer().broadcastStatus(serverStatus);
-                        MinecraftApiFacade api = new MinecraftApiFacade();
-                        api.updateServer(serverData, serverStatus);
                         logger.info("La connexion avec le client " + uuid + " (" + clientName + ") a été perdu... (déconnexion)");
                         logger.info(clientName + " a quitté la partie. (" + server.getClients().size() + "/???)");
+
+                        Server serverData = server.getServerData();
+                        if (serverData != null) {
+                            ServerStatus serverStatus = new ServerStatus(serverData.getIp(), server.getClients().size(), server.getChatMessages().size());
+                            server.getWebSocketServer().broadcastStatus(serverStatus);
+                            MinecraftApiFacade api = new MinecraftApiFacade();
+                            api.updateServer(serverData, serverStatus);
+                        }
                     }
                 }
             }

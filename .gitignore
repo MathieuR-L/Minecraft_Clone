@@ -39,3 +39,4 @@ src/log/
 skins/
 /plugins
 server-config.json
+deploy.sh

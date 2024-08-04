@@ -37,10 +37,13 @@ public class MinecraftWebSocketServer extends WebSocketServer {
             sslContext.init(keyManagerFactory.getKeyManagers(), null, null);
 
             this.setWebSocketFactory(new DefaultSSLWebSocketServerFactory(sslContext));
+            logger.info("Configuration SSL effectuée avec succès.");
         } catch (Exception e) {
+            e.printStackTrace();
             logger.warn("Impossible de configurer le certificat SSL, le serveur WebSocket ne pourra commencer de communication chiffrée.");
         }
         this.clients = new CopyOnWriteArraySet<>();
+        logger.info("Instance du serveur websocket initiée avec succès.");
     }
 
     @Override

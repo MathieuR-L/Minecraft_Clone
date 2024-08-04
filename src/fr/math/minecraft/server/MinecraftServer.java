@@ -74,7 +74,6 @@ public class MinecraftServer {
             logger.info("Serveur authentifié avec succès ! ID " + serverData.getId() + " IP : " + serverData.getIp());
         } catch (Exception e) {
             logger.error("Une erreur est survenue lors de l'authentification, veillez à renseigner un jeton d'authentification valide.");
-            logger.error(e.getMessage());
         }
         logger.info("Point de spawn calculé en " + world.getSpawnPosition());
         //world.addEntity(new Villager("Dummy"));
@@ -89,6 +88,7 @@ public class MinecraftServer {
         this.running = true;
         socket = new DatagramSocket(this.port);
         System.out.println("Serveur en écoute sur le port " + this.port + "...");
+        logger.info("Serveur en écoute sur le port " + this.port + "...");
 
         tickHandler.start();
 
