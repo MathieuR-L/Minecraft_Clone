@@ -2,12 +2,18 @@ package fr.math.minecraft.server.websockets;
 
 import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
+import fr.math.minecraft.server.ServerConfiguration;
 import org.apache.logging.log4j.Logger;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
+import org.java_websocket.server.DefaultSSLWebSocketServerFactory;
 import org.java_websocket.server.WebSocketServer;
 
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import java.io.FileInputStream;
 import java.net.InetSocketAddress;
+import java.security.KeyStore;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -18,6 +24,22 @@ public class MinecraftWebSocketServer extends WebSocketServer {
 
     public MinecraftWebSocketServer(int port) {
         super(new InetSocketAddress(port));
+        ServerConfiguration configuration = ServerConfiguration.getInstance();
+        try {
+            KeyStore ks = KeyStore.getInstance(configuration.getStoreType());
+            FileInputStream fis = new FileInputStream(configuration.getKeyStore());
+            ks.load(fis, configuration.getStorePassword().toCharArray());
+
+            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
+            keyManagerFactory.init(ks, configuration.getKeyPassword().toCharArray());
+
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(keyManagerFactory.getKeyManagers(), null, null);
+
+            this.setWebSocketFactory(new DefaultSSLWebSocketServerFactory(sslContext));
+        } catch (Exception e) {
+            logger.warn("Impossible de configurer le certificat SSL, le serveur WebSocket ne pourra commencer de communication chiffrée.");
+        }
         this.clients = new CopyOnWriteArraySet<>();
     }
 
