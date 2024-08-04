@@ -12,10 +12,9 @@ public class SignInServerApi extends ApiTemplate<Server> {
         super(new SignInServerApiMapper());
     }
 
-
     @Override
     public String getUrl() {
-        return "/api/auth/server";
+        return "/auth/server";
     }
 
     @Override
