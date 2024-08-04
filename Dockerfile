@@ -17,5 +17,6 @@ COPY server-config.json ./server-config.json
 RUN mkdir -p skins
 
 EXPOSE 50000/udp
+EXPOSE 50001/tcp
 
 CMD ["java", "-jar", "minecraft-clone-1.0-SNAPSHOT-jar-with-dependencies.jar"]
