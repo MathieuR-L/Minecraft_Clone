@@ -61,6 +61,24 @@ public class ChatMessage {
         return node;
     }
 
+    public ObjectNode toWebJSONObject() {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode node = mapper.createObjectNode();
+        ObjectNode authorNode = mapper.createObjectNode();
+
+        authorNode.put("name", senderName);
+        authorNode.put("id", senderUuid);
+        authorNode.put("profileIconUrl", "");
+
+        node.put("timestamp", timestamp);
+        node.put("id", id);
+        node.set("author", authorNode);
+        node.put("message", message);
+        node.put("colorName", color.toString());
+
+        return node;
+    }
+
     public String getId() {
         return id;
     }

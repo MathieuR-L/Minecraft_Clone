@@ -3,6 +3,8 @@ package fr.math.minecraft.server.handler;
 import com.fasterxml.jackson.databind.JsonNode;
 import fr.math.minecraft.logger.LogType;
 import fr.math.minecraft.logger.LoggerUtility;
+import fr.math.minecraft.server.api.Server;
+import fr.math.minecraft.server.websockets.MinecraftWebSocketServer;
 import fr.math.minecraft.shared.ChatMessage;
 import fr.math.minecraft.server.Client;
 import fr.math.minecraft.server.MinecraftServer;
@@ -23,6 +25,8 @@ public class ChatMessageHandler extends PacketHandler {
         String message = packetData.get("content").asText();
         String sender = packetData.get("sender").asText();
         Client client = server.getClients().get(sender);
+        MinecraftWebSocketServer webSocketServer = server.getWebSocketServer();
+        Server serverData = server.getServerData();
 
         if (client == null || !client.isActive()) {
             logger.warn("Le client (" + sender + ") est inconnu, son message contient : " + message);
@@ -33,6 +37,6 @@ public class ChatMessageHandler extends PacketHandler {
 
         ChatMessage chatMessage = new ChatMessage(client.getUuid(), client.getName(), message);
         server.getChatMessages().add(chatMessage);
+        webSocketServer.broadcastChatMessage(chatMessage);
     }
-
 }
