@@ -5,6 +5,8 @@ import fr.math.minecraft.client.Game;
 import fr.math.minecraft.client.entity.player.Player;
 import fr.math.minecraft.client.gui.menus.RetryAuthMenu;
 import fr.math.minecraft.client.manager.MenuManager;
+import fr.math.minecraft.logger.LogType;
+import fr.math.minecraft.logger.LoggerUtility;
 import fr.math.minecraft.server.Client;
 import fr.math.minecraft.server.MinecraftServer;
 import fr.math.minecraft.server.ServerConfiguration;
@@ -13,6 +15,7 @@ import fr.math.minecraft.server.manager.PluginManager;
 import fr.math.minecraft.server.websockets.MinecraftWebSocketServer;
 import fr.math.minecraft.shared.ChatMessage;
 import fr.math.minecraft.shared.world.World;
+import org.apache.logging.log4j.Logger;
 import org.java_websocket.server.WebSocketServer;
 import org.joml.Vector3f;
 import org.junit.After;
@@ -44,7 +47,7 @@ public class ServerTestCase {
         server = mock(MinecraftServer.class);
         minecraftServerMock = Mockito.mockStatic(MinecraftServer.class);
         minecraftServerMock.when(MinecraftServer::getInstance).thenReturn(server);
-        this.mockImageIO = Mockito.mockStatic(ImageIO.class);
+        mockImageIO = Mockito.mockStatic(ImageIO.class);
 
         World world = mock(World.class);
         PluginManager pluginManager = mock(PluginManager.class);
@@ -52,6 +55,7 @@ public class ServerTestCase {
         MinecraftWebSocketServer webSocketServer = mock(MinecraftWebSocketServer.class);
         Map<String, Client> clients = new HashMap<>();
         List<ChatMessage> chatMessages = new ArrayList<>();
+        Map<String, Long> lastActivities = new HashMap<>();
 
         this.serverConfigurationMock = Mockito.mockStatic(ServerConfiguration.class);
         ServerConfiguration mockConfig = Mockito.mock(ServerConfiguration.class);
@@ -72,6 +76,7 @@ public class ServerTestCase {
         when(server.getWebSocketServer()).thenReturn(webSocketServer);
         when(server.getClients()).thenReturn(clients);
         when(server.getChatMessages()).thenReturn(chatMessages);
+        when(server.getLastActivities()).thenReturn(lastActivities);
 
         mockImageIO.when(() -> ImageIO.write(any(BufferedImage.class), eq("png"), any(File.class))).thenReturn(true);
 
@@ -84,4 +89,5 @@ public class ServerTestCase {
         serverConfigurationMock.close();
         mockImageIO.close();
     }
+
 }
