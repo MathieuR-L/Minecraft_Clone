@@ -3,6 +3,7 @@ package fr.math.minecraft.server.websockets;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import fr.math.minecraft.shared.ChatMessage;
 
 import java.util.Date;
 
@@ -17,21 +18,23 @@ public class ServerStatus {
     private final int messagesCount;
     private final Date lastUpdate;
     private final Status status;
+    private final ChatMessage chatMessage;
 
     public ServerStatus(String ip, int onlinePlayers, int messagesCount) {
         this(ip, onlinePlayers, messagesCount, new Date());
     }
 
     public ServerStatus(String ip, int onlinePlayers, int messagesCount, Date lastUpdate) {
-        this(ip, Status.ONLINE, onlinePlayers, messagesCount, lastUpdate);
+        this(ip, Status.ONLINE, onlinePlayers, messagesCount, lastUpdate, null);
     }
 
-    public ServerStatus(String ip, Status status, int onlinePlayers, int messagesCount, Date lastUpdate) {
+    public ServerStatus(String ip, Status status, int onlinePlayers, int messagesCount, Date lastUpdate, ChatMessage chatMessage) {
         this.status = status;
         this.onlinePlayers = onlinePlayers;
         this.messagesCount = messagesCount;
         this.lastUpdate = lastUpdate;
         this.ip = ip;
+        this.chatMessage = chatMessage;
     }
 
     public int getOnlinePlayers() {
@@ -52,6 +55,10 @@ public class ServerStatus {
 
     public String getIp() {
         return ip;
+    }
+
+    public ChatMessage getChatMessage() {
+        return chatMessage;
     }
 
     public String toJson() {

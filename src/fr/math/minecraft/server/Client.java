@@ -395,7 +395,6 @@ public class Client {
 
             if (inputData.isClosingCraftInventory()) {
                 craftingTableInventory.setOpen(false);
-                System.out.println("?");
             }
 
             if (inputData.isPlacingBlock()) {

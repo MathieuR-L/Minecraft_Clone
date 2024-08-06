@@ -71,11 +71,11 @@ public class MinecraftServer {
             this.pluginManager.loadPlugins("plugins");
             MinecraftApiFacade api = new MinecraftApiFacade();
             this.serverData = api.signInServer();
-            logger.info("Serveur authentifié avec succès ! ID " + serverData.getId() + " IP : " + serverData.getIp());
+            logger.info("Serveur authentifié avec succès !");
         } catch (Exception e) {
             logger.error("Une erreur est survenue lors de l'authentification, veillez à renseigner un jeton d'authentification valide.");
         }
-        logger.info("Point de spawn calculé en " + world.getSpawnPosition());
+        logger.info("Point de spawn calculé en {}", world.getSpawnPosition());
         //world.addEntity(new Villager("Dummy"));
         world.addEntity(new Zombie("Dummy"));
         //logger.info("Un villageois a spawn !");

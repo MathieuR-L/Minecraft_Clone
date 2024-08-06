@@ -41,6 +41,7 @@ public abstract class ApiTemplate<T> {
             String responseData = this.handleResponse(connection);
             return apiMapper.parseData(responseData);
         } catch (IOException e) {
+            logger.error(e);
             return null;
         } finally {
             if (connection != null) {
