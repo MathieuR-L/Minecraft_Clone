@@ -13,22 +13,28 @@ public class ChatMessage {
     private final String message;
     private final long timestamp;
     private final ChatColor color;
+    private final String profileIconUrl;
 
     public ChatMessage(String senderUuid, String senderName, String message) {
-        this(UUID.randomUUID().toString(), System.currentTimeMillis(), senderUuid, senderName, message, ChatColor.WHITE);
+        this(UUID.randomUUID().toString(), System.currentTimeMillis(), senderUuid, senderName, message, ChatColor.WHITE, null);
     }
 
     public ChatMessage(String senderUuid, String senderName, String message, ChatColor color) {
-        this(UUID.randomUUID().toString(), System.currentTimeMillis(), senderUuid, senderName, message, color);
+        this(UUID.randomUUID().toString(), System.currentTimeMillis(), senderUuid, senderName, message, color, null);
     }
 
     public ChatMessage(String id, long timestamp, String senderUuid, String senderName, String message, ChatColor color) {
+        this(id, timestamp, senderUuid, senderName, message, color, null);
+    }
+
+    public ChatMessage(String id, long timestamp, String senderUuid, String senderName, String message, ChatColor color, String profileIconUrl) {
         this.timestamp = timestamp;
         this.id = id;
         this.senderUuid = senderUuid;
         this.senderName = senderName;
         this.message = message;
         this.color = color;
+        this.profileIconUrl = profileIconUrl;
     }
 
     public long getTimestamp() {
@@ -68,13 +74,12 @@ public class ChatMessage {
 
         authorNode.put("name", senderName);
         authorNode.put("id", senderUuid);
-        authorNode.put("profileIconUrl", "");
+        authorNode.put("profileIconUrl", profileIconUrl);
 
         node.put("timestamp", timestamp);
         node.put("id", id);
         node.set("author", authorNode);
         node.put("message", message);
-        node.put("colorName", color.toString());
 
         return node;
     }
@@ -85,5 +90,9 @@ public class ChatMessage {
 
     public ChatColor getColor() {
         return color;
+    }
+
+    public String getProfileIconUrl() {
+        return profileIconUrl;
     }
 }

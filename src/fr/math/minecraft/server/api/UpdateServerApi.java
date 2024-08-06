@@ -1,7 +1,6 @@
 package fr.math.minecraft.server.api;
 
 import fr.math.minecraft.server.ServerConfiguration;
-import fr.math.minecraft.server.api.mapper.ApiMapper;
 import fr.math.minecraft.server.api.mapper.VoidApiMapper;
 import fr.math.minecraft.server.websockets.ServerStatus;
 
